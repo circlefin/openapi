@@ -1,0 +1,1154 @@
+openapi: 3.0.2
+servers:
+  - url: api-sandbox.circle.com
+info:
+  version: ${version}
+  title: Accounts API
+  description: APIs to manage custodial wallets.
+tags:
+  - name: Wallets
+  - name: Transfers
+paths:
+  /v1/wallets:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Create a wallet
+      description: Creates an end user wallet.
+      operationId: createWallet
+      tags:
+        - Wallets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalletCreationRequest'
+      responses:
+        '201':
+          headers:
+            X-Request-Id:
+              $ref: '#/components/headers/XRequestId'
+          description: Successfully created a wallet.
+          content:
+            application/json:
+              schema:
+                title: CreateWalletResponse
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Wallet'
+              examples:
+                response:
+                  value:
+                    data:
+                      walletId: '434000'
+                      entityId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
+                      type: end_user_wallet
+                      description: Treasury Wallet
+                      balances:
+                        - amount: '3.14'
+                          currency: USD
+    get:
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/PageBefore'
+        - $ref: '#/components/parameters/PageAfter'
+        - $ref: '#/components/parameters/PageSize'
+      summary: List all wallets
+      description: Retrieves a list of a user's wallets.
+      operationId: getWallets
+      tags:
+        - Wallets
+      responses:
+        '200':
+          description: Successfully retrieved a list of wallets.
+          headers:
+            X-Request-Id:
+              $ref: '#/components/headers/XRequestId'
+          content:
+            application/json:
+              schema:
+                title: GetWalletsResponse
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Wallet'
+              examples:
+                response:
+                  value:
+                    data:
+                      - walletId: '434000'
+                        entityId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
+                        type: end_user_wallet
+                        description: Treasury Wallet
+                        balances:
+                          - amount: '3.14'
+                            currency: USD
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /v1/wallets/{walletId}:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/WalletId'
+      security:
+        - bearerAuth: []
+      summary: Get a wallet
+      operationId: getWallet
+      tags:
+        - Wallets
+      responses:
+        '200':
+          description: Successfully retrieved a wallet.
+          headers:
+            X-Request-Id:
+              $ref: '#/components/headers/XRequestId'
+          content:
+            application/json:
+              schema:
+                title: GetWalletResponse
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Wallet'
+              examples:
+                response:
+                  value:
+                    data:
+                      walletId: '434000'
+                      entityId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
+                      type: end_user_wallet
+                      description: Treasury Wallet
+                      balances:
+                        - amount: '3.14'
+                          currency: USD
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/wallets/{walletId}/addresses:
+    post:
+      parameters:
+        - $ref: '#/components/parameters/WalletId'
+      security:
+        - bearerAuth: []
+      summary: Create a blockchain address
+      description: |
+        Generates a new blockchain address for a wallet for a given currency/chain pair. Circle may reuse addresses on blockchains that support reuse. For example, if you're requesting two addresses for depositing USD and ETH, both on Ethereum, you may see the same Ethereum address returned. Depositing cryptocurrency to a generated address will credit the associated wallet with the value of the deposit.
+      operationId: generateAddress
+      tags:
+        - Wallets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateAddressRequest'
+      responses:
+        '201':
+          description: Successfully generated a new address.
+          headers:
+            X-Request-Id:
+              $ref: '#/components/headers/XRequestId'
+          content:
+            application/json:
+              schema:
+                title: GenerateAddressResponse
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AddressObject'
+              examples:
+                response:
+                  value:
+                    data:
+                      address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+                      addressTag: '123456789'
+                      currency: USD
+                      chain: ALGO
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    get:
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/WalletId'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/PageBefore'
+        - $ref: '#/components/parameters/PageAfter'
+        - $ref: '#/components/parameters/PageSize'
+      summary: List all addresses
+      description: Retrieves a list of addresses associated with a wallet.
+      operationId: getAddresses
+      tags:
+        - Wallets
+      responses:
+        '200':
+          description: Successfully retrieved a list of addresses.
+          headers:
+            X-Request-Id:
+              $ref: '#/components/headers/XRequestId'
+          content:
+            application/json:
+              schema:
+                title: GetAddressesResponse
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AddressObject'
+              examples:
+                response:
+                  value:
+                    data:
+                      - address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+                        addressTag: '123456789'
+                        currency: USD
+                        chain: ALGO
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/transfers:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Create a transfer
+      description: A transfer can be made from an existing funded wallet to a blockchain address or another wallet.
+      operationId: createTransfer
+      tags:
+        - Transfers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferCreationRequest'
+            examples:
+              request:
+                value:
+                  idempotencyKey: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
+                  source:
+                    type: wallet
+                    id: '12345'
+                  destination:
+                    type: blockchain
+                    address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+                    chain: ETH
+                  amount:
+                    amount: '3.14'
+                    currency: USD
+              travel rule:
+                value:
+                  idempotencyKey: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
+                  source:
+                    type: wallet
+                    id: '12345'
+                    identities:
+                      - type: individual
+                        name: Satoshi Nakamoto
+                        addresses:
+                          - line1: 100 Money Street
+                            line2: Suite 1
+                            city: Boston
+                            district: MA
+                            postalCode: '01234'
+                            country: US
+                  destination:
+                    type: blockchain
+                    address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+                    chain: ETH
+                  amount:
+                    amount: '3000.00'
+                    currency: USD
+      responses:
+        '201':
+          headers:
+            X-Request-Id:
+              $ref: '#/components/headers/XRequestId'
+          description: Successfully created a transfer.
+          content:
+            application/json:
+              schema:
+                title: CreateTransferResponse
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Transfer'
+              examples:
+                response:
+                  value:
+                    data:
+                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      source:
+                        type: wallet
+                        id: '12345'
+                      destination:
+                        type: blockchain
+                        address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+                        chain: ETH
+                      amount:
+                        amount: '3.14'
+                        currency: USD
+                      transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
+                      status: pending
+                      createDate: '2020-04-10T02:13:30.000Z'
+                travel rule:
+                  value:
+                    data:
+                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      source:
+                        type: wallet
+                        id: '12345'
+                        identities:
+                          - type: individual
+                            name: Satoshi Nakamoto
+                            addresses:
+                              - line1: 100 Money Street
+                                line2: Suite 1
+                                city: Boston
+                                district: MA
+                                postalCode: '01234'
+                                country: US
+                      destination:
+                        type: blockchain
+                        address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+                        chain: ETH
+                      amount:
+                        amount: '3000.00'
+                        currency: USD
+                      transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
+                      status: pending
+                      createDate: '2020-04-10T02:13:30.000Z'
+    get:
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: walletId
+          description: Unique identifier for the source or destination wallet of transfers, if any. May not be used in conjunction with destinationWalletId or sourceWalletId. Useful for fetching all transfers related to a wallet.
+          in: query
+          required: false
+          schema:
+            type: string
+            example: '12345'
+        - name: sourceWalletId
+          description: Unique identifier for the source wallet of transfers, if any.
+          in: query
+          required: false
+          schema:
+            type: string
+            example: '12345'
+        - name: destinationWalletId
+          description: Unique identifier for the destination wallet of transfers, if any.
+          in: query
+          required: false
+          schema:
+            type: string
+            example: '12345'
+        - $ref: '#/components/parameters/ReturnIdentities'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/PageBefore'
+        - $ref: '#/components/parameters/PageAfter'
+        - $ref: '#/components/parameters/PageSize'
+      summary: List all transfers
+      description: Searches for transfers involving the provided wallets. If no wallet ids are provided, searches all wallets associated with your Circle API account. If the date parameters are omitted, returns the most recent transfers. This endpoint returns up to 50 transfers in descending chronological order or pageSize, if provided.
+      operationId: searchTransfers
+      tags:
+        - Transfers
+      responses:
+        '200':
+          description: Successfully retrieved a list of transfers.
+          headers:
+            X-Request-Id:
+              $ref: '#/components/headers/XRequestId'
+          content:
+            application/json:
+              schema:
+                title: SearchTransfersResponse
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transfer'
+              examples:
+                response:
+                  value:
+                    data:
+                      - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                        source:
+                          type: wallet
+                          id: '12345'
+                        destination:
+                          type: blockchain
+                          address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+                          addressTag: '123456789'
+                          chain: ALGO
+                        amount:
+                          amount: '3.14'
+                          currency: USD
+                        transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
+                        status: pending
+                        createDate: '2020-04-10T02:13:30.000Z'
+                travel rule:
+                  value:
+                    data:
+                      - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                        source:
+                          type: wallet
+                          id: '12345'
+                          identities:
+                            - type: individual
+                              name: Satoshi Nakamoto
+                              addresses:
+                                - line1: 100 Money Street
+                                  line2: Suite 1
+                                  city: Boston
+                                  district: MA
+                                  postalCode: '01234'
+                                  country: US
+                        destination:
+                          type: blockchain
+                          address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+                          addressTag: '123456789'
+                          chain: ALGO
+                        amount:
+                          amount: '3000.00'
+                          currency: USD
+                        transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
+                        status: pending
+                        createDate: '2020-04-10T02:13:30.000Z'
+        '401':
+          $ref: '#/components/responses/NotAuthorized'
+  /v1/transfers/{id}:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+        - $ref: '#/components/parameters/ReturnIdentities'
+      security:
+        - bearerAuth: []
+      summary: Get a transfer
+      operationId: getTransfer
+      tags:
+        - Transfers
+      responses:
+        '200':
+          headers:
+            X-Request-Id:
+              $ref: '#/components/headers/XRequestId'
+          description: Successfully retrieved a transfer.
+          content:
+            application/json:
+              schema:
+                title: GetTransferResponse
+                properties:
+                  data:
+                    $ref: '#/components/schemas/TransferDetailedTransfer'
+              examples:
+                response:
+                  value:
+                    data:
+                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      source:
+                        type: wallet
+                        id: '12345'
+                      destination:
+                        type: blockchain
+                        address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+                        chain: ETH
+                      amount:
+                        amount: '3.14'
+                        currency: USD
+                      transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
+                      status: pending
+                      createDate: '2020-04-10T02:13:30.000Z'
+                travel rule:
+                  value:
+                    data:
+                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      source:
+                        type: wallet
+                        id: '12345'
+                        identities:
+                          - type: individual
+                            name: Satoshi Nakamoto
+                            addresses:
+                              - line1: 100 Money Street
+                                line2: Suite 1
+                                city: Boston
+                                district: MA
+                                postalCode: '01234'
+                                country: US
+                      destination:
+                        type: blockchain
+                        address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+                        chain: ETH
+                      amount:
+                        amount: '3000.00'
+                        currency: USD
+                      transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
+                      status: pending
+                      createDate: '2020-04-10T02:13:30.000Z'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    From:
+      name: from
+      description: Queries items created since the specified date-time (inclusive).
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date-time
+        example: '2020-04-10T02:13:30.000Z'
+    To:
+      name: to
+      description: Queries items created before the specified date-time (inclusive).
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date-time
+        example: '2020-04-10T02:13:30.000Z'
+    PageBefore:
+      name: pageBefore
+      description: |
+        A collection ID value used for pagination.
+
+        It marks the exclusive end of a page. When provided, the collection resource will return the next `n` items before
+        the id, with `n` being specified by `pageSize`.
+
+        The items will be returned in the natural order of the collection.
+
+        The resource will return the first page if neither `pageAfter` nor `pageBefore` are specified.
+
+        SHOULD NOT be used in conjuction with pageAfter.
+      in: query
+      required: false
+      schema:
+        type: string
+    PageAfter:
+      name: pageAfter
+      description: |
+        A collection ID value used for pagination.
+
+        It marks the exclusive begin of a page. When provided, the collection resource will return the next `n` items after
+        the id, with `n` being specified by `pageSize`.
+
+        The items will be returned in the natural order of the collection.
+
+        The resource will return the first page if neither `pageAfter` nor `pageBefore` are specified.
+
+        SHOULD NOT be used in conjuction with pageBefore.
+      in: query
+      required: false
+      schema:
+        type: string
+    PageSize:
+      name: pageSize
+      description: |
+        Limits the number of items to be returned.
+
+        Some collections have a strict upper bound that will disregard this value. In case the specified value is higher
+        than the allowed limit, the collection limit will be used.
+
+        If avoided, the collection will determine the page size itself.
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        example: 5
+    WalletId:
+      name: walletId
+      description: Identifier for the wallet.
+      in: path
+      required: true
+      schema:
+        type: string
+        example: '0123456789'
+    ReturnIdentities:
+      name: returnIdentities
+      description: Specify if you would like to see identities in the response. Restricts maximum returned items to 5. By default returnIdentities is false, resulting in the response not returning `data.source.identities`.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        example: 'true'
+        default: false
+    IdPath:
+      name: id
+      description: Universally unique identifier (UUID v4) of a resource.
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: b3d9d2d5-4c12-4946-a09d-953e82fae2b0
+  headers:
+    XRequestId:
+      description: Universally unique identifier (UUID v4) for the request. Helpful for identifying a request when communicating with Circle support.
+      schema:
+        type: string
+        format: uuid
+        example: 2adba88e-9d63-44bc-b975-9b6ae3440dde
+  schemas:
+    Money:
+      type: object
+      required:
+        - amount
+        - currency
+      properties:
+        amount:
+          type: string
+          description: Magnitude of the amount, in units of the currency, with a `.`.
+          example: '3.14'
+        currency:
+          type: string
+          description: Currency code for the amount.
+          enum:
+            - USD
+            - EUR
+            - BTC
+            - ETH
+    Wallet:
+      type: object
+      properties:
+        walletId:
+          type: string
+          description: Wallet identifier. Numeric value but should be treated as a string as format may change in the future'
+          example: '434000'
+        entityId:
+          type: string
+          description: Universally unique identifier (UUID v4) of the entity that owns the wallet.
+          example: fc988ed5-c129-4f70-a064-e5beb7eb8e32
+        type:
+          type: string
+          description: Wallet type.
+          enum:
+            - end_user_wallet
+        description:
+          type: string
+          description: A human-friendly, non-unique identifier for a wallet.
+          example: Treasury Wallet
+          maxLength: 255
+        balances:
+          description: A list of balances for currencies owned by the wallet.
+          type: array
+          items:
+            $ref: '#/components/schemas/Money'
+    IdempotencyKey:
+      type: string
+      description: Universally unique identifier (UUID v4) idempotency key. This key is utilized to ensure exactly-once execution of mutating requests.
+      format: uuid
+      example: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
+    WalletCreationRequest:
+      type: object
+      required:
+        - idempotencyKey
+      properties:
+        idempotencyKey:
+          $ref: '#/components/schemas/IdempotencyKey'
+        description:
+          type: string
+          description: A human-friendly, non-unique identifier for a wallet.
+          example: Treasury Wallet
+          maxLength: 255
+    Address:
+      type: string
+      description: An alphanumeric string representing a blockchain address. Will be in different formats for different chains. It is important to preserve the exact formatting and capitalization of the address.
+      example: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+    AddressTag:
+      type: string
+      description: The secondary identifier for a blockchain address. An example of this is the memo field on the Stellar network, which can be text, id, or hash format.
+      nullable: true
+      example: '123456789'
+    Currency:
+      type: string
+      description: A currency associated with a balance or address.
+      nullable: true
+      enum:
+        - USD
+        - EUR
+        - BTC
+        - ETH
+    Chain:
+      type: string
+      description: A blockchain that a given currency is available on.
+      enum:
+        - ALGO
+        - AVAX
+        - BTC
+        - ETH
+        - FLOW
+        - HBAR
+        - MATIC
+        - SOL
+        - TRX
+        - XLM
+    AddressObject:
+      type: object
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        addressTag:
+          $ref: '#/components/schemas/AddressTag'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        chain:
+          $ref: '#/components/schemas/Chain'
+    GenerateAddressRequest:
+      type: object
+      required:
+        - idempotencyKey
+        - currency
+        - chain
+      properties:
+        idempotencyKey:
+          $ref: '#/components/schemas/IdempotencyKey'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        chain:
+          $ref: '#/components/schemas/Chain'
+    Id:
+      type: string
+      description: Unique system generated identifier for the entity.
+      format: uuid
+      example: b8627ae8-732b-4d25-b947-1df8f4007a29
+    Identity:
+      type: object
+      description: |
+        The identity of the originator. Identities are required when:
+          * `destination.type: "blockchain"`
+          * `destination.chain: "ETH"`
+          * `amount.amount` >= $3,000 in value
+      required:
+        - type
+        - name
+        - addresses
+      properties:
+        type:
+          type: string
+          description: |
+            The type of identity for the originator.
+            * `individual` - A uniquely distinguishable individual.
+            * `business` - Any entity other than a natural person that can establish a permanent customer relationship with an affected entity or otherwise own property. This can include companies, foundations, anstalt, partnerships, associations and other relevantly similar entities.
+          enum:
+            - individual
+            - business
+        name:
+          type: string
+          description: Full name of the identity.
+          example: Satoshi Nakamoto
+          maxLength: 1024
+        addresses:
+          type: array
+          items:
+            type: object
+            required:
+              - line1
+              - city
+              - district
+              - postalCode
+              - country
+            properties:
+              line1:
+                type: string
+                description: Line one of the street address.
+                maxLength: 1024
+                example: 100 Money Street
+              line2:
+                type: string
+                description: Line two of the street address.
+                maxLength: 1024
+                example: Suite 1
+              city:
+                type: string
+                description: City portion of the address.
+                maxLength: 1024
+                example: Boston
+              district:
+                description: State / County / Province / Region portion of the address. If the country is US or Canada, then district is required and should use the two-letter code for the subdivision.
+                type: string
+                maxLength: 16
+                example: MA
+              postalCode:
+                type: string
+                description: Postal / ZIP code of the address.
+                maxLength: 16
+                example: '01234'
+              country:
+                type: string
+                description: Country portion of the address. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.
+                maxLength: 2
+                example: US
+    TransferSourceWalletLocation:
+      description: A source wallet location.
+      type: object
+      required:
+        - type
+        - id
+      properties:
+        type:
+          type: string
+          enum:
+            - wallet
+        id:
+          type: string
+          description: The id of the wallet.
+          example: '12345'
+        identities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Identity'
+    TransferSourceBlockchainLocation:
+      description: A source blockchain address.
+      type: object
+      required:
+        - type
+        - chain
+      properties:
+        type:
+          type: string
+          enum:
+            - blockchain
+        chain:
+          $ref: '#/components/schemas/Chain'
+        identities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Identity'
+    TransferSourceLocation:
+      description: A source of funds.
+      oneOf:
+        - $ref: '#/components/schemas/TransferSourceWalletLocation'
+        - $ref: '#/components/schemas/TransferSourceBlockchainLocation'
+      discriminator:
+        propertyName: type
+    TransferDestinationBlockchainLocation:
+      description: A destination blockchain address.
+      type: object
+      required:
+        - type
+        - chain
+        - address
+      properties:
+        type:
+          type: string
+          enum:
+            - blockchain
+        address:
+          $ref: '#/components/schemas/Address'
+        addressTag:
+          $ref: '#/components/schemas/AddressTag'
+        chain:
+          $ref: '#/components/schemas/Chain'
+    TransferDestinationWalletLocation:
+      description: A destination wallet location.
+      type: object
+      required:
+        - type
+        - id
+      properties:
+        type:
+          type: string
+          enum:
+            - wallet
+        id:
+          type: string
+          description: The id of the wallet.
+          example: '12345'
+        address:
+          type: string
+          description: An alphanumeric string which indicates the wallet address used to receive the transfer. Will only be set when the transfer source is a blockchain address.
+          example: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+        addressTag:
+          $ref: '#/components/schemas/AddressTag'
+    TransferDestinationLocation:
+      description: A destination of funds.
+      oneOf:
+        - $ref: '#/components/schemas/TransferDestinationBlockchainLocation'
+        - $ref: '#/components/schemas/TransferDestinationWalletLocation'
+      discriminator:
+        propertyName: type
+    TransferErrorCode:
+      type: string
+      description: Indicates the failure reason of a transfer. Only present for transfers in a `failed` state. Possible values are `insufficient_funds`, `blockchain_error` and `transfer_denied` and `transfer_failed`
+      nullable: true
+      enum:
+        - transfer_failed
+        - transfer_denied
+        - blockchain_error
+        - insufficient_funds
+    Transfer:
+      type: object
+      description: A transfer of funds.
+      required:
+        - id
+        - source
+        - destination
+        - amount
+        - status
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        source:
+          $ref: '#/components/schemas/TransferSourceLocation'
+        destination:
+          $ref: '#/components/schemas/TransferDestinationLocation'
+        amount:
+          $ref: '#/components/schemas/Money'
+        transactionHash:
+          description: A hash that uniquely identifies the onchain transaction. This is only available where either source or destination are of type blockchain.
+          type: string
+          example: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
+        status:
+          description: Status of the transfer. Status `pending` indicates that the transfer is in the process of running; `complete` indicates it finished successfully; `failed` indicates it failed.
+          type: string
+          enum:
+            - pending
+            - complete
+            - failed
+        errorCode:
+          $ref: '#/components/schemas/TransferErrorCode'
+        createDate:
+          description: The create date of the transfer.
+          type: string
+          format: date-time
+    TransferRequestSourceWalletLocation:
+      type: object
+      required:
+        - type
+        - id
+      properties:
+        type:
+          type: string
+          enum:
+            - wallet
+        id:
+          type: string
+          description: The id of the wallet.
+          example: '12345'
+        identities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Identity'
+    TransferRequestBlockchainLocation:
+      type: object
+      required:
+        - type
+        - address
+        - chain
+      properties:
+        type:
+          type: string
+          enum:
+            - blockchain
+        address:
+          type: string
+          description: The blockchain address.
+          example: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+        addressTag:
+          $ref: '#/components/schemas/AddressTag'
+        chain:
+          $ref: '#/components/schemas/Chain'
+    WalletLocation:
+      type: object
+      required:
+        - type
+        - id
+      properties:
+        type:
+          type: string
+          enum:
+            - wallet
+        id:
+          type: string
+          description: The id of the wallet.
+          example: '12345'
+    TransferCreationRequest:
+      type: object
+      required:
+        - idempotencyKey
+        - source
+        - destination
+        - amount
+      properties:
+        idempotencyKey:
+          $ref: '#/components/schemas/IdempotencyKey'
+        source:
+          $ref: '#/components/schemas/TransferRequestSourceWalletLocation'
+        destination:
+          oneOf:
+            - $ref: '#/components/schemas/TransferRequestBlockchainLocation'
+            - $ref: '#/components/schemas/WalletLocation'
+        amount:
+          $ref: '#/components/schemas/Money'
+    RiskEvaluation:
+      type: object
+      description: Results of risk evaluation. Only present if the payment is denied by Circle's risk service.
+      nullable: true
+      properties:
+        decision:
+          description: Enumerated decision of the account.
+          type: string
+          enum:
+            - approved
+            - denied
+            - review
+        reason:
+          description: Risk reason for the definitive decision outcome.
+          type: string
+          nullable: true
+          example: '3000'
+    UTCTimestamp:
+      type: string
+      description: ISO-8601 UTC date/time format.
+      example: '2020-04-10T02:13:30.000Z'
+    TransferDetailedTransfer:
+      type: object
+      description: A transfer of funds.
+      required:
+        - id
+        - source
+        - destination
+        - amount
+        - status
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        source:
+          $ref: '#/components/schemas/TransferSourceLocation'
+        destination:
+          $ref: '#/components/schemas/TransferDestinationLocation'
+        amount:
+          $ref: '#/components/schemas/Money'
+        transactionHash:
+          type: string
+          description: A hash that uniquely identifies the onchain transaction. This is only available where either source or destination are of type blockchain.
+          example: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
+        status:
+          type: string
+          description: Status of the transfer. Status `pending` indicates that the transfer is in the process of running; `complete` indicates it finished successfully; `failed` indicates it failed.
+          enum:
+            - failed
+            - pending
+            - complete
+        errorCode:
+          $ref: '#/components/schemas/TransferErrorCode'
+        riskEvaluation:
+          $ref: '#/components/schemas/RiskEvaluation'
+        createDate:
+          $ref: '#/components/schemas/UTCTimestamp'
+  responses:
+    BadRequest:
+      description: The request cannot be processed due to a client error.
+      headers:
+        X-Request-Id:
+          $ref: '#/components/headers/XRequestId'
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: Something went wrong.
+            example:
+              code: 400
+              message: Bad request.
+          examples:
+            response:
+              value:
+                code: 400
+                message: Bad request.
+    NotFound:
+      description: The specified resource was not found.
+      headers:
+        X-Request-Id:
+          $ref: '#/components/headers/XRequestId'
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: Something went wrong.
+            example:
+              code: 404
+              message: Not found.
+          examples:
+            response:
+              value:
+                code: 404
+                message: Not found.
+    Conflict:
+      description: The request has not been applied because it comes in conflict with another request (such as re-using an idempotencyKey for a different request).
+      headers:
+        X-Request-Id:
+          $ref: '#/components/headers/XRequestId'
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: Something went wrong.
+            example:
+              code: 409
+              message: Conflicts with another request.
+          examples:
+            response:
+              value:
+                code: 409
+                message: Conflicts with another request.
+    NotAuthorized:
+      description: The request has not been applied because it lacks valid authentication credentials.
+      headers:
+        X-Request-Id:
+          $ref: '#/components/headers/XRequestId'
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: Something went wrong.
+            example:
+              code: 401
+              message: Malformed authorization.
+          examples:
+            response:
+              value:
+                code: 401
+                message: Malformed authorization.
