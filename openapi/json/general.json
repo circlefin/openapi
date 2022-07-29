@@ -1,0 +1,852 @@
+{
+  "openapi": "3.0.2",
+  "servers": [
+    {
+      "url": "api-sandbox.circle.com"
+    }
+  ],
+  "info": {
+    "version": "${version}",
+    "title": "API Overview",
+    "description": "Common endpoints shared across all Circle APIs."
+  },
+  "tags": [
+    {
+      "name": "Health",
+      "description": "Inspect the health of the API."
+    },
+    {
+      "name": "Management",
+      "description": "General account and management information."
+    },
+    {
+      "name": "Encryption",
+      "description": "Encrypt sensitive data."
+    },
+    {
+      "name": "Subscriptions",
+      "description": "Manage subscriptions to notifications."
+    },
+    {
+      "name": "Stablecoins",
+      "description": "Retrieve stablecoins and their respective names, symbols, circulating total and per-chain amounts."
+    },
+    {
+      "name": "Channels",
+      "description": "View a list of channels."
+    }
+  ],
+  "paths": {
+    "/ping": {
+      "get": {
+        "summary": "Ping",
+        "description": "Checks that the service is running.",
+        "operationId": "rootPing",
+        "tags": [
+          "Health"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful ping.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ping"
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "pong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/configuration": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get configuration info",
+        "description": "Retrieves general configuration information.",
+        "operationId": "getConfig",
+        "tags": [
+          "Management"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved configuration information.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "GetConfigResponse",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Configuration"
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": {
+                        "payments": {
+                          "masterWalletId": "212000"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/encryption/public": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get public key",
+        "description": "Retrieves an RSA public key to be used in encrypting data sent to the API. Your public keys change infrequently, so we encourage you to cache this response value locally for a duration of 24 hours or more.",
+        "operationId": "getPublicKey",
+        "tags": [
+          "Encryption"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the RSA public key.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "GetPublicKeyResponse",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PublicKey"
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": {
+                        "keyId": "key1",
+                        "publicKey": "LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tClZlcnNpb246IEJDUEcgdjEuNTQKCm1RRU5CRjAxdmk0QkNBQ3JzMDNLS1Y0Qk9SRkYyT0Z4bUdvb0UyaTZMbnNneE5UL1dsV2s1ZTl2RDd2NENkSm0KcGJJbENmZ0U4WFlnYmhKUTE4YStaTzlPM0RFYUp2dGhJSEtjL0l1UEIvZmdEYUJUT285NkJzL2pVRFp6ZGxaVApQazNFUjliNFZPeGVwMFNPSHFMcmxTVFY4ZXB3M1R3SEdaL3NpSWdBYXEwRGdJdlZxUTY4TGVaMnorUFJWZm04CmhhSnJpb05SRU5Ja2ZNTWY5aFdySlowSW1zUk1aVmpDMVVrd2FSSHdrTTMwQUlia1dYcFJ5R205SXhQaXdGa08Kb1RnWlpwUFpsdVczckdkWER0NHZqL24za09hczV1dFdoNFovMlhjWHBiSUUyU0FPK0hycUdIclRnK1ZmZ05JNwpZcVZqYW5MOEN1bm83UkxmcDhKZlZDNXBLUm5ySVNCTnphN1ZBQkVCQUFHMEJrTnBjbU5zWllrQkhBUVFBUWtBCkJnVUNYVFcrTGdBS0NSQ3EzaHNwWjBMeGEwdnpCLzQvQTJpdk1CWW1aZXV2bEJZMm5ZZnNXek9Sb28vU3BIYkQKY2Y0UmtxZzZ0RERJSkUzNHhDVit0MzJydmJkM0ZOdVZseWs1MDVZRkpESnI4cVc2S0tkQVRXdU16eW5mMVVoUAo1M25hTlc0cXdrdSt3b0RWWjJpci9lUVI1WUc4L0RGcnd3bXdaa0dRd0Ftc3h5ZHd5anBnLzBrQ3lpZHkxdVBkCmVVWGgwdWt4dS9Dais4UFl5cHcwdit5V2tzbjdSZ2dVbkJFMWhiQ2pEV3FweHZjMEpDNVAxdmx6L2xRcWQrR3oKRC9Td1FJTVdRVElnV3BHRVVvQTRDc3drbU5PdHhsRVF1U0tueXNtTG02S0ExUmRhTzd6V2IrdWNLN21FZ2VoSwpXU2hHZExqRVNNZlVRUTczemNqMXg2amxLUFNhRlJyLzhXcHhrVXYzVHYvQzZMb0JpejRLCj1WSWg3Ci0tLS0tRU5EIFBHUCBQVUJMSUMgS0VZIEJMT0NLLS0tLS0K"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/notifications/subscriptions": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "List all notification subscriptions",
+        "description": "Retrieve a list of existing notification subscriptions with details.",
+        "parameters": [],
+        "operationId": "listSubscriptions",
+        "tags": [
+          "Subscriptions"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved a list of notification subscriptions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "GetListSubscriptionsResponse",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SubscriptionResponse"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                          "endpoint": "https://example.org/handler/for/notifications",
+                          "subscriptionDetails": [
+                            {
+                              "url": "arn:aws:sns:us-east-1:<...>:fcb4a2c9-9c4f-4706-b312-6b22650f5d17",
+                              "status": "confirmed"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create a notification subscription",
+        "description": "Subscribe to receiving notifications at a given endpoint. The endpoint should be able to handle AWS SNS subscription requests. For more details see https://docs.aws.amazon.com/mobile/sdkforxamarin/developerguide/sns-send-http.html. Note, the sandbox environment allows a maximum of 3 active subscriptions; otherwise, this is limited to 1 active subscription and subsequent create requests will be rejected with a Limit Exceeded error.\n",
+        "operationId": "subscribe",
+        "tags": [
+          "Subscriptions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscriptionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created a notification subscription.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "SubscribeResponse",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SubscriptionResponse"
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": {
+                        "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                        "endpoint": "https://example.org/handler/for/notifications",
+                        "subscriptionDetails": [
+                          {
+                            "url": "arn:aws:sns:us-east-1:<...>:fcb4a2c9-9c4f-4706-b312-6b22650f5d17",
+                            "status": "confirmed"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          }
+        }
+      }
+    },
+    "/v1/notifications/subscriptions/{id}": {
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Remove a notification subscription",
+        "description": "To remove a subscription, all its subscription requests' statuses must be either 'confirmed', 'deleted' or a combination of those. A subscription with at least one 'pending' subscription request cannot be removed.",
+        "operationId": "unsubscribe",
+        "tags": [
+          "Subscriptions"
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "description": "Successfully removed a subscription.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "DeleteUnsubscribeResponse",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/UnsubscribeResponse"
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/channels": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "List all channels",
+        "description": "Retrieve a list of channels with details (e.g. `cardDescriptor`, `achDescriptor`, etc.).",
+        "parameters": [],
+        "operationId": "listChannels",
+        "tags": [
+          "Channels"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved a list of channels.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "ListChannelsResponse",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ChannelResponse"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                          "default": true,
+                          "cardDescriptor": "CIRCLE LLC.",
+                          "achDescriptor": "CIRCLE LLC."
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          }
+        }
+      }
+    },
+    "/v1/stablecoins": {
+      "get": {
+        "summary": "List all stablecoins",
+        "description": "Retrieves total circulating supply for supported stablecoins across all chains. This endpoint is rate limited to one call per minute (based on IP).",
+        "operationId": "getStablecoins",
+        "tags": [
+          "Stablecoins"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved all stablecoin supplies across all chains.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "GetStablecoinsResponse",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Stablecoins"
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": [
+                        {
+                          "name": "USD Coin",
+                          "symbol": "USDC",
+                          "totalAmount": "132.584192",
+                          "chains": [
+                            {
+                              "amount": "132.584192",
+                              "chain": "ALGO"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "Ping": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "pong"
+          }
+        }
+      },
+      "MerchantWalletId": {
+        "type": "string",
+        "description": "Unique system generated identifier for the wallet of the merchant.",
+        "maxLength": 36,
+        "example": "212000"
+      },
+      "Configuration": {
+        "type": "object",
+        "properties": {
+          "payments": {
+            "type": "object",
+            "properties": {
+              "masterWalletId": {
+                "$ref": "#/components/schemas/MerchantWalletId"
+              }
+            }
+          }
+        }
+      },
+      "IdKey": {
+        "type": "string",
+        "description": "Universally unique identifier (UUID v4) of the public key used in encryption. NOTE the sandbox environment uses the default value of `key1`. For this reason the example supplied is `key1` rather than a UUID.",
+        "format": "uuid",
+        "example": "key1"
+      },
+      "PublicKey": {
+        "type": "object",
+        "required": [
+          "keyId",
+          "publicKey"
+        ],
+        "properties": {
+          "keyId": {
+            "$ref": "#/components/schemas/IdKey"
+          },
+          "publicKey": {
+            "type": "string",
+            "description": "A PGP ascii-armor encoded public key.",
+            "example": "LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tClZlcnNpb246IEJDUEcgdjEuNTQKCm1RRU5CRjAxdmk0QkNBQ3JzMDNLS1Y0Qk9SRkYyT0Z4bUdvb0UyaTZMbnNneE5UL1dsV2s1ZTl2RDd2NENkSm0KcGJJbENmZ0U4WFlnYmhKUTE4YStaTzlPM0RFYUp2dGhJSEtjL0l1UEIvZmdEYUJUT285NkJzL2pVRFp6ZGxaVApQazNFUjliNFZPeGVwMFNPSHFMcmxTVFY4ZXB3M1R3SEdaL3NpSWdBYXEwRGdJdlZxUTY4TGVaMnorUFJWZm04CmhhSnJpb05SRU5Ja2ZNTWY5aFdySlowSW1zUk1aVmpDMVVrd2FSSHdrTTMwQUlia1dYcFJ5R205SXhQaXdGa08Kb1RnWlpwUFpsdVczckdkWER0NHZqL24za09hczV1dFdoNFovMlhjWHBiSUUyU0FPK0hycUdIclRnK1ZmZ05JNwpZcVZqYW5MOEN1bm83UkxmcDhKZlZDNXBLUm5ySVNCTnphN1ZBQkVCQUFHMEJrTnBjbU5zWllrQkhBUVFBUWtBCkJnVUNYVFcrTGdBS0NSQ3EzaHNwWjBMeGEwdnpCLzQvQTJpdk1CWW1aZXV2bEJZMm5ZZnNXek9Sb28vU3BIYkQKY2Y0UmtxZzZ0RERJSkUzNHhDVit0MzJydmJkM0ZOdVZseWs1MDVZRkpESnI4cVc2S0tkQVRXdU16eW5mMVVoUAo1M25hTlc0cXdrdSt3b0RWWjJpci9lUVI1WUc4L0RGcnd3bXdaa0dRd0Ftc3h5ZHd5anBnLzBrQ3lpZHkxdVBkCmVVWGgwdWt4dS9Dais4UFl5cHcwdit5V2tzbjdSZ2dVbkJFMWhiQ2pEV3FweHZjMEpDNVAxdmx6L2xRcWQrR3oKRC9Td1FJTVdRVElnV3BHRVVvQTRDc3drbU5PdHhsRVF1U0tueXNtTG02S0ExUmRhTzd6V2IrdWNLN21FZ2VoSwpXU2hHZExqRVNNZlVRUTczemNqMXg2amxLUFNhRlJyLzhXcHhrVXYzVHYvQzZMb0JpejRLCj1WSWg3Ci0tLS0tRU5EIFBHUCBQVUJMSUMgS0VZIEJMT0NLLS0tLS0K"
+          }
+        }
+      },
+      "Id": {
+        "type": "string",
+        "description": "Unique system generated identifier for the entity.",
+        "format": "uuid",
+        "example": "b8627ae8-732b-4d25-b947-1df8f4007a29"
+      },
+      "SubscriptionDetail": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Identifier for created subscription.",
+            "example": "arn:aws:sns:us-east-1:<...>:fcb4a2c9-9c4f-4706-b312-6b22650f5d17"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the subscription request.",
+            "enum": [
+              "confirmed",
+              "pending",
+              "deleted"
+            ]
+          }
+        }
+      },
+      "SubscriptionResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "endpoint": {
+            "type": "string",
+            "description": "URL of the endpoint.",
+            "example": "https://example.org/handler/for/notifications"
+          },
+          "subscriptionDetails": {
+            "type": "array",
+            "description": "List of subscriptions details for created subscriptions.",
+            "items": {
+              "$ref": "#/components/schemas/SubscriptionDetail"
+            }
+          }
+        }
+      },
+      "SubscriptionRequest": {
+        "type": "object",
+        "required": [
+          "endpoint"
+        ],
+        "properties": {
+          "endpoint": {
+            "type": "string",
+            "description": "URL of the subscriber endpoint. Must be publicly accessible and utilize HTTPS.",
+            "example": "https://example.org/handler/for/notifications"
+          }
+        }
+      },
+      "UnsubscribeResponse": {
+        "type": "object",
+        "description": "Unsubscribe response object. No fields as of now.",
+        "example": {}
+      },
+      "ChannelResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "default": {
+            "type": "boolean",
+            "description": "Flag to indicate whether the channel is configured as default. At most one of the channels will have this flag set to true and the default channel is used when a payment request does not have the `channel` property set.",
+            "example": true
+          },
+          "cardDescriptor": {
+            "type": "string",
+            "description": "Descriptor that appears on cardholders' bank statements for card payments submitted through this channel.",
+            "example": "CIRCLE LLC."
+          },
+          "achDescriptor": {
+            "type": "string",
+            "description": "Descriptor that appears on end-users' bank statements for ACH payments submitted through this channel.",
+            "example": "CIRCLE LLC."
+          }
+        }
+      },
+      "Chain": {
+        "type": "string",
+        "description": "A blockchain that a given currency is available on.",
+        "enum": [
+          "ALGO",
+          "AVAX",
+          "BTC",
+          "ETH",
+          "FLOW",
+          "HBAR",
+          "MATIC",
+          "SOL",
+          "TRX",
+          "XLM"
+        ]
+      },
+      "TokenAmount": {
+        "type": "object",
+        "required": [
+          "amount",
+          "chain"
+        ],
+        "properties": {
+          "amount": {
+            "type": "string",
+            "description": "Magnitude of the amount, in units of the currency, with a `.`.",
+            "example": "132.584192"
+          },
+          "chain": {
+            "$ref": "#/components/schemas/Chain"
+          }
+        }
+      },
+      "Stablecoin": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the stablecoin.",
+            "example": "USD Coin"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Symbol of the stablecoin.",
+            "example": "USDC"
+          },
+          "totalAmount": {
+            "type": "string",
+            "description": "Total circulating amount of the stablecoin.",
+            "example": "132.584192"
+          },
+          "chains": {
+            "type": "array",
+            "description": "A list of the broken down totalAmount by chain of the stablecoin.",
+            "items": {
+              "$ref": "#/components/schemas/TokenAmount"
+            }
+          }
+        }
+      },
+      "Stablecoins": {
+        "type": "array",
+        "description": "A list of stablecoin objects containing its name, symbol, total amount, and per-chain amount.",
+        "items": {
+          "$ref": "#/components/schemas/Stablecoin"
+        }
+      }
+    },
+    "headers": {
+      "XRequestId": {
+        "description": "Universally unique identifier (UUID v4) for the request. Helpful for identifying a request when communicating with Circle support.",
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "2adba88e-9d63-44bc-b975-9b6ae3440dde"
+        }
+      }
+    },
+    "responses": {
+      "NotAuthorized": {
+        "description": "The request has not been applied because it lacks valid authentication credentials.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/XRequestId"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Something went wrong."
+                }
+              },
+              "example": {
+                "code": 401,
+                "message": "Malformed authorization."
+              }
+            },
+            "examples": {
+              "response": {
+                "value": {
+                  "code": 401,
+                  "message": "Malformed authorization."
+                }
+              }
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "The request cannot be processed due to a client error.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/XRequestId"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Something went wrong."
+                }
+              },
+              "example": {
+                "code": 400,
+                "message": "Bad request."
+              }
+            },
+            "examples": {
+              "response": {
+                "value": {
+                  "code": 400,
+                  "message": "Bad request."
+                }
+              }
+            }
+          }
+        }
+      },
+      "LimitExceeded": {
+        "description": "Limit exceeded. See error message for more details.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/XRequestId"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Something went wrong."
+                }
+              },
+              "example": {
+                "code": 429,
+                "message": "Too many requests."
+              }
+            },
+            "examples": {
+              "response": {
+                "value": {
+                  "code": 429,
+                  "message": "Too many requests."
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The specified resource was not found.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/XRequestId"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Something went wrong."
+                }
+              },
+              "example": {
+                "code": 404,
+                "message": "Not found."
+              }
+            },
+            "examples": {
+              "response": {
+                "value": {
+                  "code": 404,
+                  "message": "Not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "IdPath": {
+        "name": "id",
+        "description": "Universally unique identifier (UUID v4) of a resource.",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "b3d9d2d5-4c12-4946-a09d-953e82fae2b0"
+        }
+      }
+    }
+  }
+}
