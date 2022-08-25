@@ -1,40 +1,41 @@
 openapi: 3.0.2
 servers:
-  - url: api-sandbox.circle.com
+- url: api-sandbox.circle.com
 info:
   version: ${version}
   title: Payments API
   description: APIs for accepting payments.
 tags:
-  - name: Payments
-  - name: On-chain payments
-  - name: Cards
-  - name: Wires
-  - name: ACH
-  - name: SEPA
-  - name: Settlements
-  - name: Chargebacks
-  - name: Reversals
-  - name: Balances
+- name: Payments
+- name: On-chain payments
+- name: Cards
+- name: Wires
+- name: ACH
+- name: SEPA
+- name: Settlements
+- name: Chargebacks
+- name: Reversals
+- name: Balances
 paths:
   /v1/payments:
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/Source'
-        - $ref: '#/components/parameters/SettlementId'
-        - $ref: '#/components/parameters/PaymentSourceType'
-        - $ref: '#/components/parameters/PaymentStatus'
-        - $ref: '#/components/parameters/From'
-        - $ref: '#/components/parameters/To'
-        - $ref: '#/components/parameters/PageBefore'
-        - $ref: '#/components/parameters/PageAfter'
-        - $ref: '#/components/parameters/PageSize'
+      - $ref: '#/components/parameters/Source'
+      - $ref: '#/components/parameters/SettlementId'
+      - $ref: '#/components/parameters/PaymentIntentId'
+      - $ref: '#/components/parameters/PaymentSourceType'
+      - $ref: '#/components/parameters/PaymentStatus'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      - $ref: '#/components/parameters/PageBefore'
+      - $ref: '#/components/parameters/PageAfter'
+      - $ref: '#/components/parameters/PageSize'
       summary: List all payments
       operationId: getPayments
       tags:
-        - Payments
+      - Payments
       responses:
         '200':
           description: Successfully retrieved a list of payments.
@@ -49,67 +50,153 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/BasicPayment'
+                      oneOf:
+                      - $ref: '#/components/schemas/FiatPayment'
+                      - $ref: '#/components/schemas/CryptoPayment'
+                      - $ref: '#/components/schemas/FiatCancel'
+                      - $ref: '#/components/schemas/FiatRefund'
+                      discriminator:
+                        propertyName: type
+                        mapping:
+                          Fiat Payment: '#/components/schemas/FiatPayment'
+                          Crypto Payment: '#/components/schemas/CryptoPayment'
+                          Fiat Cancel: '#/components/schemas/FiatCancel'
+                          Fiat Refund: '#/components/schemas/FiatRefund'
               examples:
-                response:
+                Fiat Payment:
                   value:
                     data:
+                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      type: payment
+                      merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
+                      merchantWalletId: '212000'
+                      amount:
+                        amount: '3.14'
+                        currency: USD
+                      source:
+                        id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                        type: card
+                      description: Payment
+                      status: pending
+                      captured: false
+                      captureAmount:
+                        amount: '3.14'
+                        currency: USD
+                      captureDate: '2020-04-10T02:13:30.000Z'
+                      requiredAction:
+                        type: three_d_secure_required
+                        redirectUrl: https://example.org
+                      cancel:
+                        id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                        type: cancel
+                        description: Payment
+                        status: pending
+                        createDate: '2020-04-10T02:13:30.000Z'
+                      refunds:
                       - id: b8627ae8-732b-4d25-b947-1df8f4007a29
                         type: payment
-                        merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
-                        merchantWalletId: '212000'
                         amount:
                           amount: '3.14'
                           currency: USD
-                        source:
-                          id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                          type: card
                         description: Payment
                         status: pending
-                        captured: false
-                        captureAmount:
-                          amount: '3.14'
-                          currency: USD
-                        captureDate: '2020-04-10T02:13:30.000Z'
                         requiredAction:
                           type: three_d_secure_required
                           redirectUrl: https://example.org
-                        cancel:
-                          id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                          type: cancel
-                          description: Payment
-                          status: pending
-                          createDate: '2020-04-10T02:13:30.000Z'
-                        refunds:
-                          - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                            type: payment
-                            amount:
-                              amount: '3.14'
-                              currency: USD
-                            description: Payment
-                            status: pending
-                            requiredAction:
-                              type: three_d_secure_required
-                              redirectUrl: https://example.org
-                            fees:
-                              amount: '3.14'
-                              currency: USD
-                            createDate: '2020-04-10T02:13:30.000Z'
                         fees:
                           amount: '3.14'
                           currency: USD
-                        channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
                         createDate: '2020-04-10T02:13:30.000Z'
-                        updateDate: '2020-04-10T02:13:30.000Z'
+                      fees:
+                        amount: '3.14'
+                        currency: USD
+                      channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
+                      createDate: '2020-04-10T02:13:30.000Z'
+                      updateDate: '2020-04-10T02:13:30.000Z'
+                Crypto Payment:
+                  value:
+                    data:
+                    - id: 66c56b6a-fc79-338b-8b94-aacc4f0f18de
+                      type: payment
+                      status: paid
+                      amount:
+                        amount: '1.00'
+                        currency: USD
+                      fees:
+                        amount: '0.01'
+                        currency: USD
+                      merchantId: f1397191-56e6-42fd-be86-0a7b9bd91522
+                      merchantWalletId: '1000999922'
+                      paymentIntentId: 6e4d4047-db14-4c09-b238-1215aee50d03
+                      settlementAmount:
+                        amount: '1.00'
+                        currency: USD
+                      depositAddress:
+                        chain: ETH
+                        address: '0x97de855690955e0da79ce5c1b6804847e7070c7f'
+                      transactionHash: '0x7351585460bd657f320b9afa02a52c26d89272d0d10cc29913eb8b28e64fd906'
+                      createDate: '2022-07-21T20:16:35.092852Z'
+                      updateDate: '2022-07-21T20:19:24.719313Z'
+                Fiat Cancel:
+                  value:
+                    data:
+                    - id: 2dc266f5-0658-48ec-a81f-9c768279564d
+                      type: cancel
+                      status: confirmed
+                      description: Cancel Payment
+                      amount:
+                        amount: '10.00'
+                        currency: USD
+                      createDate: '2022-04-21T21:50:34.274Z'
+                      updateDate: '2022-04-21T21:50:34.647839Z'
+                      merchantId: b1e4e9fe-0bf1-43ad-86c7-3ab993b0051b
+                      merchantWalletId: '1000174786'
+                      source:
+                        id: bc9157fe-5d73-48fe-9e77-9f6723bdcfeb
+                        type: card
+                      originalPayment:
+                        id: 2812f549-062a-4bdd-8ee5-b521aa48a84d
+                        type: payment
+                        status: failed
+                        createDate: '2022-04-21T21:47:41.501Z'
+                        updateDate: '2022-04-21T21:50:34.669012Z'
+                      reason: requested_by_customer
+                Fiat Refund:
+                  value:
+                    data:
+                    - id: 03fbe7da-096a-4763-af77-e43006cd83be
+                      type: refund
+                      status: paid
+                      description: Refund Payment
+                      amount:
+                        amount: '3.14'
+                        currency: USD
+                      fees:
+                        amount: '0.00'
+                        currency: USD
+                      createDate: '2022-04-21T12:49:21.146Z'
+                      updateDate: '2022-04-21T12:54:10.596976Z'
+                      merchantId: b1e4e9fe-0bf1-43ad-86c7-3ab993b0051b
+                      merchantWalletId: '1000174786'
+                      source:
+                        id: 45fa5524-41b9-48ca-94cd-f45cb36cce4d
+                        type: card
+                      originalPayment:
+                        id: 895f8db5-1d8c-407d-9533-b5ca3fbcc74e
+                        type: payment
+                        status: paid
+                        createDate: '2022-04-06T19:33:29.690Z'
+                        updateDate: '2022-04-06T19:47:23.681180Z'
+                      reason: requested_by_customer
         '401':
           $ref: '#/components/responses/NotAuthorized'
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a payment
       operationId: createPayment
       tags:
-        - Payments
+      - Payments
       requestBody:
         content:
           application/json:
@@ -192,163 +279,8 @@ paths:
                         createDate: '2020-04-10T02:13:30.000Z'
                         updateDate: '2020-04-10T02:13:30.000Z'
                       refunds:
-                        - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                          type: refund
-                          merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
-                          merchantWalletId: '212000'
-                          amount:
-                            amount: '3.14'
-                            currency: USD
-                          source:
-                            id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                            type: card
-                          description: Payment
-                          status: pending
-                          originalPayment:
-                            id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                            type: payment
-                            amount:
-                              amount: '3.14'
-                              currency: USD
-                            description: Payment
-                            status: pending
-                            requiredAction:
-                              type: three_d_secure_required
-                              redirectUrl: https://example.org
-                            fees:
-                              amount: '3.14'
-                              currency: USD
-                            createDate: '2020-04-10T02:13:30.000Z'
-                          cancel:
-                            id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                            type: cancel
-                            description: Payment
-                            status: pending
-                            createDate: '2020-04-10T02:13:30.000Z'
-                          fees:
-                            amount: '3.14'
-                            currency: USD
-                          channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
-                          createDate: '2020-04-10T02:13:30.000Z'
-                          updateDate: '2020-04-10T02:13:30.000Z'
-                      fees:
-                        amount: '3.14'
-                        currency: USD
-                      trackingRef: '24910599141085313498894'
-                      errorCode: payment_failed
-                      metadata:
-                        email: satoshi@circle.com
-                        phoneNumber: '+14155555555'
-                      riskEvaluation:
-                        decision: approved
-                        reason: '3000'
-                      channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
-                      createDate: '2020-04-10T02:13:30.000Z'
-                      updateDate: '2020-04-10T02:13:30.000Z'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /v1/payments/{id}:
-    get:
-      parameters:
-        - $ref: '#/components/parameters/IdPath'
-      security:
-        - bearerAuth: []
-      summary: Get a payment
-      operationId: getPayment
-      tags:
-        - Payments
-      responses:
-        '200':
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          description: Successfully retrieved a payment.
-          content:
-            application/json:
-              schema:
-                title: GetPaymentResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/DetailedPaymentPolymorphic'
-              examples:
-                response:
-                  value:
-                    data:
-                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      type: payment
-                      merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
-                      merchantWalletId: '212000'
-                      amount:
-                        amount: '3.14'
-                        currency: USD
-                      source:
-                        id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        type: card
-                      description: Payment
-                      status: pending
-                      requiredAction:
-                        type: three_d_secure_required
-                        redirectUrl: https://example.org
-                      verification:
-                        avs: D
-                        cvv: not_requested
-                        threeDSecure: pass
-                        eci: '00'
-                      originalPayment:
-                        id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        type: payment
-                        merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
-                        merchantWalletId: '212000'
-                        amount:
-                          amount: '3.14'
-                          currency: USD
-                        source:
-                          id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                          type: card
-                        description: Payment
-                        status: pending
-                        captured: false
-                        captureAmount:
-                          amount: '3.14'
-                          currency: USD
-                        captureDate: '2020-04-10T02:13:30.000Z'
-                        requiredAction:
-                          type: three_d_secure_required
-                          redirectUrl: https://example.org
-                        cancel:
-                          id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                          type: cancel
-                          description: Payment
-                          status: pending
-                          createDate: '2020-04-10T02:13:30.000Z'
-                        refunds:
-                          - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                            type: payment
-                            amount:
-                              amount: '3.14'
-                              currency: USD
-                            description: Payment
-                            status: pending
-                            requiredAction:
-                              type: three_d_secure_required
-                              redirectUrl: https://example.org
-                            fees:
-                              amount: '3.14'
-                              currency: USD
-                            createDate: '2020-04-10T02:13:30.000Z'
-                        fees:
-                          amount: '3.14'
-                          currency: USD
-                        channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
-                        createDate: '2020-04-10T02:13:30.000Z'
-                        updateDate: '2020-04-10T02:13:30.000Z'
-                      cancel:
-                        id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        type: cancel
+                      - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                        type: refund
                         merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
                         merchantWalletId: '212000'
                         amount:
@@ -374,13 +306,176 @@ paths:
                             amount: '3.14'
                             currency: USD
                           createDate: '2020-04-10T02:13:30.000Z'
+                        cancel:
+                          id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                          type: cancel
+                          description: Payment
+                          status: pending
+                          createDate: '2020-04-10T02:13:30.000Z'
                         fees:
                           amount: '3.14'
                           currency: USD
                         channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
                         createDate: '2020-04-10T02:13:30.000Z'
                         updateDate: '2020-04-10T02:13:30.000Z'
-                      refunds:
+                      fees:
+                        amount: '3.14'
+                        currency: USD
+                      trackingRef: '24910599141085313498894'
+                      errorCode: payment_failed
+                      metadata:
+                        email: satoshi@circle.com
+                        phoneNumber: '+14155555555'
+                      riskEvaluation:
+                        decision: approved
+                        reason: '3000'
+                      channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
+                      createDate: '2020-04-10T02:13:30.000Z'
+                      updateDate: '2020-04-10T02:13:30.000Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/payments/{id}:
+    get:
+      parameters:
+      - $ref: '#/components/parameters/IdPath'
+      security:
+      - bearerAuth: []
+      summary: Get a payment
+      operationId: getPayment
+      tags:
+      - Payments
+      responses:
+        '200':
+          headers:
+            X-Request-Id:
+              $ref: '#/components/headers/XRequestId'
+          description: Successfully retrieved a payment.
+          content:
+            application/json:
+              schema:
+                title: GetPaymentResponse
+                properties:
+                  data:
+                    oneOf:
+                    - $ref: '#/components/schemas/FiatPaymentPolymorphic'
+                    - $ref: '#/components/schemas/CryptoPayment'
+                    discriminator:
+                      propertyName: type
+                      mapping:
+                        Fiat Payment: '#/components/schemas/FiatPayment'
+                        Crypto Payment: '#/components/schemas/CryptoPayment'
+              examples:
+                Fiat Payment:
+                  value:
+                    data:
+                      data:
+                        id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                        type: payment
+                        merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
+                        merchantWalletId: '212000'
+                        amount:
+                          amount: '3.14'
+                          currency: USD
+                        source:
+                          id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                          type: card
+                        description: Payment
+                        status: pending
+                        requiredAction:
+                          type: three_d_secure_required
+                          redirectUrl: https://example.org
+                        verification:
+                          avs: D
+                          cvv: not_requested
+                          threeDSecure: pass
+                          eci: '00'
+                        originalPayment:
+                          id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                          type: payment
+                          merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
+                          merchantWalletId: '212000'
+                          amount:
+                            amount: '3.14'
+                            currency: USD
+                          source:
+                            id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                            type: card
+                          description: Payment
+                          status: pending
+                          captured: false
+                          captureAmount:
+                            amount: '3.14'
+                            currency: USD
+                          captureDate: '2020-04-10T02:13:30.000Z'
+                          requiredAction:
+                            type: three_d_secure_required
+                            redirectUrl: https://example.org
+                          cancel:
+                            id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                            type: cancel
+                            description: Payment
+                            status: pending
+                            createDate: '2020-04-10T02:13:30.000Z'
+                          refunds:
+                          - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                            type: payment
+                            amount:
+                              amount: '3.14'
+                              currency: USD
+                            description: Payment
+                            status: pending
+                            requiredAction:
+                              type: three_d_secure_required
+                              redirectUrl: https://example.org
+                            fees:
+                              amount: '3.14'
+                              currency: USD
+                            createDate: '2020-04-10T02:13:30.000Z'
+                          fees:
+                            amount: '3.14'
+                            currency: USD
+                          channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
+                          createDate: '2020-04-10T02:13:30.000Z'
+                          updateDate: '2020-04-10T02:13:30.000Z'
+                        cancel:
+                          id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                          type: cancel
+                          merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
+                          merchantWalletId: '212000'
+                          amount:
+                            amount: '3.14'
+                            currency: USD
+                          source:
+                            id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                            type: card
+                          description: Payment
+                          status: pending
+                          originalPayment:
+                            id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                            type: payment
+                            amount:
+                              amount: '3.14'
+                              currency: USD
+                            description: Payment
+                            status: pending
+                            requiredAction:
+                              type: three_d_secure_required
+                              redirectUrl: https://example.org
+                            fees:
+                              amount: '3.14'
+                              currency: USD
+                            createDate: '2020-04-10T02:13:30.000Z'
+                          fees:
+                            amount: '3.14'
+                            currency: USD
+                          channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
+                          createDate: '2020-04-10T02:13:30.000Z'
+                          updateDate: '2020-04-10T02:13:30.000Z'
+                        refunds:
                         - id: b8627ae8-732b-4d25-b947-1df8f4007a29
                           type: refund
                           merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
@@ -420,21 +515,45 @@ paths:
                           channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
                           createDate: '2020-04-10T02:13:30.000Z'
                           updateDate: '2020-04-10T02:13:30.000Z'
-                      fees:
-                        amount: '3.14'
+                        fees:
+                          amount: '3.14'
+                          currency: USD
+                        trackingRef: '24910599141085313498894'
+                        externalRef: YYYYMMDDXXXXXXXX012345
+                        errorCode: payment_failed
+                        metadata:
+                          email: satoshi@circle.com
+                          phoneNumber: '+14155555555'
+                        channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
+                        riskEvaluation:
+                          decision: approved
+                          reason: '3000'
+                        createDate: '2020-04-10T02:13:30.000Z'
+                        updateDate: '2020-04-10T02:13:30.000Z'
+                Crypto Payment:
+                  value:
+                    data:
+                      id: 66c56b6a-fc79-338b-8b94-aacc4f0f18de
+                      type: payment
+                      status: paid
+                      amount:
+                        amount: '1.00'
                         currency: USD
-                      trackingRef: '24910599141085313498894'
-                      externalRef: YYYYMMDDXXXXXXXX012345
-                      errorCode: payment_failed
-                      metadata:
-                        email: satoshi@circle.com
-                        phoneNumber: '+14155555555'
-                      channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
-                      riskEvaluation:
-                        decision: approved
-                        reason: '3000'
-                      createDate: '2020-04-10T02:13:30.000Z'
-                      updateDate: '2020-04-10T02:13:30.000Z'
+                      fees:
+                        amount: '0.01'
+                        currency: USD
+                      merchantId: f1397191-56e6-42fd-be86-0a7b9bd91522
+                      merchantWalletId: '1000999922'
+                      paymentIntentId: 6e4d4047-db14-4c09-b238-1215aee50d03
+                      settlementAmount:
+                        amount: '1.00'
+                        currency: USD
+                      depositAddress:
+                        chain: ETH
+                        address: '0x97de855690955e0da79ce5c1b6804847e7070c7f'
+                      transactionHash: '0x7351585460bd657f320b9afa02a52c26d89272d0d10cc29913eb8b28e64fd906'
+                      createDate: '2022-07-21T20:16:35.092852Z'
+                      updateDate: '2022-07-21T20:19:24.719313Z'
         '401':
           $ref: '#/components/responses/NotAuthorized'
         '404':
@@ -442,25 +561,32 @@ paths:
   /v1/payments/{id}/capture:
     post:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CaptureCreationRequest'
       summary: Capture a payment (BETA)
-      description: |
-        Warning: Please contact Circle support if you are planning on using this feature.
+      description: 'Warning: Please contact Circle support if you are planning on
+        using this feature.
 
-        The given amount will be captured for the authorized payment if possible. If no amount is specified, the full amount
+
+        The given amount will be captured for the authorized payment if possible.
+        If no amount is specified, the full amount
+
         will be captured. You can only capture once per authorization.
 
-        A successful response does *not* mean the payment has been captured. It only means the capture request was successfully submitted.
+
+        A successful response does *not* mean the payment has been captured. It only
+        means the capture request was successfully submitted.
+
+        '
       operationId: capturePayment
       tags:
-        - Payments
+      - Payments
       responses:
         '202':
           headers:
@@ -476,24 +602,31 @@ paths:
   /v1/payments/{id}/cancel:
     post:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CancelCreationRequest'
       summary: Cancel a payment
-      description: |
-        The payment will be voided if possible meaning the payment source will not be charged & the payment will never settle.
-        Otherwise, the payment will be refunded meaning the payment source will be charged & the payment will be refunded from deductions of future settlements.
+      description: 'The payment will be voided if possible meaning the payment source
+        will not be charged & the payment will never settle.
+
+        Otherwise, the payment will be refunded meaning the payment source will be
+        charged & the payment will be refunded from deductions of future settlements.
+
         Not all payments are eligible to be cancelled.
 
-        A successful response does *not* mean the payment has been cancelled; it only means the cancellation request is successfully submitted.
+
+        A successful response does *not* mean the payment has been cancelled; it only
+        means the cancellation request is successfully submitted.
+
+        '
       operationId: cancelPayment
       tags:
-        - Payments
+      - Payments
       responses:
         '200':
           headers:
@@ -551,20 +684,20 @@ paths:
                           status: pending
                           createDate: '2020-04-10T02:13:30.000Z'
                         refunds:
-                          - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                            type: payment
-                            amount:
-                              amount: '3.14'
-                              currency: USD
-                            description: Payment
-                            status: pending
-                            requiredAction:
-                              type: three_d_secure_required
-                              redirectUrl: https://example.org
-                            fees:
-                              amount: '3.14'
-                              currency: USD
-                            createDate: '2020-04-10T02:13:30.000Z'
+                        - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                          type: payment
+                          amount:
+                            amount: '3.14'
+                            currency: USD
+                          description: Payment
+                          status: pending
+                          requiredAction:
+                            type: three_d_secure_required
+                            redirectUrl: https://example.org
+                          fees:
+                            amount: '3.14'
+                            currency: USD
+                          createDate: '2020-04-10T02:13:30.000Z'
                         fees:
                           amount: '3.14'
                           currency: USD
@@ -592,22 +725,26 @@ paths:
   /v1/payments/{id}/refund:
     post:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/RefundCreationRequest'
       summary: Refund a payment
-      description: |
-        The payment source will be refunded if possible. Not all payments are eligible to be cancelled.
+      description: 'The payment source will be refunded if possible. Not all payments
+        are eligible to be cancelled.
 
-        A successful response does *not* mean the payment has been refunded; it only means the refund request is successfully submitted.
+
+        A successful response does *not* mean the payment has been refunded; it only
+        means the refund request is successfully submitted.
+
+        '
       operationId: refundPayment
       tags:
-        - Payments
+      - Payments
       responses:
         '200':
           headers:
@@ -665,20 +802,20 @@ paths:
                           status: pending
                           createDate: '2020-04-10T02:13:30.000Z'
                         refunds:
-                          - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                            type: payment
-                            amount:
-                              amount: '3.14'
-                              currency: USD
-                            description: Payment
-                            status: pending
-                            requiredAction:
-                              type: three_d_secure_required
-                              redirectUrl: https://example.org
-                            fees:
-                              amount: '3.14'
-                              currency: USD
-                            createDate: '2020-04-10T02:13:30.000Z'
+                        - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                          type: payment
+                          amount:
+                            amount: '3.14'
+                            currency: USD
+                          description: Payment
+                          status: pending
+                          requiredAction:
+                            type: three_d_secure_required
+                            redirectUrl: https://example.org
+                          fees:
+                            amount: '3.14'
+                            currency: USD
+                          createDate: '2020-04-10T02:13:30.000Z'
                         fees:
                           amount: '3.14'
                           currency: USD
@@ -739,12 +876,14 @@ paths:
   /v1/mocks/payments/wire:
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a mock Wire payment
-      description: In the sandbox environment, initiate a mock wire payment that mimics the behavior of funds sent through the bank (wire) account linked to master wallet.
+      description: In the sandbox environment, initiate a mock wire payment that mimics
+        the behavior of funds sent through the bank (wire) account linked to master
+        wallet.
       operationId: createWirePayment
       tags:
-        - Payments
+      - Payments
       requestBody:
         content:
           application/json:
@@ -781,12 +920,14 @@ paths:
   /v1/mocks/payments/sepa:
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a mock SEPA payment
-      description: In the sandbox environment, initiate a mock SEPA payment that mimics the behavior of funds sent through the bank (SEPA) account linked to master wallet.
+      description: In the sandbox environment, initiate a mock SEPA payment that mimics
+        the behavior of funds sent through the bank (SEPA) account linked to master
+        wallet.
       operationId: createSepaPayment
       tags:
-        - Payments
+      - Payments
       requestBody:
         content:
           application/json:
@@ -826,40 +967,47 @@ paths:
   /v1/transfers:
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       parameters:
-        - name: walletId
-          description: Unique identifier for the source or destination wallet of transfers, if any. May not be used in conjunction with destinationWalletId or sourceWalletId. Useful for fetching all transfers related to a wallet.
-          in: query
-          required: false
-          schema:
-            type: string
-            example: '12345'
-        - name: sourceWalletId
-          description: Unique identifier for the source wallet of transfers, if any.
-          in: query
-          required: false
-          schema:
-            type: string
-            example: '12345'
-        - name: destinationWalletId
-          description: Unique identifier for the destination wallet of transfers, if any.
-          in: query
-          required: false
-          schema:
-            type: string
-            example: '12345'
-        - $ref: '#/components/parameters/ReturnIdentities'
-        - $ref: '#/components/parameters/From'
-        - $ref: '#/components/parameters/To'
-        - $ref: '#/components/parameters/PageBefore'
-        - $ref: '#/components/parameters/PageAfter'
-        - $ref: '#/components/parameters/PageSize'
+      - name: walletId
+        description: Unique identifier for the source or destination wallet of transfers,
+          if any. May not be used in conjunction with destinationWalletId or sourceWalletId.
+          Useful for fetching all transfers related to a wallet.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '12345'
+      - name: sourceWalletId
+        description: Unique identifier for the source wallet of transfers, if any.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '12345'
+      - name: destinationWalletId
+        description: Unique identifier for the destination wallet of transfers, if
+          any.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '12345'
+      - $ref: '#/components/parameters/ReturnIdentities'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      - $ref: '#/components/parameters/PageBefore'
+      - $ref: '#/components/parameters/PageAfter'
+      - $ref: '#/components/parameters/PageSize'
       summary: List all transfers
-      description: Searches for transfers involving the provided wallets. If no wallet ids are provided, searches all wallets associated with your Circle API account. If the date parameters are omitted, returns the most recent transfers. This endpoint returns up to 50 transfers in descending chronological order or pageSize, if provided.
+      description: Searches for transfers involving the provided wallets. If no wallet
+        ids are provided, searches all wallets associated with your Circle API account.
+        If the date parameters are omitted, returns the most recent transfers. This
+        endpoint returns up to 50 transfers in descending chronological order or pageSize,
+        if provided.
       operationId: searchTransfers
       tags:
-        - On-chain payments
+      - On-chain payments
       responses:
         '200':
           description: Successfully retrieved a list of transfers.
@@ -879,34 +1027,34 @@ paths:
                 response:
                   value:
                     data:
-                      - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        source:
-                          type: wallet
-                          id: '12345'
-                        destination:
-                          type: blockchain
-                          address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
-                          addressTag: '123456789'
-                          chain: ALGO
-                        amount:
-                          amount: '3.14'
-                          currency: USD
-                        transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
-                        status: pending
-                        createDate: '2020-04-10T02:13:30.000Z'
+                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      source:
+                        type: wallet
+                        id: '12345'
+                      destination:
+                        type: blockchain
+                        address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+                        addressTag: '123456789'
+                        chain: ALGO
+                      amount:
+                        amount: '3.14'
+                        currency: USD
+                      transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
+                      status: pending
+                      createDate: '2020-04-10T02:13:30.000Z'
         '401':
           $ref: '#/components/responses/NotAuthorized'
   /v1/transfers/{id}:
     get:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
-        - $ref: '#/components/parameters/ReturnIdentities'
+      - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/ReturnIdentities'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get a transfer
       operationId: getTransfer
       tags:
-        - On-chain payments
+      - On-chain payments
       responses:
         '200':
           headers:
@@ -941,15 +1089,21 @@ paths:
   /v1/wallets/{walletId}/addresses:
     post:
       parameters:
-        - $ref: '#/components/parameters/WalletId'
+      - $ref: '#/components/parameters/WalletId'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a blockchain address
-      description: |
-        Generates a new blockchain address for a wallet for a given currency/chain pair. Circle may reuse addresses on blockchains that support reuse. For example, if you're requesting two addresses for depositing USD and ETH, both on Ethereum, you may see the same Ethereum address returned. Depositing cryptocurrency to a generated address will credit the associated wallet with the value of the deposit.
+      description: 'Generates a new blockchain address for a wallet for a given currency/chain
+        pair. Circle may reuse addresses on blockchains that support reuse. For example,
+        if you''re requesting two addresses for depositing USD and ETH, both on Ethereum,
+        you may see the same Ethereum address returned. Depositing cryptocurrency
+        to a generated address will credit the associated wallet with the value of
+        the deposit.
+
+        '
       operationId: generateAddress
       tags:
-        - On-chain payments
+      - On-chain payments
       requestBody:
         content:
           application/json:
@@ -984,19 +1138,19 @@ paths:
           $ref: '#/components/responses/Conflict'
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/WalletId'
-        - $ref: '#/components/parameters/From'
-        - $ref: '#/components/parameters/To'
-        - $ref: '#/components/parameters/PageBefore'
-        - $ref: '#/components/parameters/PageAfter'
-        - $ref: '#/components/parameters/PageSize'
+      - $ref: '#/components/parameters/WalletId'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      - $ref: '#/components/parameters/PageBefore'
+      - $ref: '#/components/parameters/PageAfter'
+      - $ref: '#/components/parameters/PageSize'
       summary: List all addresses
       description: Retrieves a list of addresses associated with a wallet.
       operationId: getAddresses
       tags:
-        - On-chain payments
+      - On-chain payments
       responses:
         '200':
           description: Successfully retrieved a list of addresses.
@@ -1016,10 +1170,10 @@ paths:
                 response:
                   value:
                     data:
-                      - address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
-                        addressTag: '123456789'
-                        currency: USD
-                        chain: ALGO
+                    - address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+                      addressTag: '123456789'
+                      currency: USD
+                      chain: ALGO
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -1027,11 +1181,11 @@ paths:
   /v1/cards:
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a card
       operationId: createCard
       tags:
-        - Cards
+      - Cards
       requestBody:
         content:
           application/json:
@@ -1090,15 +1244,15 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: List all cards
       operationId: getCards
       tags:
-        - Cards
+      - Cards
       parameters:
-        - $ref: '#/components/parameters/PageBefore'
-        - $ref: '#/components/parameters/PageAfter'
-        - $ref: '#/components/parameters/PageSize'
+      - $ref: '#/components/parameters/PageBefore'
+      - $ref: '#/components/parameters/PageAfter'
+      - $ref: '#/components/parameters/PageSize'
       responses:
         '200':
           description: Successfully retrieved a list of cards.
@@ -1108,9 +1262,9 @@ paths:
           content:
             application/json:
               schema:
+                title: GetCardsResponse
                 properties:
                   data:
-                    title: GetCardsResponse
                     type: array
                     items:
                       $ref: '#/components/schemas/SimpleCard'
@@ -1118,37 +1272,37 @@ paths:
                 response:
                   value:
                     data:
-                      - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        status: pending
-                        billingDetails:
-                          country: US
-                          district: MA
-                        expMonth: 1
-                        expYear: 2020
-                        network: VISA
-                        bin: '401230'
-                        issuerCountry: US
-                        fingerprint: eb170539-9e1c-4e92-bf4f-1d09534fdca2
-                        verification:
-                          avs: D
-                          cvv: not_requested
-                        riskEvaluation:
-                          decision: approved
-                          reason: '3000'
-                        createDate: '2020-04-10T02:13:30.000Z'
-                        updateDate: '2020-04-10T02:13:30.000Z'
+                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      status: pending
+                      billingDetails:
+                        country: US
+                        district: MA
+                      expMonth: 1
+                      expYear: 2020
+                      network: VISA
+                      bin: '401230'
+                      issuerCountry: US
+                      fingerprint: eb170539-9e1c-4e92-bf4f-1d09534fdca2
+                      verification:
+                        avs: D
+                        cvv: not_requested
+                      riskEvaluation:
+                        decision: approved
+                        reason: '3000'
+                      createDate: '2020-04-10T02:13:30.000Z'
+                      updateDate: '2020-04-10T02:13:30.000Z'
         '401':
           $ref: '#/components/responses/NotAuthorized'
   /v1/cards/{id}:
     get:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get a card
       operationId: getCard
       tags:
-        - Cards
+      - Cards
       responses:
         '200':
           description: Successfully retrieved a card.
@@ -1202,13 +1356,13 @@ paths:
           $ref: '#/components/responses/NotFound'
     put:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Update a card
       operationId: UpdateCard
       tags:
-        - Cards
+      - Cards
       requestBody:
         content:
           application/json:
@@ -1264,11 +1418,11 @@ paths:
   /v1/banks/wires:
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a Wire bank account
       operationId: createWireBankAccount
       tags:
-        - Wires
+      - Wires
       requestBody:
         content:
           application/json:
@@ -1320,13 +1474,13 @@ paths:
   /v1/banks/wires/{id}:
     get:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get a Wire bank account
       operationId: getWireBankAccount
       tags:
-        - Wires
+      - Wires
       responses:
         '200':
           description: Successfully retrieved a bank account for wire transfers.
@@ -1373,17 +1527,19 @@ paths:
   /v1/banks/wires/{id}/instructions:
     get:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get Wire instructions
-      description: Get the wire transfer instructions into the Circle bank account given your bank account id
+      description: Get the wire transfer instructions into the Circle bank account
+        given your bank account id
       operationId: getWireInstructionsBankAccount
       tags:
-        - Wires
+      - Wires
       responses:
         '200':
-          description: Successfully retrieved wire transfer instructions for the bank account.
+          description: Successfully retrieved wire transfer instructions for the bank
+            account.
           headers:
             X-Request-Id:
               $ref: '#/components/headers/XRequestId'
@@ -1420,11 +1576,11 @@ paths:
   /v1/banks/ach:
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a ACH bank account
       operationId: createACHBankAccount
       tags:
-        - ACH
+      - ACH
       requestBody:
         content:
           application/json:
@@ -1459,6 +1615,7 @@ paths:
                         line2: Suite 1
                         district: MA
                         postalCode: '01234'
+                      bankAccountType: retail
                       bankAddress:
                         bankName: SAN FRANCISCO
                         city: SAN FRANCISCO
@@ -1483,13 +1640,13 @@ paths:
   /v1/banks/ach/{id}:
     get:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get a ACH bank account
       operationId: getACHBankAccount
       tags:
-        - ACH
+      - ACH
       responses:
         '200':
           description: Successfully retrieved a bank account for ACH transfers.
@@ -1519,6 +1676,7 @@ paths:
                         line2: Suite 1
                         district: MA
                         postalCode: '01234'
+                      bankAccountType: retail
                       bankAddress:
                         bankName: SAN FRANCISCO
                         city: SAN FRANCISCO
@@ -1543,12 +1701,13 @@ paths:
   /v1/mocks/ach/accounts:
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a mock ACH bank account
-      description: In the sandbox environment, create a mock ACH account and retrieve a processor token that can be used to link an ACH account.
+      description: In the sandbox environment, create a mock ACH account and retrieve
+        a processor token that can be used to link an ACH account.
       operationId: createAchAccount
       tags:
-        - ACH
+      - ACH
       requestBody:
         content:
           application/json:
@@ -1577,7 +1736,7 @@ paths:
                         currency: USD
                       account:
                         accountNumber: '123456789'
-                        routingNumber: '011000028'
+                        routingNumber: 011000028
                         description: My ACH account
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -1586,11 +1745,11 @@ paths:
   /v1/banks/sepa:
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a SEPA bank account (BETA)
       operationId: createSEPABankAccount
       tags:
-        - SEPA
+      - SEPA
       requestBody:
         content:
           application/json:
@@ -1638,13 +1797,13 @@ paths:
   /v1/banks/sepa/{id}:
     get:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get a SEPA bank account (BETA)
       operationId: getSEPABankAccount
       tags:
-        - SEPA
+      - SEPA
       responses:
         '200':
           description: Successfully retrieved a bank account for SEPA transfers.
@@ -1687,17 +1846,19 @@ paths:
   /v1/banks/sepa/{id}/instructions:
     get:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get SEPA instructions (BETA)
-      description: Get the SEPA transfer instructions into the Circle bank account given your bank account id (BETA).
+      description: Get the SEPA transfer instructions into the Circle bank account
+        given your bank account id (BETA).
       operationId: getSEPAInstructionsBankAccount
       tags:
-        - SEPA
+      - SEPA
       responses:
         '200':
-          description: Successfully retrieved SEPA transfer instructions for the bank account.
+          description: Successfully retrieved SEPA transfer instructions for the bank
+            account.
           headers:
             X-Request-Id:
               $ref: '#/components/headers/XRequestId'
@@ -1732,17 +1893,17 @@ paths:
   /v1/settlements:
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/From'
-        - $ref: '#/components/parameters/To'
-        - $ref: '#/components/parameters/PageBefore'
-        - $ref: '#/components/parameters/PageAfter'
-        - $ref: '#/components/parameters/PageSize'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      - $ref: '#/components/parameters/PageBefore'
+      - $ref: '#/components/parameters/PageAfter'
+      - $ref: '#/components/parameters/PageSize'
       summary: List all settlements
       operationId: getSettlements
       tags:
-        - Settlements
+      - Settlements
       responses:
         '200':
           description: Successfully retrieved a list of settlements.
@@ -1762,35 +1923,35 @@ paths:
                 response:
                   value:
                     data:
-                      - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        merchantWalletId: '212000'
-                        walletId: '12345'
-                        totalDebits:
-                          amount: '3.14'
-                          currency: USD
-                        totalCredits:
-                          amount: '3.14'
-                          currency: USD
-                        paymentFees:
-                          amount: '3.14'
-                          currency: USD
-                        chargebackFees:
-                          amount: '3.14'
-                          currency: USD
-                        createDate: '2020-04-10T02:13:30.000Z'
-                        updateDate: '2020-04-10T02:13:30.000Z'
+                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      merchantWalletId: '212000'
+                      walletId: '12345'
+                      totalDebits:
+                        amount: '3.14'
+                        currency: USD
+                      totalCredits:
+                        amount: '3.14'
+                        currency: USD
+                      paymentFees:
+                        amount: '3.14'
+                        currency: USD
+                      chargebackFees:
+                        amount: '3.14'
+                        currency: USD
+                      createDate: '2020-04-10T02:13:30.000Z'
+                      updateDate: '2020-04-10T02:13:30.000Z'
         '401':
           $ref: '#/components/responses/NotAuthorized'
   /v1/settlements/{id}:
     get:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get a settlement
       operationId: getSettlement
       tags:
-        - Settlements
+      - Settlements
       responses:
         '200':
           description: Successfully retrieved a settlement.
@@ -1832,20 +1993,22 @@ paths:
   /v1/chargebacks:
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/PaymentId'
-        - $ref: '#/components/parameters/From'
-        - $ref: '#/components/parameters/To'
-        - $ref: '#/components/parameters/PageBefore'
-        - $ref: '#/components/parameters/PageAfter'
-        - $ref: '#/components/parameters/PageSize'
+      - $ref: '#/components/parameters/PaymentId'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      - $ref: '#/components/parameters/PageBefore'
+      - $ref: '#/components/parameters/PageAfter'
+      - $ref: '#/components/parameters/PageSize'
       summary: List all chargebacks
-      description: |
-        Retrieve list of chargebacks. Results will be sorted by create date descending: more recent chargebacks will be at the beginning of the list.
+      description: 'Retrieve list of chargebacks. Results will be sorted by create
+        date descending: more recent chargebacks will be at the beginning of the list.
+
+        '
       operationId: getChargebacks
       tags:
-        - Chargebacks
+      - Chargebacks
       responses:
         '200':
           description: Successfully retrieved a list of chargebacks.
@@ -1865,22 +2028,23 @@ paths:
                 response:
                   value:
                     data:
-                      - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        paymentId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
-                        merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
-                        reasonCode: '10.4'
-                        category: Canceled Recurring Payment
-                        history:
-                          - type: 1st Chargeback
-                            chargebackAmount:
-                              amount: '3.14'
-                              currency: USD
-                            fee:
-                              amount: '3.14'
-                              currency: USD
-                            description: The cardholder claims an unauthorized transaction occurred.
-                            settlementId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
-                            createDate: '2020-04-10T02:13:30.000Z'
+                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      paymentId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
+                      merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
+                      reasonCode: '10.4'
+                      category: Canceled Recurring Payment
+                      history:
+                      - type: 1st Chargeback
+                        chargebackAmount:
+                          amount: '3.14'
+                          currency: USD
+                        fee:
+                          amount: '3.14'
+                          currency: USD
+                        description: The cardholder claims an unauthorized transaction
+                          occurred.
+                        settlementId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
+                        createDate: '2020-04-10T02:13:30.000Z'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1888,13 +2052,13 @@ paths:
   /v1/chargebacks/{id}:
     get:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get a chargeback
       operationId: getChargeback
       tags:
-        - Chargebacks
+      - Chargebacks
       responses:
         '200':
           description: Successfully retrieved a chargeback.
@@ -1918,16 +2082,17 @@ paths:
                       reasonCode: '10.4'
                       category: Canceled Recurring Payment
                       history:
-                        - type: 1st Chargeback
-                          chargebackAmount:
-                            amount: '3.14'
-                            currency: USD
-                          fee:
-                            amount: '3.14'
-                            currency: USD
-                          description: The cardholder claims an unauthorized transaction occurred.
-                          settlementId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
-                          createDate: '2020-04-10T02:13:30.000Z'
+                      - type: 1st Chargeback
+                        chargebackAmount:
+                          amount: '3.14'
+                          currency: USD
+                        fee:
+                          amount: '3.14'
+                          currency: USD
+                        description: The cardholder claims an unauthorized transaction
+                          occurred.
+                        settlementId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
+                        createDate: '2020-04-10T02:13:30.000Z'
         '401':
           $ref: '#/components/responses/NotAuthorized'
         '404':
@@ -1935,12 +2100,16 @@ paths:
   /v1/mocks/cards/chargebacks:
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a mock chargeback
-      description: In the sandbox environment, initiate a mock chargeback of a specified payment.  The entire payment will be charged back for its full value.  The payment must be in the `paid` state (otherwise the endpoint will return a `404`), and each payment can only be charged back once (otherwise the endpoint will return a `409`).  This endpoint is only available in the sandbox environment.
+      description: In the sandbox environment, initiate a mock chargeback of a specified
+        payment.  The entire payment will be charged back for its full value.  The
+        payment must be in the `paid` state (otherwise the endpoint will return a
+        `404`), and each payment can only be charged back once (otherwise the endpoint
+        will return a `409`).  This endpoint is only available in the sandbox environment.
       operationId: createMockChargeback
       tags:
-        - Chargebacks
+      - Chargebacks
       requestBody:
         content:
           application/json:
@@ -1974,19 +2143,21 @@ paths:
   /v1/reversals:
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/PaymentStatus'
-        - $ref: '#/components/parameters/From'
-        - $ref: '#/components/parameters/To'
-        - $ref: '#/components/parameters/PageBefore'
-        - $ref: '#/components/parameters/PageAfter'
-        - $ref: '#/components/parameters/PageSize'
+      - $ref: '#/components/parameters/PaymentStatus'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      - $ref: '#/components/parameters/PageBefore'
+      - $ref: '#/components/parameters/PageAfter'
+      - $ref: '#/components/parameters/PageSize'
       summary: List all ACH payment reversals.
-      description: Retrieve a list of ACH payment reversals. Results will be sorted by create date descending; more recent reversals will be at the beginning of the list
+      description: Retrieve a list of ACH payment reversals. Results will be sorted
+        by create date descending; more recent reversals will be at the beginning
+        of the list
       operationId: getReversals
       tags:
-        - Reversals
+      - Reversals
       responses:
         '200':
           description: Successfully retrieved a list of ACH payment reversals.
@@ -2006,19 +2177,19 @@ paths:
                 response:
                   value:
                     data:
-                      - id: key1
-                        paymentId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
-                        amount:
-                          amount: '3.14'
-                          currency: USD
-                        description: Merchant Payment Reversal
-                        status: pending
-                        reason: duplicate
-                        fees:
-                          amount: '3.14'
-                          currency: USD
-                        createDate: '2020-04-10T02:13:30.000Z'
-                        updateDate: '2020-04-10T02:13:30.000Z'
+                    - id: key1
+                      paymentId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
+                      amount:
+                        amount: '3.14'
+                        currency: USD
+                      description: Merchant Payment Reversal
+                      status: pending
+                      reason: duplicate
+                      fees:
+                        amount: '3.14'
+                        currency: USD
+                      createDate: '2020-04-10T02:13:30.000Z'
+                      updateDate: '2020-04-10T02:13:30.000Z'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -2026,12 +2197,13 @@ paths:
   /v1/balances:
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: List all balances
-      description: Retrieves the balance of merchant funds that have settled and also of funds that have been sent for processing but have not yet settled.
+      description: Retrieves the balance of merchant funds that have settled and also
+        of funds that have been sent for processing but have not yet settled.
       operationId: getBalances
       tags:
-        - Balances
+      - Balances
       responses:
         '200':
           description: Successfully retrieved balances.
@@ -2050,11 +2222,11 @@ paths:
                   value:
                     data:
                       available:
-                        - amount: '3.14'
-                          currency: USD
+                      - amount: '3.14'
+                        currency: USD
                       unsettled:
-                        - amount: '3.14'
-                          currency: USD
+                      - amount: '3.14'
+                        currency: USD
         '401':
           $ref: '#/components/responses/NotAuthorized'
 components:
@@ -2065,7 +2237,8 @@ components:
   parameters:
     Source:
       name: source
-      description: Universally unique identifier (UUID v4) for the source. Filters results to fetch only payments made from the provdided source.
+      description: Universally unique identifier (UUID v4) for the source. Filters
+        results to fetch only payments made from the provdided source.
       in: query
       required: false
       schema:
@@ -2074,7 +2247,17 @@ components:
         example: b3d9d2d5-4c12-4946-a09d-953e82fae2b0
     SettlementId:
       name: settlementId
-      description: Queries items with the specified settlement id. Matches any settlement id if unspecified.
+      description: Queries items with the specified settlement id. Matches any settlement
+        id if unspecified.
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+        example: b48c8962-8e9f-40c3-9f1d-d9adde2ffe61
+    PaymentIntentId:
+      name: paymentIntentId
+      description: Queries items with the specified payment intent id.
       in: query
       required: false
       schema:
@@ -2083,7 +2266,8 @@ components:
         example: b48c8962-8e9f-40c3-9f1d-d9adde2ffe61
     PaymentSourceType:
       name: type
-      description: Source account type. Filters the results to fetch all payments made from a specified account type. Matches any source type if unspecified.
+      description: Source account type. Filters the results to fetch all payments
+        made from a specified account type. Matches any source type if unspecified.
       in: query
       required: false
       schema:
@@ -2091,23 +2275,24 @@ components:
         items:
           type: string
           enum:
-            - card
-            - wire
-            - ach
-            - sepa
+          - card
+          - wire
+          - ach
+          - sepa
     PaymentStatus:
       name: status
-      description: Queries items with the specified status. Matches any status if unspecified.
+      description: Queries items with the specified status. Matches any status if
+        unspecified.
       in: query
       required: false
       schema:
         type: string
         enum:
-          - pending
-          - confirmed
-          - paid
-          - failed
-          - action_required
+        - pending
+        - confirmed
+        - paid
+        - failed
+        - action_required
     From:
       name: from
       description: Queries items created since the specified date-time (inclusive).
@@ -2128,47 +2313,68 @@ components:
         example: '2020-04-10T02:13:30.000Z'
     PageBefore:
       name: pageBefore
-      description: |
-        A collection ID value used for pagination.
+      description: 'A collection ID value used for pagination.
 
-        It marks the exclusive end of a page. When provided, the collection resource will return the next `n` items before
+
+        It marks the exclusive end of a page. When provided, the collection resource
+        will return the next `n` items before
+
         the id, with `n` being specified by `pageSize`.
+
 
         The items will be returned in the natural order of the collection.
 
-        The resource will return the first page if neither `pageAfter` nor `pageBefore` are specified.
+
+        The resource will return the first page if neither `pageAfter` nor `pageBefore`
+        are specified.
+
 
         SHOULD NOT be used in conjuction with pageAfter.
+
+        '
       in: query
       required: false
       schema:
         type: string
     PageAfter:
       name: pageAfter
-      description: |
-        A collection ID value used for pagination.
+      description: 'A collection ID value used for pagination.
 
-        It marks the exclusive begin of a page. When provided, the collection resource will return the next `n` items after
+
+        It marks the exclusive begin of a page. When provided, the collection resource
+        will return the next `n` items after
+
         the id, with `n` being specified by `pageSize`.
+
 
         The items will be returned in the natural order of the collection.
 
-        The resource will return the first page if neither `pageAfter` nor `pageBefore` are specified.
+
+        The resource will return the first page if neither `pageAfter` nor `pageBefore`
+        are specified.
+
 
         SHOULD NOT be used in conjuction with pageBefore.
+
+        '
       in: query
       required: false
       schema:
         type: string
     PageSize:
       name: pageSize
-      description: |
-        Limits the number of items to be returned.
+      description: 'Limits the number of items to be returned.
 
-        Some collections have a strict upper bound that will disregard this value. In case the specified value is higher
+
+        Some collections have a strict upper bound that will disregard this value.
+        In case the specified value is higher
+
         than the allowed limit, the collection limit will be used.
 
+
         If avoided, the collection will determine the page size itself.
+
+        '
       in: query
       required: false
       schema:
@@ -2186,7 +2392,9 @@ components:
         example: b3d9d2d5-4c12-4946-a09d-953e82fae2b0
     ReturnIdentities:
       name: returnIdentities
-      description: Specify if you would like to see identities in the response. Restricts maximum returned items to 5. By default returnIdentities is false, resulting in the response not returning `data.source.identities`.
+      description: Specify if you would like to see identities in the response. Restricts
+        maximum returned items to 5. By default returnIdentities is false, resulting
+        in the response not returning `data.source.identities`.
       in: query
       required: false
       schema:
@@ -2200,7 +2408,7 @@ components:
       required: true
       schema:
         type: string
-        example: '0123456789'
+        example: 0123456789
     PaymentId:
       name: paymentId
       description: The payment ID associated with the chargeback.
@@ -2212,7 +2420,8 @@ components:
         example: 202ad9ce-974c-49ca-8d34-3afb7d7247ae
   headers:
     XRequestId:
-      description: Universally unique identifier (UUID v4) for the request. Helpful for identifying a request when communicating with Circle support.
+      description: Universally unique identifier (UUID v4) for the request. Helpful
+        for identifying a request when communicating with Circle support.
       schema:
         type: string
         format: uuid
@@ -2236,8 +2445,8 @@ components:
     FiatMoneyUsd:
       type: object
       required:
-        - amount
-        - currency
+      - amount
+      - currency
       properties:
         amount:
           description: Magnitude of the amount, in units of the currency, with a `.`.
@@ -2247,7 +2456,7 @@ components:
           description: Currency code.
           type: string
           enum:
-            - USD
+          - USD
     SourceResponse:
       type: object
       description: The payment source.
@@ -2258,35 +2467,44 @@ components:
           type: string
           description: Type of the source.
           enum:
-            - card
-            - ach
-            - wire
-            - sepa
+          - card
+          - ach
+          - wire
+          - sepa
     PaymentStatus:
       type: string
-      description: Enumerated status of the payment. `pending` means the payment is waiting to be processed. `confirmed` means the payment has been approved by the bank and the merchant can treat it as successful, but settlement funds are not yet available to the merchant.  `paid` means settlement funds have been received and are available to the merchant. `failed` means something went wrong (most commonly that the payment was denied). `action_required` means that additional steps are required to process this payment; refer to `requiredAction` for more details. Terminal states are `paid` and `failed`.
+      description: Enumerated status of the payment. `pending` means the payment is
+        waiting to be processed. `confirmed` means the payment has been approved by
+        the bank and the merchant can treat it as successful, but settlement funds
+        are not yet available to the merchant.  `paid` means settlement funds have
+        been received and are available to the merchant. `failed` means something
+        went wrong (most commonly that the payment was denied). `action_required`
+        means that additional steps are required to process this payment; refer to
+        `requiredAction` for more details. Terminal states are `paid` and `failed`.
       enum:
-        - pending
-        - confirmed
-        - paid
-        - failed
-        - action_required
+      - pending
+      - confirmed
+      - paid
+      - failed
+      - action_required
     UTCTimestamp:
       type: string
       description: ISO-8601 UTC date/time format.
       example: '2020-04-10T02:13:30.000Z'
     RequiredAction:
       type: object
-      description: When the payment status is `action_required`, this object summarizes the required additional steps.
+      description: When the payment status is `action_required`, this object summarizes
+        the required additional steps.
       required:
-        - type
-        - redirectUrl
+      - type
+      - redirectUrl
       properties:
         type:
           type: string
-          description: The type of action that is required to proceed with the payment. Currently only one type is supported.
+          description: The type of action that is required to proceed with the payment.
+            Currently only one type is supported.
           enum:
-            - three_d_secure_required
+          - three_d_secure_required
         redirectUrl:
           type: string
           description: The URL to bring the user to in order to complete the payment.
@@ -2294,14 +2512,21 @@ components:
     CancelRefundReversalStatus:
       type: string
       enum:
-        - pending
-        - confirmed
-        - paid
-        - failed
-      description: Enumerated status of the payment. `pending` means the payment is waiting to be processed. `confirmed` means the payment has been approved by the bank and the merchant can treat it as successful, but settlement funds are not yet available to the merchant.  `paid` means settlement funds have been received and are available to the merchant. `failed` means something went wrong (most commonly that the payment was denied). Terminal states are `paid` and `failed`.
+      - pending
+      - confirmed
+      - paid
+      - failed
+      description: Enumerated status of the payment. `pending` means the payment is
+        waiting to be processed. `confirmed` means the payment has been approved by
+        the bank and the merchant can treat it as successful, but settlement funds
+        are not yet available to the merchant.  `paid` means settlement funds have
+        been received and are available to the merchant. `failed` means something
+        went wrong (most commonly that the payment was denied). Terminal states are
+        `paid` and `failed`.
     PaymentInfoCancel:
       type: object
-      description: Status information of the related cancel. This property is only present on canceled payment or refund items.
+      description: Status information of the related cancel. This property is only
+        present on canceled payment or refund items.
       nullable: true
       properties:
         id:
@@ -2310,20 +2535,21 @@ components:
           type: string
           description: Type of the payment object.
           enum:
-            - cancel
+          - cancel
         description:
           description: Enumerated description of the payment item.
           type: string
           nullable: true
           enum:
-            - Payment
+          - Payment
         status:
           $ref: '#/components/schemas/CancelRefundReversalStatus'
         createDate:
           $ref: '#/components/schemas/UTCTimestamp'
     PaymentInfoPaymentAndRefund:
       type: object
-      description: Status information of the related payment. This property is only present on refund or cancel items.
+      description: Status information of the related payment. This property is only
+        present on refund or cancel items.
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -2331,8 +2557,8 @@ components:
           type: string
           description: Type of the payment object.
           enum:
-            - payment
-            - refund
+          - payment
+          - refund
         amount:
           $ref: '#/components/schemas/FiatMoneyUsd'
         description:
@@ -2340,7 +2566,7 @@ components:
           description: Enumerated description of the payment item.
           nullable: true
           enum:
-            - Payment
+          - Payment
         status:
           $ref: '#/components/schemas/PaymentStatus'
         requiredAction:
@@ -2352,18 +2578,20 @@ components:
     Channel:
       type: string
       format: uuid
-      description: The channel identifier that can be set for the payment. When not provided, the default channel is used.
+      description: The channel identifier that can be set for the payment. When not
+        provided, the default channel is used.
       example: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
-    BasicPayment:
+    FiatPayment:
       type: object
-      description: Status information of the related payment. This property is only present on refund or cancel items.
+      description: Status information of the related payment. This property is only
+        present on refund or cancel items.
       required:
-        - id
-        - type
-        - merchantId
-        - amount
-        - source
-        - status
+      - id
+      - type
+      - merchantId
+      - amount
+      - source
+      - status
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -2371,7 +2599,7 @@ components:
           description: Type of the payment object.
           type: string
           enum:
-            - payment
+          - payment
         merchantId:
           $ref: '#/components/schemas/IdMerchant'
         merchantWalletId:
@@ -2384,11 +2612,12 @@ components:
           description: Enumerated description of the payment.
           type: string
           enum:
-            - Payment
+          - Payment
         status:
           $ref: '#/components/schemas/PaymentStatus'
         captured:
-          description: Determines if a payment has successfully been captured. This property is only present for payments that did not use auto capture.
+          description: Determines if a payment has successfully been captured. This
+            property is only present for payments that did not use auto capture.
           type: boolean
         captureAmount:
           $ref: '#/components/schemas/FiatMoneyUsd'
@@ -2410,14 +2639,170 @@ components:
           $ref: '#/components/schemas/UTCTimestamp'
         updateDate:
           $ref: '#/components/schemas/UTCTimestamp'
+    Chain:
+      type: string
+      description: A blockchain that a given currency is available on.
+      enum:
+      - ALGO
+      - AVAX
+      - BTC
+      - ETH
+      - FLOW
+      - HBAR
+      - MATIC
+      - SOL
+      - TRX
+      - XLM
+    CryptoPayment:
+      type: object
+      description: Status information of the related payment. This property is only
+        present on refund or cancel items.
+      required:
+      - id
+      - type
+      - merchantId
+      - amount
+      - source
+      - status
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        type:
+          description: Type of the payment object.
+          type: string
+          enum:
+          - payment
+        merchantId:
+          $ref: '#/components/schemas/IdMerchant'
+        merchantWalletId:
+          $ref: '#/components/schemas/MerchantWalletId'
+        amount:
+          $ref: '#/components/schemas/FiatMoneyUsd'
+        status:
+          $ref: '#/components/schemas/PaymentStatus'
+        fees:
+          $ref: '#/components/schemas/FiatMoneyUsd'
+        paymentIntentId:
+          type: string
+          format: uuid
+          example: 6e4d4047-db14-4c09-b238-1215aee50d03
+        settlementAmount:
+          $ref: '#/components/schemas/FiatMoneyUsd'
+        depositAddress:
+          type: object
+          properties:
+            chain:
+              $ref: '#/components/schemas/Chain'
+            address:
+              type: string
+              example: '0x97de855690955e0da79ce5c1b6804847e7070c7f'
+        transactionHash:
+          type: string
+          example: '0x7351585460bd657f320b9afa02a52c26d89272d0d10cc29913eb8b28e64fd906'
+        createDate:
+          $ref: '#/components/schemas/UTCTimestamp'
+        updateDate:
+          $ref: '#/components/schemas/UTCTimestamp'
+    FiatCancel:
+      type: object
+      description: Status information of the related cancel. This property is only
+        present on canceled payment or refund items.
+      nullable: true
+      required:
+      - id
+      - type
+      - merchantId
+      - amount
+      - source
+      - status
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        type:
+          type: string
+          description: Type of the payment object.
+          enum:
+          - cancel
+        merchantId:
+          $ref: '#/components/schemas/IdMerchant'
+        merchantWalletId:
+          $ref: '#/components/schemas/MerchantWalletId'
+        amount:
+          $ref: '#/components/schemas/FiatMoneyUsd'
+        source:
+          $ref: '#/components/schemas/SourceResponse'
+        description:
+          description: Enumerated description of the payment.
+          type: string
+          enum:
+          - Payment
+        status:
+          $ref: '#/components/schemas/CancelRefundReversalStatus'
+        originalPayment:
+          $ref: '#/components/schemas/PaymentInfoPaymentAndRefund'
+        fees:
+          $ref: '#/components/schemas/FiatMoneyUsd'
+        channel:
+          $ref: '#/components/schemas/Channel'
+        createDate:
+          $ref: '#/components/schemas/UTCTimestamp'
+        updateDate:
+          $ref: '#/components/schemas/UTCTimestamp'
+    FiatRefund:
+      type: object
+      required:
+      - id
+      - type
+      - merchantId
+      - amount
+      - source
+      - status
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        type:
+          description: Type of the payment object.
+          type: string
+          enum:
+          - refund
+        merchantId:
+          $ref: '#/components/schemas/IdMerchant'
+        merchantWalletId:
+          $ref: '#/components/schemas/MerchantWalletId'
+        amount:
+          $ref: '#/components/schemas/FiatMoneyUsd'
+        source:
+          $ref: '#/components/schemas/SourceResponse'
+        description:
+          description: Enumerated description of the payment.
+          type: string
+          enum:
+          - Payment
+        status:
+          $ref: '#/components/schemas/CancelRefundReversalStatus'
+        originalPayment:
+          $ref: '#/components/schemas/PaymentInfoPaymentAndRefund'
+        cancel:
+          $ref: '#/components/schemas/PaymentInfoCancel'
+        fees:
+          $ref: '#/components/schemas/FiatMoneyUsd'
+        channel:
+          $ref: '#/components/schemas/Channel'
+        createDate:
+          $ref: '#/components/schemas/UTCTimestamp'
+        updateDate:
+          $ref: '#/components/schemas/UTCTimestamp'
     IdempotencyKey:
       type: string
-      description: Universally unique identifier (UUID v4) idempotency key. This key is utilized to ensure exactly-once execution of mutating requests.
+      description: Universally unique identifier (UUID v4) idempotency key. This key
+        is utilized to ensure exactly-once execution of mutating requests.
       format: uuid
       example: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
     IdKey:
       type: string
-      description: Universally unique identifier (UUID v4) of the public key used in encryption. NOTE the sandbox environment uses the default value of `key1`. For this reason the example supplied is `key1` rather than a UUID.
+      description: Universally unique identifier (UUID v4) of the public key used
+        in encryption. NOTE the sandbox environment uses the default value of `key1`.
+        For this reason the example supplied is `key1` rather than a UUID.
       format: uuid
       example: key1
     Email:
@@ -2427,13 +2812,18 @@ components:
       example: satoshi@circle.com
     PhoneNumber:
       type: string
-      description: Phone number of the user in E.164 format. We recommend using a library such as [libphonenumber](https://github.com/google/libphonenumber) to parse and validate phone numbers.
+      description: Phone number of the user in E.164 format. We recommend using a
+        library such as [libphonenumber](https://github.com/google/libphonenumber)
+        to parse and validate phone numbers.
       maxLength: 16
       pattern: /\+?[1-9]\d{1,14}/
       example: '+14155555555'
     SessionId:
-      description: |
-        Hash of the session identifier; typically of the end user. This helps us make risk decisions and prevent fraud. IMPORTANT: Please hash the session identifier to prevent sending us actual session identifiers.
+      description: 'Hash of the session identifier; typically of the end user. This
+        helps us make risk decisions and prevent fraud. IMPORTANT: Please hash the
+        session identifier to prevent sending us actual session identifiers.
+
+        '
       type: string
       maxLength: 50
       example: DE6FA86F60BB47B379307F851E238617
@@ -2444,9 +2834,9 @@ components:
     MetadataPayment:
       type: object
       required:
-        - email
-        - sessionId
-        - ipAddress
+      - email
+      - sessionId
+      - ipAddress
       properties:
         email:
           $ref: '#/components/schemas/Email'
@@ -2465,16 +2855,16 @@ components:
           type: string
           description: Type of the source.
           enum:
-            - card
-            - ach
+          - card
+          - ach
     PaymentCreationRequest:
       type: object
       required:
-        - idempotencyKey
-        - amount
-        - verification
-        - source
-        - metadata
+      - idempotencyKey
+      - amount
+      - verification
+      - source
+      - metadata
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -2486,16 +2876,17 @@ components:
           $ref: '#/components/schemas/FiatMoneyUsd'
         autoCapture:
           type: boolean
-          description: Triggers the automatic capture of the full payment amount. If set to false the payment will only be authorized but not captured.
+          description: Triggers the automatic capture of the full payment amount.
+            If set to false the payment will only be authorized but not captured.
           default: true
           example: true
         verification:
           type: string
           description: Indicates the verification method for this payment.
           enum:
-            - none
-            - cvv
-            - three_d_secure
+          - none
+          - cvv
+          - three_d_secure
         verificationSuccessUrl:
           type: string
           description: The URL to redirect users to after successful 3DS authentication.
@@ -2515,190 +2906,122 @@ components:
         encryptedData:
           type: string
           format: byte
-          description: |
-            PGP encrypted base64 encoded string. Contains CVV.
-            * **CVV (Card Verification Number)**: Three or four digit security code. Only required if `verification` is `cvv`.
+          description: 'PGP encrypted base64 encoded string. Contains CVV.
+
+            * **CVV (Card Verification Number)**: Three or four digit security code.
+            Only required if `verification` is `cvv`.
+
+            '
           example: UHVibGljS2V5QmFzZTY0RW5jb2RlZA==
         channel:
           $ref: '#/components/schemas/Channel'
     AvsResults:
       type: string
-      description: Status of the AVS check. Raw AVS response, expressed as an upper-case letter. `not_requested` indicates check was not made. `pending` is pending/processing.
+      description: Status of the AVS check. Raw AVS response, expressed as an upper-case
+        letter. `not_requested` indicates check was not made. `pending` is pending/processing.
       example: D
     CvvResults:
-      description: Enumerated status of the check. `not_requested` indicates check was not made. `pass` indicates value is correct. `fail` indicates value is incorrect. `unavailable` indicates card issuer did not do the provided check. `pending` indicates check is pending/processing.
+      description: Enumerated status of the check. `not_requested` indicates check
+        was not made. `pass` indicates value is correct. `fail` indicates value is
+        incorrect. `unavailable` indicates card issuer did not do the provided check.
+        `pending` indicates check is pending/processing.
       type: string
       enum:
-        - not_requested
-        - pass
-        - fail
-        - unavailable
-        - pending
-    3dsResults:
+      - not_requested
+      - pass
+      - fail
+      - unavailable
+      - pending
+    ThreeDSResult:
       type: string
-      description: Enumerated status of the check. `pass` indicates successful 3DS authentication. `fail` indicates failed 3DS authentication.
+      description: Enumerated status of the check. `pass` indicates successful 3DS
+        authentication. `fail` indicates failed 3DS authentication.
       enum:
-        - pass
-        - fail
+      - pass
+      - fail
     Eci:
       type: string
-      description: ECI (electronic commerce indicator) value returned by Directory Servers (namely Visa, MasterCard, JCB, and American Express) indicating the outcome of authentication attempted on transactions enforced by 3DS.
+      description: ECI (electronic commerce indicator) value returned by Directory
+        Servers (namely Visa, MasterCard, JCB, and American Express) indicating the
+        outcome of authentication attempted on transactions enforced by 3DS.
       enum:
-        - '00'
-        - '01'
-        - '02'
-        - '05'
-        - '06'
-        - '07'
+      - '00'
+      - '01'
+      - '02'
+      - '05'
+      - '06'
+      - '07'
     PaymentVerificationResponse:
       type: object
-      description: Indicates the status of the payment verification. This property will be present once the payment is confirmed.
+      description: Indicates the status of the payment verification. This property
+        will be present once the payment is confirmed.
       required:
-        - avs
-        - cvv
+      - avs
+      - cvv
       properties:
         avs:
           $ref: '#/components/schemas/AvsResults'
         cvv:
           $ref: '#/components/schemas/CvvResults'
         threeDSecure:
-          $ref: '#/components/schemas/3dsResults'
+          $ref: '#/components/schemas/ThreeDSResult'
         eci:
           $ref: '#/components/schemas/Eci'
-    BasicCancel:
-      type: object
-      description: Status information of the related cancel. This property is only present on canceled payment or refund items.
-      nullable: true
-      required:
-        - id
-        - type
-        - merchantId
-        - amount
-        - source
-        - status
-      properties:
-        id:
-          $ref: '#/components/schemas/Id'
-        type:
-          type: string
-          description: Type of the payment object.
-          enum:
-            - cancel
-        merchantId:
-          $ref: '#/components/schemas/IdMerchant'
-        merchantWalletId:
-          $ref: '#/components/schemas/MerchantWalletId'
-        amount:
-          $ref: '#/components/schemas/FiatMoneyUsd'
-        source:
-          $ref: '#/components/schemas/SourceResponse'
-        description:
-          description: Enumerated description of the payment.
-          type: string
-          enum:
-            - Payment
-        status:
-          $ref: '#/components/schemas/CancelRefundReversalStatus'
-        originalPayment:
-          $ref: '#/components/schemas/PaymentInfoPaymentAndRefund'
-        fees:
-          $ref: '#/components/schemas/FiatMoneyUsd'
-        channel:
-          $ref: '#/components/schemas/Channel'
-        createDate:
-          $ref: '#/components/schemas/UTCTimestamp'
-        updateDate:
-          $ref: '#/components/schemas/UTCTimestamp'
-    BasicRefund:
-      type: object
-      required:
-        - id
-        - type
-        - merchantId
-        - amount
-        - source
-        - status
-      properties:
-        id:
-          $ref: '#/components/schemas/Id'
-        type:
-          description: Type of the payment object.
-          type: string
-          enum:
-            - refund
-        merchantId:
-          $ref: '#/components/schemas/IdMerchant'
-        merchantWalletId:
-          $ref: '#/components/schemas/MerchantWalletId'
-        amount:
-          $ref: '#/components/schemas/FiatMoneyUsd'
-        source:
-          $ref: '#/components/schemas/SourceResponse'
-        description:
-          description: Enumerated description of the payment.
-          type: string
-          enum:
-            - Payment
-        status:
-          $ref: '#/components/schemas/CancelRefundReversalStatus'
-        originalPayment:
-          $ref: '#/components/schemas/PaymentInfoPaymentAndRefund'
-        cancel:
-          $ref: '#/components/schemas/PaymentInfoCancel'
-        fees:
-          $ref: '#/components/schemas/FiatMoneyUsd'
-        channel:
-          $ref: '#/components/schemas/Channel'
-        createDate:
-          $ref: '#/components/schemas/UTCTimestamp'
-        updateDate:
-          $ref: '#/components/schemas/UTCTimestamp'
     PaymentErrorCode:
       type: string
-      description: Indicates the failure reason of a payment. Only present for payments in failed state. Possible values are [`payment_failed`, `payment_fraud_detected`, `payment_denied`, `payment_not_supported_by_issuer`, `payment_not_funded`, `payment_unprocessable`, `payment_stopped_by_issuer`, `payment_canceled`, `payment_returned`, `payment_failed_balance_check`, `card_failed`, `card_invalid`, `card_address_mismatch`, `card_zip_mismatch`, `card_cvv_invalid`, `card_expired`, `card_limit_violated`, `card_not_honored`, `card_cvv_required`, `credit_card_not_allowed`, `card_account_ineligible`, `card_network_unsupported`, `channel_invalid`, `unauthorized_transaction`, `bank_account_ineligible`, `bank_transaction_error`, `invalid_account_number`, `invalid_wire_rtn`, `invalid_ach_rtn`, `vendor_inactive`]'
+      description: Indicates the failure reason of a payment. Only present for payments
+        in failed state. Possible values are [`payment_failed`, `payment_fraud_detected`,
+        `payment_denied`, `payment_not_supported_by_issuer`, `payment_not_funded`,
+        `payment_unprocessable`, `payment_stopped_by_issuer`, `payment_canceled`,
+        `payment_returned`, `payment_failed_balance_check`, `card_failed`, `card_invalid`,
+        `card_address_mismatch`, `card_zip_mismatch`, `card_cvv_invalid`, `card_expired`,
+        `card_limit_violated`, `card_not_honored`, `card_cvv_required`, `credit_card_not_allowed`,
+        `card_account_ineligible`, `card_network_unsupported`, `channel_invalid`,
+        `unauthorized_transaction`, `bank_account_ineligible`, `bank_transaction_error`,
+        `invalid_account_number`, `invalid_wire_rtn`, `invalid_ach_rtn`, `vendor_inactive`]'
       nullable: true
       enum:
-        - payment_failed
-        - payment_fraud_detected
-        - payment_denied
-        - payment_not_supported_by_issuer
-        - payment_not_funded
-        - payment_unprocessable
-        - payment_stopped_by_issuer
-        - payment_canceled
-        - payment_returned
-        - payment_failed_balance_check
-        - card_failed
-        - card_invalid
-        - card_address_mismatch
-        - card_zip_mismatch
-        - card_cvv_invalid
-        - card_expired
-        - card_limit_violated
-        - card_not_honored
-        - card_cvv_required
-        - card_restricted,
-        - card_account_ineligible
-        - card_network_unsupported
-        - channel_invalid
-        - unauthorized_transaction
-        - bank_account_ineligible
-        - bank_transaction_error
-        - invalid_account_number
-        - invalid_wire_rtn
-        - invalid_ach_rtn
-        - ref_id_invalid
-        - account_name_mismatch
-        - account_number_mismatch
-        - account_ineligible
-        - wallet_address_mismatch
-        - customer_name_mismatch
-        - institution_name_mismatch
-        - vendor_inactive
+      - payment_failed
+      - payment_fraud_detected
+      - payment_denied
+      - payment_not_supported_by_issuer
+      - payment_not_funded
+      - payment_unprocessable
+      - payment_stopped_by_issuer
+      - payment_canceled
+      - payment_returned
+      - payment_failed_balance_check
+      - card_failed
+      - card_invalid
+      - card_address_mismatch
+      - card_zip_mismatch
+      - card_cvv_invalid
+      - card_expired
+      - card_limit_violated
+      - card_not_honored
+      - card_cvv_required
+      - card_restricted,
+      - card_account_ineligible
+      - card_network_unsupported
+      - channel_invalid
+      - unauthorized_transaction
+      - bank_account_ineligible
+      - bank_transaction_error
+      - invalid_account_number
+      - invalid_wire_rtn
+      - invalid_ach_rtn
+      - ref_id_invalid
+      - account_name_mismatch
+      - account_number_mismatch
+      - account_ineligible
+      - wallet_address_mismatch
+      - customer_name_mismatch
+      - institution_name_mismatch
+      - vendor_inactive
     MetadataPhoneEmail:
       type: object
       required:
-        - email
+      - email
       properties:
         email:
           $ref: '#/components/schemas/Email'
@@ -2706,16 +3029,17 @@ components:
           $ref: '#/components/schemas/PhoneNumber'
     RiskEvaluation:
       type: object
-      description: Results of risk evaluation. Only present if the payment is denied by Circle's risk service.
+      description: Results of risk evaluation. Only present if the payment is denied
+        by Circle's risk service.
       nullable: true
       properties:
         decision:
           description: Enumerated decision of the account.
           type: string
           enum:
-            - approved
-            - denied
-            - review
+          - approved
+          - denied
+          - review
         reason:
           description: Risk reason for the definitive decision outcome.
           type: string
@@ -2724,12 +3048,12 @@ components:
     DetailedPayment:
       type: object
       required:
-        - id
-        - type
-        - merchantId
-        - amount
-        - source
-        - status
+      - id
+      - type
+      - merchantId
+      - amount
+      - source
+      - status
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -2737,7 +3061,7 @@ components:
           description: Type of the payment object.
           type: string
           enum:
-            - payment
+          - payment
         merchantId:
           $ref: '#/components/schemas/IdMerchant'
         merchantWalletId:
@@ -2750,12 +3074,13 @@ components:
           type: string
           description: Enumerated description of the payment.
           enum:
-            - Payment
+          - Payment
         status:
           $ref: '#/components/schemas/PaymentStatus'
         captured:
           type: boolean
-          description: Determines if a payment has successfully been captured. This property is only present for payments that did not use auto capture.
+          description: Determines if a payment has successfully been captured. This
+            property is only present for payments that did not use auto capture.
         captureAmount:
           $ref: '#/components/schemas/FiatMoneyUsd'
         captureDate:
@@ -2765,11 +3090,11 @@ components:
         verification:
           $ref: '#/components/schemas/PaymentVerificationResponse'
         cancel:
-          $ref: '#/components/schemas/BasicCancel'
+          $ref: '#/components/schemas/FiatCancel'
         refunds:
           type: array
           items:
-            $ref: '#/components/schemas/BasicRefund'
+            $ref: '#/components/schemas/FiatRefund'
         fees:
           $ref: '#/components/schemas/FiatMoneyUsd'
         trackingRef:
@@ -2792,21 +3117,21 @@ components:
           $ref: '#/components/schemas/UTCTimestamp'
     ExternalRef:
       type: string
-      description: |
-        External network identifier which will be present once provided from the applicable network. 
-
-        Examples:
-        * **Input/Output Message Accountability Data (IMAD/OMAD)**: unique number given to each FedWire payment when using the Federal Reserve Bank Service which can be used to investigate and track wire transfers.
+      description: "External network identifier which will be present once provided\
+        \ from the applicable network. \n\nExamples:\n* **Input/Output Message Accountability\
+        \ Data (IMAD/OMAD)**: unique number given to each FedWire payment when using\
+        \ the Federal Reserve Bank Service which can be used to investigate and track\
+        \ wire transfers.\n"
       example: YYYYMMDDXXXXXXXX012345
-    DetailedPaymentPolymorphic:
+    FiatPaymentPolymorphic:
       type: object
       required:
-        - id
-        - type
-        - merchantId
-        - amount
-        - source
-        - status
+      - id
+      - type
+      - merchantId
+      - amount
+      - source
+      - status
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -2814,9 +3139,9 @@ components:
           description: Type of the payment object.
           type: string
           enum:
-            - payment
-            - refund
-            - cancel
+          - payment
+          - refund
+          - cancel
         merchantId:
           $ref: '#/components/schemas/IdMerchant'
         merchantWalletId:
@@ -2829,7 +3154,7 @@ components:
           description: Enumerated description of the payment.
           type: string
           enum:
-            - Payment
+          - Payment
         status:
           $ref: '#/components/schemas/PaymentStatus'
         requiredAction:
@@ -2837,14 +3162,14 @@ components:
         verification:
           $ref: '#/components/schemas/PaymentVerificationResponse'
         originalPayment:
-          $ref: '#/components/schemas/BasicPayment'
+          $ref: '#/components/schemas/FiatPayment'
         cancel:
-          $ref: '#/components/schemas/BasicCancel'
+          $ref: '#/components/schemas/FiatCancel'
         refunds:
           type: array
           nullable: true
           items:
-            $ref: '#/components/schemas/BasicRefund'
+            $ref: '#/components/schemas/FiatRefund'
         fees:
           $ref: '#/components/schemas/FiatMoneyUsd'
         trackingRef:
@@ -2869,7 +3194,7 @@ components:
     CaptureCreationRequest:
       type: object
       required:
-        - idempotencyKey
+      - idempotencyKey
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -2877,24 +3202,25 @@ components:
           $ref: '#/components/schemas/FiatMoneyUsd'
     ReversalReason:
       type: string
-      description: Enumerated reason for a returned payment. Providing this reason in the request is recommended (to improve risk evaluation) but not required.
+      description: Enumerated reason for a returned payment. Providing this reason
+        in the request is recommended (to improve risk evaluation) but not required.
       enum:
-        - duplicate
-        - fraudulent
-        - requested_by_customer
-        - bank_transaction_error
-        - insufficient_funds
-        - payment_stopped_by_issuer
-        - payment_returned
-        - bank_account_ineligible
-        - invalid_account_number
-        - invalid_ach_rtn
-        - unauthorized_transaction
-        - payment_failed
+      - duplicate
+      - fraudulent
+      - requested_by_customer
+      - bank_transaction_error
+      - invalid_account_number
+      - insufficient_funds
+      - payment_stopped_by_issuer
+      - payment_returned
+      - bank_account_ineligible
+      - invalid_ach_rtn
+      - unauthorized_transaction
+      - payment_failed
     CancelCreationRequest:
       type: object
       required:
-        - idempotencyKey
+      - idempotencyKey
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -2903,12 +3229,12 @@ components:
     DetailedCancel:
       type: object
       required:
-        - id
-        - type
-        - merchantId
-        - amount
-        - source
-        - status
+      - id
+      - type
+      - merchantId
+      - amount
+      - source
+      - status
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -2916,7 +3242,7 @@ components:
           description: Type of the payment object.
           type: string
           enum:
-            - cancel
+          - cancel
         merchantId:
           $ref: '#/components/schemas/IdMerchant'
         merchantWalletId:
@@ -2929,11 +3255,11 @@ components:
           description: Enumerated description of the payment.
           type: string
           enum:
-            - Payment
+          - Payment
         status:
           $ref: '#/components/schemas/CancelRefundReversalStatus'
         originalPayment:
-          $ref: '#/components/schemas/BasicPayment'
+          $ref: '#/components/schemas/FiatPayment'
         fees:
           $ref: '#/components/schemas/FiatMoneyUsd'
         trackingRef:
@@ -2948,7 +3274,9 @@ components:
         riskEvaluation:
           $ref: '#/components/schemas/RiskEvaluation'
         refund:
-          description: If the cancel was made after a cutoff time period, it will be processed as a refund. This flag indicates that the cancel was processed as a refund'
+          description: If the cancel was made after a cutoff time period, it will
+            be processed as a refund. This flag indicates that the cancel was processed
+            as a refund'
           type: boolean
           default: false
         createDate:
@@ -2958,8 +3286,8 @@ components:
     RefundCreationRequest:
       type: object
       required:
-        - idempotencyKey
-        - amount
+      - idempotencyKey
+      - amount
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -2970,12 +3298,12 @@ components:
     DetailedRefund:
       type: object
       required:
-        - id
-        - type
-        - merchantId
-        - amount
-        - source
-        - status
+      - id
+      - type
+      - merchantId
+      - amount
+      - source
+      - status
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -2983,7 +3311,7 @@ components:
           description: Type of the payment object.
           type: string
           enum:
-            - refund
+          - refund
         merchantId:
           $ref: '#/components/schemas/IdMerchant'
         merchantWalletId:
@@ -2996,13 +3324,13 @@ components:
           description: Enumerated description of the payment.
           type: string
           enum:
-            - Payment
+          - Payment
         status:
           $ref: '#/components/schemas/CancelRefundReversalStatus'
         originalPayment:
-          $ref: '#/components/schemas/BasicPayment'
+          $ref: '#/components/schemas/FiatPayment'
         cancel:
-          $ref: '#/components/schemas/BasicCancel'
+          $ref: '#/components/schemas/FiatCancel'
         fees:
           $ref: '#/components/schemas/FiatMoneyUsd'
         trackingRef:
@@ -3023,22 +3351,25 @@ components:
     MockWirePaymentBeneficiaryBankInstruction:
       type: object
       required:
-        - accountNumber
+      - accountNumber
       properties:
         accountNumber:
           type: string
-          description: Virtual account number or Circle corporate Silvergate Wire account number that needs to be set as destination.
+          description: Virtual account number or Circle corporate Silvergate Wire
+            account number that needs to be set as destination.
           example: '11111111'
     MockWirePaymentRequest:
       type: object
       required:
-        - trackingRef
-        - amount
-        - beneficiaryBank
+      - trackingRef
+      - amount
+      - beneficiaryBank
       properties:
         trackingRef:
           type: string
-          description: Wire tracking reference that needs to be set in the wire reference to beneficiary field. This field is retrievable through the response during wire creation or via the bank instruction endpoint.
+          description: Wire tracking reference that needs to be set in the wire reference
+            to beneficiary field. This field is retrievable through the response during
+            wire creation or via the bank instruction endpoint.
           example: CIR13FB13A
         amount:
           $ref: '#/components/schemas/FiatMoneyUsd'
@@ -3049,7 +3380,9 @@ components:
       properties:
         trackingRef:
           type: string
-          description: Wire tracking reference that needs to be set in the wire reference to beneficiary field. This field is retrievable through the response during wire creation or via the bank instruction endpoint.
+          description: Wire tracking reference that needs to be set in the wire reference
+            to beneficiary field. This field is retrievable through the response during
+            wire creation or via the bank instruction endpoint.
           example: CIR13FB13A
         amount:
           $ref: '#/components/schemas/FiatMoneyUsd'
@@ -3057,20 +3390,23 @@ components:
           $ref: '#/components/schemas/MockWirePaymentBeneficiaryBankInstruction'
         status:
           type: string
-          description: Enumerated status of the wire payment. Status `pending` indicates that the wire payment is in process; `processed` indicates it finished successfully; `failed` indicates it failed.
+          description: Enumerated status of the wire payment. Status `pending` indicates
+            that the wire payment is in process; `processed` indicates it finished
+            successfully; `failed` indicates it failed.
           enum:
-            - pending
-            - processed
-            - failed
+          - pending
+          - processed
+          - failed
     MockSepaPaymentRequest:
       type: object
       required:
-        - trackingRef
-        - amount
+      - trackingRef
+      - amount
       properties:
         trackingRef:
           type: string
-          description: SEPA tracking reference that needs to be set in the payment details or description.
+          description: SEPA tracking reference that needs to be set in the payment
+            details or description.
           example: CIR13FB13A
         amount:
           $ref: '#/components/schemas/FiatMoneyUsd'
@@ -3079,38 +3415,87 @@ components:
       properties:
         trackingRef:
           type: string
-          description: SEPA tracking reference that needs to be set in the payment details or description.
+          description: SEPA tracking reference that needs to be set in the payment
+            details or description.
           example: CIR13FB13A
         amount:
           $ref: '#/components/schemas/FiatMoneyUsd'
         status:
           type: string
-          description: Enumerated status of the SEPA payment. Status `pending` indicates that the SEPA payment is in process; `processed` indicates it finished successfully; `failed` indicates it failed.
+          description: Enumerated status of the SEPA payment. Status `pending` indicates
+            that the SEPA payment is in process; `processed` indicates it finished
+            successfully; `failed` indicates it failed.
           enum:
-            - pending
-            - processed
-            - failed
+          - pending
+          - processed
+          - failed
+    IdentityAddress:
+      type: object
+      required:
+      - line1
+      - city
+      - district
+      - postalCode
+      - country
+      properties:
+        line1:
+          type: string
+          description: Line one of the street address.
+          maxLength: 1024
+          example: 100 Money Street
+        line2:
+          type: string
+          description: Line two of the street address.
+          maxLength: 1024
+          example: Suite 1
+        city:
+          type: string
+          description: City portion of the address.
+          maxLength: 1024
+          example: Boston
+        district:
+          description: State / County / Province / Region portion of the address.
+            If the country is US or Canada, then district is required and should use
+            the two-letter code for the subdivision.
+          type: string
+          maxLength: 16
+          example: MA
+        postalCode:
+          type: string
+          description: Postal / ZIP code of the address.
+          maxLength: 16
+          example: '01234'
+        country:
+          type: string
+          description: Country portion of the address. Formatted as a two-letter country
+            code specified in ISO 3166-1 alpha-2.
+          maxLength: 2
+          example: US
     Identity:
       type: object
-      description: |
-        The identity of the originator. Identities are required when:
-          * `destination.type: "blockchain"`
-          * `destination.chain: "ETH"`
-          * `amount.amount` >= $3,000 in value
+      description: "The identity of the originator. Identities are required when:\n\
+        \  * `destination.type: \"blockchain\"`\n  * `destination.chain: \"ETH\"`\n\
+        \  * `amount.amount` >= $3,000 in value\n"
       required:
-        - type
-        - name
-        - addresses
+      - type
+      - name
+      - addresses
       properties:
         type:
           type: string
-          description: |
-            The type of identity for the originator.
+          description: 'The type of identity for the originator.
+
             * `individual` - A uniquely distinguishable individual.
-            * `business` - Any entity other than a natural person that can establish a permanent customer relationship with an affected entity or otherwise own property. This can include companies, foundations, anstalt, partnerships, associations and other relevantly similar entities.
+
+            * `business` - Any entity other than a natural person that can establish
+            a permanent customer relationship with an affected entity or otherwise
+            own property. This can include companies, foundations, anstalt, partnerships,
+            associations and other relevantly similar entities.
+
+            '
           enum:
-            - individual
-            - business
+          - individual
+          - business
         name:
           type: string
           description: Full name of the identity.
@@ -3119,55 +3504,18 @@ components:
         addresses:
           type: array
           items:
-            type: object
-            required:
-              - line1
-              - city
-              - district
-              - postalCode
-              - country
-            properties:
-              line1:
-                type: string
-                description: Line one of the street address.
-                maxLength: 1024
-                example: 100 Money Street
-              line2:
-                type: string
-                description: Line two of the street address.
-                maxLength: 1024
-                example: Suite 1
-              city:
-                type: string
-                description: City portion of the address.
-                maxLength: 1024
-                example: Boston
-              district:
-                description: State / County / Province / Region portion of the address. If the country is US or Canada, then district is required and should use the two-letter code for the subdivision.
-                type: string
-                maxLength: 16
-                example: MA
-              postalCode:
-                type: string
-                description: Postal / ZIP code of the address.
-                maxLength: 16
-                example: '01234'
-              country:
-                type: string
-                description: Country portion of the address. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.
-                maxLength: 2
-                example: US
+            $ref: '#/components/schemas/IdentityAddress'
     TransferSourceWalletLocation:
       description: A source wallet location.
       type: object
       required:
-        - type
-        - id
+      - type
+      - id
       properties:
         type:
           type: string
           enum:
-            - wallet
+          - wallet
         id:
           type: string
           description: The id of the wallet.
@@ -3176,31 +3524,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Identity'
-    Chain:
-      type: string
-      description: A blockchain that a given currency is available on.
-      enum:
-        - ALGO
-        - AVAX
-        - BTC
-        - ETH
-        - FLOW
-        - HBAR
-        - MATIC
-        - SOL
-        - TRX
-        - XLM
     TransferSourceBlockchainLocation:
       description: A source blockchain address.
       type: object
       required:
-        - type
-        - chain
+      - type
+      - chain
       properties:
         type:
           type: string
           enum:
-            - blockchain
+          - blockchain
         chain:
           $ref: '#/components/schemas/Chain'
         identities:
@@ -3210,31 +3544,35 @@ components:
     TransferSourceLocation:
       description: A source of funds.
       oneOf:
-        - $ref: '#/components/schemas/TransferSourceWalletLocation'
-        - $ref: '#/components/schemas/TransferSourceBlockchainLocation'
+      - $ref: '#/components/schemas/TransferSourceWalletLocation'
+      - $ref: '#/components/schemas/TransferSourceBlockchainLocation'
       discriminator:
         propertyName: type
     Address:
       type: string
-      description: An alphanumeric string representing a blockchain address. Will be in different formats for different chains. It is important to preserve the exact formatting and capitalization of the address.
+      description: An alphanumeric string representing a blockchain address. Will
+        be in different formats for different chains. It is important to preserve
+        the exact formatting and capitalization of the address.
       example: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
     AddressTag:
       type: string
-      description: The secondary identifier for a blockchain address. An example of this is the memo field on the Stellar network, which can be text, id, or hash format.
+      description: The secondary identifier for a blockchain address. An example of
+        this is the memo field on the Stellar network, which can be text, id, or hash
+        format.
       nullable: true
       example: '123456789'
     TransferDestinationBlockchainLocation:
       description: A destination blockchain address.
       type: object
       required:
-        - type
-        - chain
-        - address
+      - type
+      - chain
+      - address
       properties:
         type:
           type: string
           enum:
-            - blockchain
+          - blockchain
         address:
           $ref: '#/components/schemas/Address'
         addressTag:
@@ -3245,35 +3583,37 @@ components:
       description: A destination wallet location.
       type: object
       required:
-        - type
-        - id
+      - type
+      - id
       properties:
         type:
           type: string
           enum:
-            - wallet
+          - wallet
         id:
           type: string
           description: The id of the wallet.
           example: '12345'
         address:
           type: string
-          description: An alphanumeric string which indicates the wallet address used to receive the transfer. Will only be set when the transfer source is a blockchain address.
+          description: An alphanumeric string which indicates the wallet address used
+            to receive the transfer. Will only be set when the transfer source is
+            a blockchain address.
           example: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
         addressTag:
           $ref: '#/components/schemas/AddressTag'
     TransferDestinationLocation:
       description: A destination of funds.
       oneOf:
-        - $ref: '#/components/schemas/TransferDestinationBlockchainLocation'
-        - $ref: '#/components/schemas/TransferDestinationWalletLocation'
+      - $ref: '#/components/schemas/TransferDestinationBlockchainLocation'
+      - $ref: '#/components/schemas/TransferDestinationWalletLocation'
       discriminator:
         propertyName: type
     Money:
       type: object
       required:
-        - amount
-        - currency
+      - amount
+      - currency
       properties:
         amount:
           type: string
@@ -3283,28 +3623,52 @@ components:
           type: string
           description: Currency code for the amount.
           enum:
-            - USD
-            - EUR
-            - BTC
-            - ETH
+          - USD
+          - EUR
+          - BTC
+          - ETH
+    Fee:
+      type: object
+      required:
+      - amount
+      - currency
+      - type
+      properties:
+        amount:
+          type: string
+          description: Magnitude of the fee amount, in units of the currency, with
+            a `.`.
+          example: '10.00'
+        currency:
+          type: string
+          description: Currency code for the amount.
+          enum:
+          - USD
+        type:
+          type: string
+          description: Category of the fee.
+          enum:
+          - network
     TransferErrorCode:
       type: string
-      description: Indicates the failure reason of a transfer. Only present for transfers in a `failed` state. Possible values are `insufficient_funds`, `blockchain_error` and `transfer_denied` and `transfer_failed`
+      description: Indicates the failure reason of a transfer. Only present for transfers
+        in a `failed` state. Possible values are `insufficient_funds`, `blockchain_error`
+        and `transfer_denied` and `transfer_failed`
       nullable: true
       enum:
-        - transfer_failed
-        - transfer_denied
-        - blockchain_error
-        - insufficient_funds
+      - transfer_failed
+      - transfer_denied
+      - blockchain_error
+      - insufficient_funds
     Transfer:
       type: object
       description: A transfer of funds.
       required:
-        - id
-        - source
-        - destination
-        - amount
-        - status
+      - id
+      - source
+      - destination
+      - amount
+      - status
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -3314,17 +3678,27 @@ components:
           $ref: '#/components/schemas/TransferDestinationLocation'
         amount:
           $ref: '#/components/schemas/Money'
+        fees:
+          description: An array of fees applied to a transaction. This is only available
+            when there is at least one non-zero fee.
+          readOnly: true
+          type: array
+          items:
+            $ref: '#/components/schemas/Fee'
         transactionHash:
-          description: A hash that uniquely identifies the onchain transaction. This is only available where either source or destination are of type blockchain.
+          description: A hash that uniquely identifies the onchain transaction. This
+            is only available where either source or destination are of type blockchain.
           type: string
           example: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
         status:
-          description: Status of the transfer. Status `pending` indicates that the transfer is in the process of running; `complete` indicates it finished successfully; `failed` indicates it failed.
+          description: Status of the transfer. Status `pending` indicates that the
+            transfer is in the process of running; `complete` indicates it finished
+            successfully; `failed` indicates it failed.
           type: string
           enum:
-            - pending
-            - complete
-            - failed
+          - pending
+          - complete
+          - failed
         errorCode:
           $ref: '#/components/schemas/TransferErrorCode'
         createDate:
@@ -3335,11 +3709,11 @@ components:
       type: object
       description: A transfer of funds.
       required:
-        - id
-        - source
-        - destination
-        - amount
-        - status
+      - id
+      - source
+      - destination
+      - amount
+      - status
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -3349,17 +3723,27 @@ components:
           $ref: '#/components/schemas/TransferDestinationLocation'
         amount:
           $ref: '#/components/schemas/Money'
+        fees:
+          description: An array of fees applied to a transaction. This is only available
+            when there is at least one non-zero fee.
+          readOnly: true
+          type: array
+          items:
+            $ref: '#/components/schemas/Fee'
         transactionHash:
           type: string
-          description: A hash that uniquely identifies the onchain transaction. This is only available where either source or destination are of type blockchain.
+          description: A hash that uniquely identifies the onchain transaction. This
+            is only available where either source or destination are of type blockchain.
           example: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
         status:
           type: string
-          description: Status of the transfer. Status `pending` indicates that the transfer is in the process of running; `complete` indicates it finished successfully; `failed` indicates it failed.
+          description: Status of the transfer. Status `pending` indicates that the
+            transfer is in the process of running; `complete` indicates it finished
+            successfully; `failed` indicates it failed.
           enum:
-            - failed
-            - pending
-            - complete
+          - failed
+          - pending
+          - complete
         errorCode:
           $ref: '#/components/schemas/TransferErrorCode'
         riskEvaluation:
@@ -3371,10 +3755,10 @@ components:
       description: A currency associated with a balance or address.
       nullable: true
       enum:
-        - USD
-        - EUR
-        - BTC
-        - ETH
+      - USD
+      - EUR
+      - BTC
+      - ETH
     AddressObject:
       type: object
       properties:
@@ -3389,9 +3773,9 @@ components:
     GenerateAddressRequest:
       type: object
       required:
-        - idempotencyKey
-        - currency
-        - chain
+      - idempotencyKey
+      - currency
+      - chain
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -3400,39 +3784,45 @@ components:
         chain:
           $ref: '#/components/schemas/Chain'
     ExternalFiatAccountStatus:
-      description: Status of the account. A `pending` status indicates that the linking is in-progress; `complete` indicates the account was linked successfully; `failed` indicates it failed.
+      description: Status of the account. A `pending` status indicates that the linking
+        is in-progress; `complete` indicates the account was linked successfully;
+        `failed` indicates it failed.
       type: string
       enum:
-        - pending
-        - complete
-        - failed
+      - pending
+      - complete
+      - failed
     SimpleBillingDetails:
       type: object
       description: Billing details of the card holder.
       required:
-        - country
-        - district
+      - country
+      - district
       properties:
         country:
           type: string
-          description: Country portion of the address. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.
+          description: Country portion of the address. Formatted as a two-letter country
+            code specified in ISO 3166-1 alpha-2.
           maxLength: 2
           example: US
         district:
           type: string
-          description: State / County / Province / Region portion of the address. US and Canada use the two-letter code for the subdivision.
+          description: State / County / Province / Region portion of the address.
+            US and Canada use the two-letter code for the subdivision.
           maxLength: 16
           example: MA
     Fingerprint:
       type: string
-      description: A UUID that uniquely identifies the account number. If the same account is used more than once, each card object will have a different id, but the fingerprint will stay the same.
+      description: A UUID that uniquely identifies the account number. If the same
+        account is used more than once, each card object will have a different id,
+        but the fingerprint will stay the same.
       example: eb170539-9e1c-4e92-bf4f-1d09534fdca2
     CardVerificationResponse:
       type: object
       description: Indicates the status of the card for verification purposes.
       required:
-        - avs
-        - cvv
+      - avs
+      - cvv
       properties:
         avs:
           $ref: '#/components/schemas/AvsResults'
@@ -3441,16 +3831,16 @@ components:
     SimpleCard:
       type: object
       required:
-        - id
-        - status
-        - fingerprint
-        - billingDetails
-        - expMonth
-        - expYear
-        - network
-        - verification
-        - createDate
-        - updateDate
+      - id
+      - status
+      - fingerprint
+      - billingDetails
+      - expMonth
+      - expYear
+      - network
+      - verification
+      - createDate
+      - updateDate
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -3470,17 +3860,19 @@ components:
           type: string
           description: The network of the card.
           enum:
-            - VISA
-            - MASTERCARD
-            - AMEX
-            - UNKNOWN
+          - VISA
+          - MASTERCARD
+          - AMEX
+          - UNKNOWN
         bin:
           type: string
-          description: The bank identification number (BIN), the first 6 digits of the card.
+          description: The bank identification number (BIN), the first 6 digits of
+            the card.
           example: '401230'
         issuerCountry:
           type: string
-          description: The country code of the issuer bank. Follows the ISO 3166-1 alpha-2 standard.
+          description: The country code of the issuer bank. Follows the ISO 3166-1
+            alpha-2 standard.
           example: US
         fingerprint:
           $ref: '#/components/schemas/Fingerprint'
@@ -3495,11 +3887,11 @@ components:
     BillingDetails:
       type: object
       required:
-        - name
-        - city
-        - country
-        - line1
-        - postalCode
+      - name
+      - city
+      - country
+      - line1
+      - postalCode
       properties:
         name:
           type: string
@@ -3513,7 +3905,8 @@ components:
           example: Boston
         country:
           type: string
-          description: Country portion of the address. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.
+          description: Country portion of the address. Formatted as a two-letter country
+            code specified in ISO 3166-1 alpha-2.
           maxLength: 2
           example: US
         line1:
@@ -3527,7 +3920,9 @@ components:
           maxLength: 1024
           example: Suite 1
         district:
-          description: State / County / Province / Region portion of the address. If the country is US or Canada, then district is required and should use the two-letter code for the subdivision.
+          description: State / County / Province / Region portion of the address.
+            If the country is US or Canada, then district is required and should use
+            the two-letter code for the subdivision.
           type: string
           maxLength: 16
           example: MA
@@ -3551,9 +3946,9 @@ components:
     MetadataCardAndAch:
       type: object
       required:
-        - email
-        - sessionId
-        - ipAddress
+      - email
+      - sessionId
+      - ipAddress
       properties:
         email:
           $ref: '#/components/schemas/Email'
@@ -3566,12 +3961,12 @@ components:
     CardCreationRequest:
       type: object
       required:
-        - idempotencyKey
-        - expMonth
-        - expYear
-        - encryptedData
-        - billingDetails
-        - metadata
+      - idempotencyKey
+      - expMonth
+      - expYear
+      - encryptedData
+      - billingDetails
+      - metadata
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -3580,10 +3975,14 @@ components:
         encryptedData:
           type: string
           format: byte
-          description: |
-            PGP encrypted base64 encoded string. Contains Number and CVV.
+          description: 'PGP encrypted base64 encoded string. Contains Number and CVV.
+
             * **Number**: Card number. No spaces or other separators. REQUIRED
-            * **CVV (Card Verification Number)**: Three or four digit security code. REQUIRED'
+
+            * **CVV (Card Verification Number)**: Three or four digit security code.
+            REQUIRED''
+
+            '
           example: LS0tLS1CRUdJTiBQR1AgTUVTU0FHRS0tLS0tCgp3Y0JNQTBYV1NGbEZScFZoQVFmL2J2bVVkNG5LZ3dkbExKVTlEdEFEK0p5c0VOTUxuOUlRUWVGWnZJUWEKMGgzQklpRFNRU0RMZmI0NEs2SXZMeTZRbm54bmFLcWx0MjNUSmtPd2hGWFIrdnNSMU5IbnVHN0lUNWJECmZzeVdleXlNK1JLNUVHV0thZ3NmQ2tWamh2NGloY29xUnlTTGtJbWVmRzVaR0tMRkJTTTBsTFNPWFRURQpiMy91eU1zMVJNb3ZiclNvbXkxa3BybzUveWxabWVtV2ZsU1pWQlhNcTc1dGc1YjVSRVIraXM5ckc0cS8KMXl0M0FOYXA3UDhKekFhZVlyTnVNZGhGZFhvK0NFMC9CQnN3L0NIZXdhTDk4SmRVUEV0NjA5WFRHTG9kCjZtamY0YUtMQ01xd0RFMkNVb3dPdE8vMzVIMitnVDZKS3FoMmtjQUQyaXFlb3luNWcralRHaFNyd3NKWgpIdEphQWVZZXpGQUVOaFo3Q01IOGNsdnhZVWNORnJuNXlMRXVGTkwwZkczZy95S3loclhxQ0o3UFo5b3UKMFVxQjkzQURKWDlJZjRBeVQ2bU9MZm9wUytpT2lLall4bG1NLzhlVWc3OGp1OVJ5T1BXelhyTzdLWTNHClFSWm8KPXc1dEYKLS0tLS1FTkQgUEdQIE1FU1NBR0UtLS0tLQo
         billingDetails:
           $ref: '#/components/schemas/BillingDetails'
@@ -3595,41 +3994,46 @@ components:
           $ref: '#/components/schemas/MetadataCardAndAch'
     VerificationErrorCode:
       type: string
-      description: Indicates the failure reason of the card verification. Only present on cards with failed verification. Possible values are [verification_failed, verification_fraud_detected, verification_denied, verification_not_supported_by_issuer, verification_stopped_by_issuer, card_failed, card_invalid, card_address_mismatch, card_zip_mismatch, card_cvv_invalid, card_expired, card_limit_violated, card_not_honored, card_cvv_required, credit_card_not_allowed, card_account_ineligible, card_network_unsupported]'
+      description: Indicates the failure reason of the card verification. Only present
+        on cards with failed verification. Possible values are [verification_failed,
+        verification_fraud_detected, verification_denied, verification_not_supported_by_issuer,
+        verification_stopped_by_issuer, card_failed, card_invalid, card_address_mismatch,
+        card_zip_mismatch, card_cvv_invalid, card_expired, card_limit_violated, card_not_honored,
+        card_cvv_required, credit_card_not_allowed, card_account_ineligible, card_network_unsupported]'
       nullable: true
       enum:
-        - verification_failed
-        - verification_fraud_detected
-        - verification_denied
-        - verification_not_supported_by_issuer
-        - verification_stopped_by_issuer
-        - card_failed
-        - card_invalid
-        - card_address_mismatch
-        - card_zip_mismatch
-        - card_cvv_invalid
-        - card_expired
-        - card_limit_violated
-        - card_not_honored
-        - card_cvv_required
-        - credit_card_not_allowed
-        - card_account_ineligible
-        - card_network_unsupported
+      - verification_failed
+      - verification_fraud_detected
+      - verification_denied
+      - verification_not_supported_by_issuer
+      - verification_stopped_by_issuer
+      - card_failed
+      - card_invalid
+      - card_address_mismatch
+      - card_zip_mismatch
+      - card_cvv_invalid
+      - card_expired
+      - card_limit_violated
+      - card_not_honored
+      - card_cvv_required
+      - credit_card_not_allowed
+      - card_account_ineligible
+      - card_network_unsupported
     Card:
       type: object
       required:
-        - id
-        - status
-        - billingDetails
-        - expMonth
-        - expYear
-        - network
-        - last4
-        - fingerprint
-        - verification
-        - metadata
-        - createDate
-        - updateDate
+      - id
+      - status
+      - billingDetails
+      - expMonth
+      - expYear
+      - network
+      - last4
+      - fingerprint
+      - verification
+      - metadata
+      - createDate
+      - updateDate
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -3645,30 +4049,33 @@ components:
           type: string
           description: The network of the card.
           enum:
-            - VISA
-            - MASTERCARD
-            - AMEX
-            - UNKNOWN
+          - VISA
+          - MASTERCARD
+          - AMEX
+          - UNKNOWN
         last4:
           type: string
           description: The last 4 digits of the card.
           example: '0123'
         bin:
           type: string
-          description: The bank identification number (BIN), the first 6 digits of the card.
+          description: The bank identification number (BIN), the first 6 digits of
+            the card.
           example: '401230'
         issuerCountry:
           type: string
-          description: The country code of the issuer bank. Follows the ISO 3166-1 alpha-2 standard.
+          description: The country code of the issuer bank. Follows the ISO 3166-1
+            alpha-2 standard.
           example: US
         fundingType:
-          description: The funding type of the card. Possible values are `credit`, `debit`, `prepaid`, and `unknown`.
+          description: The funding type of the card. Possible values are `credit`,
+            `debit`, `prepaid`, and `unknown`.
           type: string
           enum:
-            - credit
-            - debit
-            - prepaid
-            - unknown
+          - credit
+          - debit
+          - prepaid
+          - unknown
         fingerprint:
           $ref: '#/components/schemas/Fingerprint'
         errorCode:
@@ -3686,19 +4093,22 @@ components:
     CardUpdate:
       type: object
       required:
-        - keyId
-        - encryptedData
-        - expMonth
-        - expYear
+      - keyId
+      - encryptedData
+      - expMonth
+      - expYear
       properties:
         keyId:
           $ref: '#/components/schemas/IdKey'
         encryptedData:
           type: string
           format: byte
-          description: |
-            PGP encrypted base64 encoded string. Contains CVV.
-            * **CVV (Card Verification Number)**: Three or four digit security code. REQUIRED'
+          description: 'PGP encrypted base64 encoded string. Contains CVV.
+
+            * **CVV (Card Verification Number)**: Three or four digit security code.
+            REQUIRED''
+
+            '
           example: UHVibGljS2V5QmFzZTY0RW5jb2RlZA==
         expMonth:
           $ref: '#/components/schemas/CardExpMonth'
@@ -3706,23 +4116,27 @@ components:
           $ref: '#/components/schemas/CardExpYear'
     BankAddress:
       type: object
-      description: The address details for the bank, as provided during bank account creation.
+      description: The address details for the bank, as provided during bank account
+        creation.
       required:
-        - country
+      - country
       properties:
         bankName:
           type: string
-          description: Name of the bank. This property is required for bank accounts outside of the US that do not support IBAN'
+          description: Name of the bank. This property is required for bank accounts
+            outside of the US that do not support IBAN'
           maxLength: 35
           example: SAN FRANCISCO
         city:
           type: string
-          description: City portion of the address. This property is required for bank accounts outside of the US.
+          description: City portion of the address. This property is required for
+            bank accounts outside of the US.
           maxLength: 35
           example: SAN FRANCISCO
         country:
           type: string
-          description: Country portion of the address. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.
+          description: Country portion of the address. Formatted as a two-letter country
+            code specified in ISO 3166-1 alpha-2.
           maxLength: 2
           example: US
         line1:
@@ -3737,7 +4151,8 @@ components:
           example: Suite 1
         district:
           type: string
-          description: State / County / Province / Region portion of the address. US and Canada use the two-letter code for the subdivision.
+          description: State / County / Province / Region portion of the address.
+            US and Canada use the two-letter code for the subdivision.
           maxLength: 16
           example: CA
     WireCreationRequestUS:
@@ -3745,11 +4160,11 @@ components:
       title: US Bank Account
       description: Relevant fields for U.S. bank accounts.
       required:
-        - idempotencyKey
-        - accountNumber
-        - routingNumber
-        - billingDetails
-        - bankAddress
+      - idempotencyKey
+      - accountNumber
+      - routingNumber
+      - billingDetails
+      - bankAddress
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -3760,7 +4175,8 @@ components:
           minLength: 6
           maxLength: 35
         routingNumber:
-          description: ABA routing number for the bank account. Note this has to be specific for bank wire transfers.
+          description: ABA routing number for the bank account. Note this has to be
+            specific for bank wire transfers.
           type: string
           example: '121000248'
         billingDetails:
@@ -3771,22 +4187,25 @@ components:
       type: object
       description: The address of the bank. City and country fields are required.
       required:
-        - city
-        - country
+      - city
+      - country
       properties:
         bankName:
           type: string
-          description: Name of the bank. This property is required for bank accounts outside of the US that do not support IBAN'
+          description: Name of the bank. This property is required for bank accounts
+            outside of the US that do not support IBAN'
           maxLength: 35
           example: SAN FRANCISCO
         city:
           type: string
-          description: City portion of the address. This property is required for bank accounts outside of the US.
+          description: City portion of the address. This property is required for
+            bank accounts outside of the US.
           maxLength: 1024
           example: SAN FRANCISCO
         country:
           type: string
-          description: Country portion of the address. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.
+          description: Country portion of the address. Formatted as a two-letter country
+            code specified in ISO 3166-1 alpha-2.
           maxLength: 2
           example: US
         line1:
@@ -3801,7 +4220,8 @@ components:
           example: Suite 1
         district:
           type: string
-          description: State / County / Province / Region portion of the address. US and Canada use the two-letter code for the subdivision.
+          description: State / County / Province / Region portion of the address.
+            US and Canada use the two-letter code for the subdivision.
           maxLength: 16
           example: CA
     WireCreationRequestIban:
@@ -3809,10 +4229,10 @@ components:
       title: Non US Bank Account - IBAN Supported
       description: Relevant fields for non-U.S. bank accounts that support IBAN.
       required:
-        - idempotencyKey
-        - iban
-        - billingDetails
-        - bankAddress
+      - idempotencyKey
+      - iban
+      - billingDetails
+      - bankAddress
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -3826,25 +4246,29 @@ components:
           $ref: '#/components/schemas/BankAddressIbanSupported'
     BankAddressNonIban:
       type: object
-      description: The address of the bank. BankName, City and Country fields are required.
+      description: The address of the bank. BankName, City and Country fields are
+        required.
       required:
-        - bankName
-        - city
-        - country
+      - bankName
+      - city
+      - country
       properties:
         bankName:
           type: string
-          description: Name of the bank. This property is required for bank accounts outside of the US that do not support IBAN'
+          description: Name of the bank. This property is required for bank accounts
+            outside of the US that do not support IBAN'
           maxLength: 35
           example: SAN FRANCISCO
         city:
           type: string
-          description: City portion of the address. This property is required for bank accounts outside of the US.
+          description: City portion of the address. This property is required for
+            bank accounts outside of the US.
           maxLength: 1024
           example: SAN FRANCISCO
         country:
           type: string
-          description: Country portion of the address. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.
+          description: Country portion of the address. Formatted as a two-letter country
+            code specified in ISO 3166-1 alpha-2.
           maxLength: 2
           example: US
         line1:
@@ -3859,7 +4283,8 @@ components:
           example: Suite 1
         district:
           type: string
-          description: State / County / Province / Region portion of the address. US and Canada use the two-letter code for the subdivision.
+          description: State / County / Province / Region portion of the address.
+            US and Canada use the two-letter code for the subdivision.
           maxLength: 16
           example: CA
     WireCreationRequestAccountNumber:
@@ -3867,18 +4292,18 @@ components:
       title: Non US Bank Account - IBAN Not Supported
       description: Relevant fields for non-U.S. banks that do NOT support IBAN.
       required:
-        - idempotencyKey
-        - accountNumber
-        - routingNumber
-        - billingDetails
-        - bankAddress
+      - idempotencyKey
+      - accountNumber
+      - routingNumber
+      - billingDetails
+      - bankAddress
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
         accountNumber:
           description: Account number that identifies the bank account.
           type: string
-          example: '0321800123'
+          example: 0321800123
           minLength: 6
           maxLength: 35
         routingNumber:
@@ -3891,22 +4316,24 @@ components:
           $ref: '#/components/schemas/BankAddressNonIban'
     WireCreationRequest:
       type: object
-      description: Request object used to create a bank account (wires). Different fields are required depending on the bank country, see the guide documentation for the list of supported bank countries along with which ones support IBAN.
+      description: Request object used to create a bank account (wires). Different
+        fields are required depending on the bank country, see the guide documentation
+        for the list of supported bank countries along with which ones support IBAN.
       oneOf:
-        - $ref: '#/components/schemas/WireCreationRequestUS'
-        - $ref: '#/components/schemas/WireCreationRequestIban'
-        - $ref: '#/components/schemas/WireCreationRequestAccountNumber'
+      - $ref: '#/components/schemas/WireCreationRequestUS'
+      - $ref: '#/components/schemas/WireCreationRequestIban'
+      - $ref: '#/components/schemas/WireCreationRequestAccountNumber'
     Wire:
       type: object
       required:
-        - id
-        - status
-        - description
-        - trackingRef
-        - fingerprint
-        - billingDetails
-        - createDate
-        - updateDate
+      - id
+      - status
+      - description
+      - trackingRef
+      - fingerprint
+      - billingDetails
+      - createDate
+      - updateDate
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -3914,11 +4341,13 @@ components:
           $ref: '#/components/schemas/ExternalFiatAccountStatus'
         description:
           type: string
-          description: Bank name plus last four digits of the bank account number or IBAN.
+          description: Bank name plus last four digits of the bank account number
+            or IBAN.
           example: WELLS FARGO BANK, NA ****0010
         trackingRef:
           type: string
-          description: Wire tracking ref that needs to be set in the wire reference to beneficiary field.
+          description: Wire tracking ref that needs to be set in the wire reference
+            to beneficiary field.
           example: CIR13FB13A
         fingerprint:
           $ref: '#/components/schemas/Fingerprint'
@@ -3982,14 +4411,16 @@ components:
           example: '02110'
         country:
           type: string
-          description: Country code of the beneficiary's bank. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.
+          description: Country code of the beneficiary's bank. Formatted as a two-letter
+            country code specified in ISO 3166-1 alpha-2.
           example: US
     WireInstruction:
       type: object
       properties:
         trackingRef:
           type: string
-          description: Circle tracking reference that needs to be set in the wire reference field.
+          description: Circle tracking reference that needs to be set in the wire
+            reference field.
           example: CIR13FB13A
         beneficiary:
           $ref: '#/components/schemas/WireInstructionBeneficiary'
@@ -3999,7 +4430,7 @@ components:
       type: object
       description: Billing details of the account holder.
       required:
-        - name
+      - name
       properties:
         name:
           type: string
@@ -4013,7 +4444,8 @@ components:
           example: Boston
         country:
           type: string
-          description: Country portion of the address. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.
+          description: Country portion of the address. Formatted as a two-letter country
+            code specified in ISO 3166-1 alpha-2.
           maxLength: 2
           example: US
         line1:
@@ -4028,7 +4460,9 @@ components:
           example: Suite 1
         district:
           type: string
-          description: State / County / Province / Region portion of the address. If the country is US or Canada, then district is required and should use the two-letter code for the subdivision.
+          description: State / County / Province / Region portion of the address.
+            If the country is US or Canada, then district is required and should use
+            the two-letter code for the subdivision.
           maxLength: 16
           example: MA
         postalCode:
@@ -4036,13 +4470,20 @@ components:
           description: Postal / ZIP code of the address.
           maxLength: 16
           example: '01234'
+    ACHBankAccountType:
+      type: string
+      description: Type of bank account ( Retail Bank or Business Bank)
+      nullable: true
+      enum:
+      - retail
+      - business
     ACHCreationRequest:
       type: object
       required:
-        - idempotencyKey
-        - plaidProcessorToken
-        - billingDetails
-        - metadata
+      - idempotencyKey
+      - plaidProcessorToken
+      - billingDetails
+      - metadata
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -4052,6 +4493,8 @@ components:
           example: processor-sandbox-circle-82cf95bb-43f8-4191-8d30-2c9f42853621
         billingDetails:
           $ref: '#/components/schemas/ACHBillingDetails'
+        bankAccountType:
+          $ref: '#/components/schemas/ACHBankAccountType'
         metadata:
           $ref: '#/components/schemas/MetadataCardAndAch'
     AccountNumberMasked:
@@ -4064,29 +4507,32 @@ components:
       example: '613334455'
     AchVerificationErrorCodes:
       type: string
-      description: Indicates the failure reason of the ACH account. Only present on failed accounts. Possible values are [bank_account_authorization_expired, bank_account_error, bank_account_ineligible, bank_account_not_found, bank_account_unauthorized, unsupported_routing_number, verification_failed].
+      description: Indicates the failure reason of the ACH account. Only present on
+        failed accounts. Possible values are [bank_account_authorization_expired,
+        bank_account_error, bank_account_ineligible, bank_account_not_found, bank_account_unauthorized,
+        unsupported_routing_number, verification_failed].
       nullable: true
       enum:
-        - bank_account_authorization_expired
-        - bank_account_error
-        - bank_account_ineligible
-        - bank_account_not_found
-        - bank_account_unauthorized
-        - unsupported_routing_number
-        - verification_failed
+      - bank_account_authorization_expired
+      - bank_account_error
+      - bank_account_ineligible
+      - bank_account_not_found
+      - bank_account_unauthorized
+      - unsupported_routing_number
+      - verification_failed
     ACH:
       type: object
       required:
-        - id
-        - accountNumber
-        - routingNumber
-        - description
-        - billingDetails
-        - bankAddress
-        - fingerprint
-        - metadata
-        - createDate
-        - updateDate
+      - id
+      - accountNumber
+      - routingNumber
+      - description
+      - billingDetails
+      - bankAddress
+      - fingerprint
+      - metadata
+      - createDate
+      - updateDate
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -4098,6 +4544,8 @@ components:
           $ref: '#/components/schemas/RoutingNumber'
         billingDetails:
           $ref: '#/components/schemas/ACHBillingDetails'
+        bankAccountType:
+          $ref: '#/components/schemas/ACHBankAccountType'
         bankAddress:
           $ref: '#/components/schemas/BankAddress'
         fingerprint:
@@ -4115,9 +4563,9 @@ components:
     MockAchAccount:
       type: object
       required:
-        - accountNumber
-        - routingNumber
-        - description
+      - accountNumber
+      - routingNumber
+      - description
       properties:
         accountNumber:
           type: string
@@ -4125,11 +4573,15 @@ components:
           example: '123456789'
         routingNumber:
           type: string
-          description: |
-            The routing number of the ACH account.
+          description: 'The routing number of the ACH account.
 
-            For sandbox testing, valid routing numbers include `011000028`, `011201762`, `011500120`, `021214862`, `121000248`, `121140399`, `211073473`, `221172610`, and `011000138`.
-          example: '011000028'
+
+            For sandbox testing, valid routing numbers include `011000028`, `011201762`,
+            `011500120`, `021214862`, `121000248`, `121140399`, `211073473`, `221172610`,
+            and `011000138`.
+
+            '
+          example: 011000028
         description:
           type: string
           description: A description for the ACH account.
@@ -4137,8 +4589,8 @@ components:
     MockAchAccountCreationRequest:
       type: object
       required:
-        - account
-        - balance
+      - account
+      - balance
       properties:
         account:
           $ref: '#/components/schemas/MockAchAccount'
@@ -4149,7 +4601,8 @@ components:
       properties:
         processorToken:
           type: string
-          description: The processor token needs to be provided when linking an ACH account against this mock.
+          description: The processor token needs to be provided when linking an ACH
+            account against this mock.
           example: processor-sandbox-circle-82cf95bb-43f8-4191-8d30-2c9f42853621
         balance:
           $ref: '#/components/schemas/FiatMoneyUsd'
@@ -4158,10 +4611,10 @@ components:
     SEPACreationRequest:
       type: object
       required:
-        - idempotencyKey
-        - accountName
-        - iban
-        - billingDetails
+      - idempotencyKey
+      - accountName
+      - iban
+      - billingDetails
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -4174,14 +4627,14 @@ components:
     SEPA:
       type: object
       required:
-        - id
-        - status
-        - description
-        - trackingRef
-        - fingerprint
-        - billingDetails
-        - createDate
-        - updateDate
+      - id
+      - status
+      - description
+      - trackingRef
+      - fingerprint
+      - billingDetails
+      - createDate
+      - updateDate
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -4193,7 +4646,8 @@ components:
           example: Bank of Ireland ****0010
         trackingRef:
           type: string
-          description: Tracking reference that needs to be set in the payment details or description.
+          description: Tracking reference that needs to be set in the payment details
+            or description.
           example: CIR13FB13A
         fingerprint:
           $ref: '#/components/schemas/Fingerprint'
@@ -4248,7 +4702,8 @@ components:
           type: string
           example: '10017'
         country:
-          description: Country code of the beneficiary's bank. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.
+          description: Country code of the beneficiary's bank. Formatted as a two-letter
+            country code specified in ISO 3166-1 alpha-2.
           type: string
           example: EE
     SEPAInstruction:
@@ -4256,7 +4711,8 @@ components:
       properties:
         trackingRef:
           type: string
-          description: Circle tracking reference that needs to be set in the SEPA transfer reference field.
+          description: Circle tracking reference that needs to be set in the SEPA
+            transfer reference field.
           example: CIR13FB13A
         beneficiary:
           $ref: '#/components/schemas/SEPAInstructionBeneficiary'
@@ -4270,7 +4726,9 @@ components:
         merchantWalletId:
           $ref: '#/components/schemas/MerchantWalletId'
         walletId:
-          description: If this settlement was used for a marketplace payment, the wallet involved in the settlement. Not included for standard merchant settlements.
+          description: If this settlement was used for a marketplace payment, the
+            wallet involved in the settlement. Not included for standard merchant
+            settlements.
           type: string
           example: '12345'
         totalDebits:
@@ -4287,47 +4745,55 @@ components:
           $ref: '#/components/schemas/UTCTimestamp'
     IdPayment:
       type: string
-      description: Unique system generated identifier for the payment that is associated to the chargeback item.
+      description: Unique system generated identifier for the payment that is associated
+        to the chargeback item.
       format: uuid
       example: fc988ed5-c129-4f70-a064-e5beb7eb8e32
     ChargebackCategories:
       type: string
-      description: Enumerated category of the chargeback status codes based on the chargeback status code.
+      description: Enumerated category of the chargeback status codes based on the
+        chargeback status code.
       enum:
-        - Canceled Recurring Payment
-        - Customer Dispute
-        - Fraudulent
-        - General
-        - Processing Error
-        - Not Defined
+      - Canceled Recurring Payment
+      - Customer Dispute
+      - Fraudulent
+      - General
+      - Processing Error
+      - Not Defined
     IdSettlement:
       type: string
-      description: Unique system generated identifier for the settlement related to the chargeback history.
+      description: Unique system generated identifier for the settlement related to
+        the chargeback history.
       format: uuid
       nullable: true
       example: fc988ed5-c129-4f70-a064-e5beb7eb8e32
     BasicChargebackHistory:
       type: object
       required:
-        - type
-        - chargebackAmount
-        - description
+      - type
+      - chargebackAmount
+      - description
       properties:
         type:
           type: string
-          description: |
-            Enumerated type of the chargeback history event. `1st Chargeback` represents the first stage of the dispute procedure initiated by the cardholder’s issuing bank.
-              `2nd Chargeback` represents the second stage of the dispute procedure initiated by the cardholder’s issuing bank (This stage is MasterCard only).
-              `Chargeback Reversal` represents when 1st Chargeback or 2nd Chargeback is withdrawn by the issuer.
-              `Representment` represents the stage when merchants decided to dispute 1st Chargeback or 2nd Chargeback.
-              `Chargeback Settlement` can imply one of the two: 1) If merchant or marketplace is taking the lost of the chargeback, money will be debit from the wallet during this stage.
-              2) If merchant of marketplace successfully dispute the chargeback, money will be credit back to the wallet during this stage.
+          description: "Enumerated type of the chargeback history event. `1st Chargeback`\
+            \ represents the first stage of the dispute procedure initiated by the\
+            \ cardholder\u2019s issuing bank.\n  `2nd Chargeback` represents the second\
+            \ stage of the dispute procedure initiated by the cardholder\u2019s issuing\
+            \ bank (This stage is MasterCard only).\n  `Chargeback Reversal` represents\
+            \ when 1st Chargeback or 2nd Chargeback is withdrawn by the issuer.\n\
+            \  `Representment` represents the stage when merchants decided to dispute\
+            \ 1st Chargeback or 2nd Chargeback.\n  `Chargeback Settlement` can imply\
+            \ one of the two: 1) If merchant or marketplace is taking the lost of\
+            \ the chargeback, money will be debit from the wallet during this stage.\n\
+            \  2) If merchant of marketplace successfully dispute the chargeback,\
+            \ money will be credit back to the wallet during this stage.\n"
           enum:
-            - 1st Chargeback
-            - 2nd Chargeback
-            - Chargeback Reversal
-            - Representment
-            - Chargeback Settlement
+          - 1st Chargeback
+          - 2nd Chargeback
+          - Chargeback Reversal
+          - Representment
+          - Chargeback Settlement
         chargebackAmount:
           $ref: '#/components/schemas/FiatMoneyUsd'
         fee:
@@ -4343,11 +4809,11 @@ components:
     BasicChargeback:
       type: object
       required:
-        - id
-        - paymentId
-        - merchantId
-        - history
-        - reasonCode
+      - id
+      - paymentId
+      - merchantId
+      - history
+      - reasonCode
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -4363,20 +4829,24 @@ components:
           $ref: '#/components/schemas/ChargebackCategories'
         history:
           type: array
-          description: |
-            The chargeback item's history list will be sorted by create date descending: more recent chargeback statuses will be at the beginning of the list.
+          description: 'The chargeback item''s history list will be sorted by create
+            date descending: more recent chargeback statuses will be at the beginning
+            of the list.
+
+            '
           minItems: 1
           items:
             $ref: '#/components/schemas/BasicChargebackHistory'
     MockChargebackCreationRequest:
       type: object
       required:
-        - paymentId
+      - paymentId
       properties:
         paymentId:
           type: string
           format: uuid
-          description: The id of the payment to be charged back.  Each payment can only be charged back once.
+          description: The id of the payment to be charged back.  Each payment can
+            only be charged back once.
           example: fc988ed5-c129-4f70-a064-e5beb7eb8e32
     MockChargeback:
       type: object
@@ -4384,15 +4854,15 @@ components:
     Reversal:
       type: object
       required:
-        - id
-        - paymentId
-        - amount
-        - description
-        - status
-        - reason
-        - fees
-        - createDate
-        - updateDate
+      - id
+      - paymentId
+      - amount
+      - description
+      - status
+      - reason
+      - fees
+      - createDate
+      - updateDate
       properties:
         id:
           $ref: '#/components/schemas/IdKey'
@@ -4418,22 +4888,26 @@ components:
       type: object
       description: Available and unsettled balances of the merchant.
       required:
-        - available
-        - unsettled
+      - available
+      - unsettled
       properties:
         available:
           type: array
-          description: List of currency balances (one for each currency) that are currently available to spend.
+          description: List of currency balances (one for each currency) that are
+            currently available to spend.
           items:
             $ref: '#/components/schemas/Money'
         unsettled:
           type: array
-          description: List of currency balances (one for each currency) that have been captured but are currently in the process of settling and will become available to spend at some point in the future.
+          description: List of currency balances (one for each currency) that have
+            been captured but are currently in the process of settling and will become
+            available to spend at some point in the future.
           items:
             $ref: '#/components/schemas/Money'
   responses:
     NotAuthorized:
-      description: The request has not been applied because it lacks valid authentication credentials.
+      description: The request has not been applied because it lacks valid authentication
+        credentials.
       headers:
         X-Request-Id:
           $ref: '#/components/headers/XRequestId'
@@ -4441,9 +4915,10 @@ components:
         application/json:
           schema:
             type: object
+            title: NotAuthorized
             required:
-              - code
-              - message
+            - code
+            - message
             properties:
               code:
                 type: integer
@@ -4468,9 +4943,10 @@ components:
         application/json:
           schema:
             type: object
+            title: BadRequest
             required:
-              - code
-              - message
+            - code
+            - message
             properties:
               code:
                 type: integer
@@ -4495,9 +4971,10 @@ components:
         application/json:
           schema:
             type: object
+            title: NotFound
             required:
-              - code
-              - message
+            - code
+            - message
             properties:
               code:
                 type: integer
@@ -4514,7 +4991,8 @@ components:
                 code: 404
                 message: Not found.
     Conflict:
-      description: The request has not been applied because it comes in conflict with another request (such as re-using an idempotencyKey for a different request).
+      description: The request has not been applied because it comes in conflict with
+        another request (such as re-using an idempotencyKey for a different request).
       headers:
         X-Request-Id:
           $ref: '#/components/headers/XRequestId'
@@ -4522,9 +5000,10 @@ components:
         application/json:
           schema:
             type: object
+            title: Conflict
             required:
-              - code
-              - message
+            - code
+            - message
             properties:
               code:
                 type: integer

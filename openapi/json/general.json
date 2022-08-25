@@ -93,7 +93,7 @@
                   "title": "GetConfigResponse",
                   "properties": {
                     "data": {
-                      "$ref": "#/components/schemas/Configuration"
+                      "$ref": "#/components/schemas/AccountConfiguration"
                     }
                   }
                 },
@@ -469,10 +469,11 @@
         "maxLength": 36,
         "example": "212000"
       },
-      "Configuration": {
+      "AccountConfiguration": {
         "type": "object",
         "properties": {
           "payments": {
+            "title": "WalletConfig",
             "type": "object",
             "properties": {
               "masterWalletId": {
@@ -681,6 +682,7 @@
           "application/json": {
             "schema": {
               "type": "object",
+              "title": "NotAuthorized",
               "required": [
                 "code",
                 "message"
@@ -722,6 +724,7 @@
           "application/json": {
             "schema": {
               "type": "object",
+              "title": "BadRequest",
               "required": [
                 "code",
                 "message"
@@ -763,6 +766,7 @@
           "application/json": {
             "schema": {
               "type": "object",
+              "title": "LimitExceeded",
               "required": [
                 "code",
                 "message"
@@ -804,6 +808,7 @@
           "application/json": {
             "schema": {
               "type": "object",
+              "title": "NotFound",
               "required": [
                 "code",
                 "message"

@@ -1,23 +1,24 @@
 openapi: 3.0.2
 servers:
-  - url: api-sandbox.circle.com
+- url: api-sandbox.circle.com
 info:
   version: ${version}
   title: API Overview
   description: Common endpoints shared across all Circle APIs.
 tags:
-  - name: Health
-    description: Inspect the health of the API.
-  - name: Management
-    description: General account and management information.
-  - name: Encryption
-    description: Encrypt sensitive data.
-  - name: Subscriptions
-    description: Manage subscriptions to notifications.
-  - name: Stablecoins
-    description: Retrieve stablecoins and their respective names, symbols, circulating total and per-chain amounts.
-  - name: Channels
-    description: View a list of channels.
+- name: Health
+  description: Inspect the health of the API.
+- name: Management
+  description: General account and management information.
+- name: Encryption
+  description: Encrypt sensitive data.
+- name: Subscriptions
+  description: Manage subscriptions to notifications.
+- name: Stablecoins
+  description: Retrieve stablecoins and their respective names, symbols, circulating
+    total and per-chain amounts.
+- name: Channels
+  description: View a list of channels.
 paths:
   /ping:
     get:
@@ -25,7 +26,7 @@ paths:
       description: Checks that the service is running.
       operationId: rootPing
       tags:
-        - Health
+      - Health
       responses:
         '200':
           description: Successful ping.
@@ -40,12 +41,12 @@ paths:
   /v1/configuration:
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get configuration info
       description: Retrieves general configuration information.
       operationId: getConfig
       tags:
-        - Management
+      - Management
       responses:
         '200':
           description: Successfully retrieved configuration information.
@@ -58,7 +59,7 @@ paths:
                 title: GetConfigResponse
                 properties:
                   data:
-                    $ref: '#/components/schemas/Configuration'
+                    $ref: '#/components/schemas/AccountConfiguration'
               examples:
                 response:
                   value:
@@ -68,12 +69,14 @@ paths:
   /v1/encryption/public:
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get public key
-      description: Retrieves an RSA public key to be used in encrypting data sent to the API. Your public keys change infrequently, so we encourage you to cache this response value locally for a duration of 24 hours or more.
+      description: Retrieves an RSA public key to be used in encrypting data sent
+        to the API. Your public keys change infrequently, so we encourage you to cache
+        this response value locally for a duration of 24 hours or more.
       operationId: getPublicKey
       tags:
-        - Encryption
+      - Encryption
       responses:
         '200':
           description: Successfully retrieved the RSA public key.
@@ -96,13 +99,13 @@ paths:
   /v1/notifications/subscriptions:
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: List all notification subscriptions
       description: Retrieve a list of existing notification subscriptions with details.
       parameters: []
       operationId: listSubscriptions
       tags:
-        - Subscriptions
+      - Subscriptions
       responses:
         '200':
           description: Successfully retrieved a list of notification subscriptions.
@@ -119,22 +122,28 @@ paths:
                 response:
                   value:
                     data:
-                      - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        endpoint: https://example.org/handler/for/notifications
-                        subscriptionDetails:
-                          - url: arn:aws:sns:us-east-1:<...>:fcb4a2c9-9c4f-4706-b312-6b22650f5d17
-                            status: confirmed
+                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      endpoint: https://example.org/handler/for/notifications
+                      subscriptionDetails:
+                      - url: arn:aws:sns:us-east-1:<...>:fcb4a2c9-9c4f-4706-b312-6b22650f5d17
+                        status: confirmed
         '401':
           $ref: '#/components/responses/NotAuthorized'
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a notification subscription
-      description: |
-        Subscribe to receiving notifications at a given endpoint. The endpoint should be able to handle AWS SNS subscription requests. For more details see https://docs.aws.amazon.com/mobile/sdkforxamarin/developerguide/sns-send-http.html. Note, the sandbox environment allows a maximum of 3 active subscriptions; otherwise, this is limited to 1 active subscription and subsequent create requests will be rejected with a Limit Exceeded error.
+      description: 'Subscribe to receiving notifications at a given endpoint. The
+        endpoint should be able to handle AWS SNS subscription requests. For more
+        details see https://docs.aws.amazon.com/mobile/sdkforxamarin/developerguide/sns-send-http.html.
+        Note, the sandbox environment allows a maximum of 3 active subscriptions;
+        otherwise, this is limited to 1 active subscription and subsequent create
+        requests will be rejected with a Limit Exceeded error.
+
+        '
       operationId: subscribe
       tags:
-        - Subscriptions
+      - Subscriptions
       requestBody:
         content:
           application/json:
@@ -157,8 +166,8 @@ paths:
                       id: b8627ae8-732b-4d25-b947-1df8f4007a29
                       endpoint: https://example.org/handler/for/notifications
                       subscriptionDetails:
-                        - url: arn:aws:sns:us-east-1:<...>:fcb4a2c9-9c4f-4706-b312-6b22650f5d17
-                          status: confirmed
+                      - url: arn:aws:sns:us-east-1:<...>:fcb4a2c9-9c4f-4706-b312-6b22650f5d17
+                        status: confirmed
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -168,14 +177,16 @@ paths:
   /v1/notifications/subscriptions/{id}:
     delete:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Remove a notification subscription
-      description: To remove a subscription, all its subscription requests' statuses must be either 'confirmed', 'deleted' or a combination of those. A subscription with at least one 'pending' subscription request cannot be removed.
+      description: To remove a subscription, all its subscription requests' statuses
+        must be either 'confirmed', 'deleted' or a combination of those. A subscription
+        with at least one 'pending' subscription request cannot be removed.
       operationId: unsubscribe
       tags:
-        - Subscriptions
+      - Subscriptions
       responses:
         '200':
           headers:
@@ -202,13 +213,14 @@ paths:
   /v1/channels:
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: List all channels
-      description: Retrieve a list of channels with details (e.g. `cardDescriptor`, `achDescriptor`, etc.).
+      description: Retrieve a list of channels with details (e.g. `cardDescriptor`,
+        `achDescriptor`, etc.).
       parameters: []
       operationId: listChannels
       tags:
-        - Channels
+      - Channels
       responses:
         '200':
           description: Successfully retrieved a list of channels.
@@ -225,19 +237,21 @@ paths:
                 response:
                   value:
                     data:
-                      - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        default: true
-                        cardDescriptor: CIRCLE LLC.
-                        achDescriptor: CIRCLE LLC.
+                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      default: true
+                      cardDescriptor: CIRCLE LLC.
+                      achDescriptor: CIRCLE LLC.
         '401':
           $ref: '#/components/responses/NotAuthorized'
   /v1/stablecoins:
     get:
       summary: List all stablecoins
-      description: Retrieves total circulating supply for supported stablecoins across all chains. This endpoint is rate limited to one call per minute (based on IP).
+      description: Retrieves total circulating supply for supported stablecoins across
+        all chains. This endpoint is rate limited to one call per minute (based on
+        IP).
       operationId: getStablecoins
       tags:
-        - Stablecoins
+      - Stablecoins
       responses:
         '200':
           description: Successfully retrieved all stablecoin supplies across all chains.
@@ -252,12 +266,12 @@ paths:
                 response:
                   value:
                     data:
-                      - name: USD Coin
-                        symbol: USDC
-                        totalAmount: '132.584192'
-                        chains:
-                          - amount: '132.584192'
-                            chain: ALGO
+                    - name: USD Coin
+                      symbol: USDC
+                      totalAmount: '132.584192'
+                      chains:
+                      - amount: '132.584192'
+                        chain: ALGO
         '429':
           $ref: '#/components/responses/LimitExceeded'
 components:
@@ -269,7 +283,7 @@ components:
     Ping:
       type: object
       required:
-        - message
+      - message
       properties:
         message:
           type: string
@@ -279,24 +293,27 @@ components:
       description: Unique system generated identifier for the wallet of the merchant.
       maxLength: 36
       example: '212000'
-    Configuration:
+    AccountConfiguration:
       type: object
       properties:
         payments:
+          title: WalletConfig
           type: object
           properties:
             masterWalletId:
               $ref: '#/components/schemas/MerchantWalletId'
     IdKey:
       type: string
-      description: Universally unique identifier (UUID v4) of the public key used in encryption. NOTE the sandbox environment uses the default value of `key1`. For this reason the example supplied is `key1` rather than a UUID.
+      description: Universally unique identifier (UUID v4) of the public key used
+        in encryption. NOTE the sandbox environment uses the default value of `key1`.
+        For this reason the example supplied is `key1` rather than a UUID.
       format: uuid
       example: key1
     PublicKey:
       type: object
       required:
-        - keyId
-        - publicKey
+      - keyId
+      - publicKey
       properties:
         keyId:
           $ref: '#/components/schemas/IdKey'
@@ -320,9 +337,9 @@ components:
           type: string
           description: Status of the subscription request.
           enum:
-            - confirmed
-            - pending
-            - deleted
+          - confirmed
+          - pending
+          - deleted
     SubscriptionResponse:
       type: object
       properties:
@@ -340,11 +357,12 @@ components:
     SubscriptionRequest:
       type: object
       required:
-        - endpoint
+      - endpoint
       properties:
         endpoint:
           type: string
-          description: URL of the subscriber endpoint. Must be publicly accessible and utilize HTTPS.
+          description: URL of the subscriber endpoint. Must be publicly accessible
+            and utilize HTTPS.
           example: https://example.org/handler/for/notifications
     UnsubscribeResponse:
       type: object
@@ -357,35 +375,40 @@ components:
           $ref: '#/components/schemas/Id'
         default:
           type: boolean
-          description: Flag to indicate whether the channel is configured as default. At most one of the channels will have this flag set to true and the default channel is used when a payment request does not have the `channel` property set.
+          description: Flag to indicate whether the channel is configured as default.
+            At most one of the channels will have this flag set to true and the default
+            channel is used when a payment request does not have the `channel` property
+            set.
           example: true
         cardDescriptor:
           type: string
-          description: Descriptor that appears on cardholders' bank statements for card payments submitted through this channel.
+          description: Descriptor that appears on cardholders' bank statements for
+            card payments submitted through this channel.
           example: CIRCLE LLC.
         achDescriptor:
           type: string
-          description: Descriptor that appears on end-users' bank statements for ACH payments submitted through this channel.
+          description: Descriptor that appears on end-users' bank statements for ACH
+            payments submitted through this channel.
           example: CIRCLE LLC.
     Chain:
       type: string
       description: A blockchain that a given currency is available on.
       enum:
-        - ALGO
-        - AVAX
-        - BTC
-        - ETH
-        - FLOW
-        - HBAR
-        - MATIC
-        - SOL
-        - TRX
-        - XLM
+      - ALGO
+      - AVAX
+      - BTC
+      - ETH
+      - FLOW
+      - HBAR
+      - MATIC
+      - SOL
+      - TRX
+      - XLM
     TokenAmount:
       type: object
       required:
-        - amount
-        - chain
+      - amount
+      - chain
       properties:
         amount:
           type: string
@@ -415,19 +438,22 @@ components:
             $ref: '#/components/schemas/TokenAmount'
     Stablecoins:
       type: array
-      description: A list of stablecoin objects containing its name, symbol, total amount, and per-chain amount.
+      description: A list of stablecoin objects containing its name, symbol, total
+        amount, and per-chain amount.
       items:
         $ref: '#/components/schemas/Stablecoin'
   headers:
     XRequestId:
-      description: Universally unique identifier (UUID v4) for the request. Helpful for identifying a request when communicating with Circle support.
+      description: Universally unique identifier (UUID v4) for the request. Helpful
+        for identifying a request when communicating with Circle support.
       schema:
         type: string
         format: uuid
         example: 2adba88e-9d63-44bc-b975-9b6ae3440dde
   responses:
     NotAuthorized:
-      description: The request has not been applied because it lacks valid authentication credentials.
+      description: The request has not been applied because it lacks valid authentication
+        credentials.
       headers:
         X-Request-Id:
           $ref: '#/components/headers/XRequestId'
@@ -435,9 +461,10 @@ components:
         application/json:
           schema:
             type: object
+            title: NotAuthorized
             required:
-              - code
-              - message
+            - code
+            - message
             properties:
               code:
                 type: integer
@@ -462,9 +489,10 @@ components:
         application/json:
           schema:
             type: object
+            title: BadRequest
             required:
-              - code
-              - message
+            - code
+            - message
             properties:
               code:
                 type: integer
@@ -489,9 +517,10 @@ components:
         application/json:
           schema:
             type: object
+            title: LimitExceeded
             required:
-              - code
-              - message
+            - code
+            - message
             properties:
               code:
                 type: integer
@@ -516,9 +545,10 @@ components:
         application/json:
           schema:
             type: object
+            title: NotFound
             required:
-              - code
-              - message
+            - code
+            - message
             properties:
               code:
                 type: integer

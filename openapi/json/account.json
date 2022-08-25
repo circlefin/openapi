@@ -559,6 +559,7 @@
             "content": {
               "application/json": {
                 "schema": {
+                  "title": "GetBusinessAccountWireBankAccountsResponse",
                   "properties": {
                     "data": {
                       "type": "array",
@@ -695,6 +696,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/IdPath"
+          },
+          {
+            "$ref": "#/components/parameters/Currency"
           }
         ],
         "security": [
@@ -1090,6 +1094,7 @@
             "content": {
               "application/json": {
                 "schema": {
+                  "title": "GetBusinessAccountSenBankAccountsResponse",
                   "properties": {
                     "data": {
                       "type": "array",
@@ -1321,6 +1326,13 @@
                           "amount": "3.14",
                           "currency": "USD"
                         },
+                        "fees": [
+                          {
+                            "amount": "10.00",
+                            "currency": "USD",
+                            "type": "network"
+                          }
+                        ],
                         "transactionHash": "0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63",
                         "status": "pending",
                         "errorCode": "transfer_failed",
@@ -1420,6 +1432,13 @@
                             "amount": "3.14",
                             "currency": "USD"
                           },
+                          "fees": [
+                            {
+                              "amount": "10.00",
+                              "currency": "USD",
+                              "type": "network"
+                            }
+                          ],
                           "transactionHash": "0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63",
                           "status": "pending",
                           "errorCode": "transfer_failed",
@@ -1508,6 +1527,13 @@
                           "amount": "3.14",
                           "currency": "USD"
                         },
+                        "fees": [
+                          {
+                            "amount": "10.00",
+                            "currency": "USD",
+                            "type": "network"
+                          }
+                        ],
                         "transactionHash": "0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63",
                         "status": "pending",
                         "errorCode": "transfer_failed",
@@ -2146,6 +2172,19 @@
           }
         }
       },
+      "FinalAdjustments": {
+        "type": "object",
+        "description": "Final adjustment which increases (credits) or decreases (debits) the total returned amount to the source wallet.",
+        "nullable": true,
+        "properties": {
+          "fxCredit": {
+            "$ref": "#/components/schemas/FiatMoneyUsd"
+          },
+          "fxDebit": {
+            "$ref": "#/components/schemas/FiatMoneyUsd"
+          }
+        }
+      },
       "IdPayout": {
         "type": "string",
         "description": "Universally unique identifier (UUID v4) of the payout that is associated with the return.",
@@ -2231,17 +2270,7 @@
             "$ref": "#/components/schemas/RiskEvaluation"
           },
           "adjustments": {
-            "description": "Final adjustment which increases (credits) or decreases (debits) the total returned amount to the source wallet.",
-            "nullable": true,
-            "type": "object",
-            "properties": {
-              "fxCredit": {
-                "$ref": "#/components/schemas/FiatMoneyUsd"
-              },
-              "fxDebit": {
-                "$ref": "#/components/schemas/FiatMoneyUsd"
-              }
-            }
+            "$ref": "#/components/schemas/FinalAdjustments"
           },
           "return": {
             "$ref": "#/components/schemas/UnwithdrawalObject"
@@ -2898,6 +2927,54 @@
           }
         }
       },
+      "IdentityAddress": {
+        "type": "object",
+        "required": [
+          "line1",
+          "city",
+          "district",
+          "postalCode",
+          "country"
+        ],
+        "properties": {
+          "line1": {
+            "type": "string",
+            "description": "Line one of the street address.",
+            "maxLength": 1024,
+            "example": "100 Money Street"
+          },
+          "line2": {
+            "type": "string",
+            "description": "Line two of the street address.",
+            "maxLength": 1024,
+            "example": "Suite 1"
+          },
+          "city": {
+            "type": "string",
+            "description": "City portion of the address.",
+            "maxLength": 1024,
+            "example": "Boston"
+          },
+          "district": {
+            "description": "State / County / Province / Region portion of the address. If the country is US or Canada, then district is required and should use the two-letter code for the subdivision.",
+            "type": "string",
+            "maxLength": 16,
+            "example": "MA"
+          },
+          "postalCode": {
+            "type": "string",
+            "description": "Postal / ZIP code of the address.",
+            "maxLength": 16,
+            "example": "01234"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country portion of the address. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.",
+            "maxLength": 2,
+            "example": "US"
+          }
+        }
+      },
       "Identity": {
         "type": "object",
         "description": "The identity of the originator. Identities are required when:\n  * `destination.type: \"blockchain\"`\n  * `destination.chain: \"ETH\"`\n  * `amount.amount` >= $3,000 in value\n",
@@ -2924,52 +3001,7 @@
           "addresses": {
             "type": "array",
             "items": {
-              "type": "object",
-              "required": [
-                "line1",
-                "city",
-                "district",
-                "postalCode",
-                "country"
-              ],
-              "properties": {
-                "line1": {
-                  "type": "string",
-                  "description": "Line one of the street address.",
-                  "maxLength": 1024,
-                  "example": "100 Money Street"
-                },
-                "line2": {
-                  "type": "string",
-                  "description": "Line two of the street address.",
-                  "maxLength": 1024,
-                  "example": "Suite 1"
-                },
-                "city": {
-                  "type": "string",
-                  "description": "City portion of the address.",
-                  "maxLength": 1024,
-                  "example": "Boston"
-                },
-                "district": {
-                  "description": "State / County / Province / Region portion of the address. If the country is US or Canada, then district is required and should use the two-letter code for the subdivision.",
-                  "type": "string",
-                  "maxLength": 16,
-                  "example": "MA"
-                },
-                "postalCode": {
-                  "type": "string",
-                  "description": "Postal / ZIP code of the address.",
-                  "maxLength": 16,
-                  "example": "01234"
-                },
-                "country": {
-                  "type": "string",
-                  "description": "Country portion of the address. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.",
-                  "maxLength": 2,
-                  "example": "US"
-                }
-              }
+              "$ref": "#/components/schemas/IdentityAddress"
             }
           }
         }
@@ -3136,6 +3168,35 @@
           "propertyName": "type"
         }
       },
+      "Fee": {
+        "type": "object",
+        "required": [
+          "amount",
+          "currency",
+          "type"
+        ],
+        "properties": {
+          "amount": {
+            "type": "string",
+            "description": "Magnitude of the fee amount, in units of the currency, with a `.`.",
+            "example": "10.00"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency code for the amount.",
+            "enum": [
+              "USD"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "description": "Category of the fee.",
+            "enum": [
+              "network"
+            ]
+          }
+        }
+      },
       "TransferErrorCode": {
         "type": "string",
         "description": "Indicates the failure reason of a transfer. Only present for transfers in a `failed` state. Possible values are `insufficient_funds`, `blockchain_error` and `transfer_denied` and `transfer_failed`",
@@ -3169,6 +3230,14 @@
           },
           "amount": {
             "$ref": "#/components/schemas/Money"
+          },
+          "fees": {
+            "description": "An array of fees applied to a transaction. This is only available when there is at least one non-zero fee.",
+            "readOnly": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Fee"
+            }
           },
           "transactionHash": {
             "description": "A hash that uniquely identifies the onchain transaction. This is only available where either source or destination are of type blockchain.",
@@ -3480,6 +3549,7 @@
           "application/json": {
             "schema": {
               "type": "object",
+              "title": "NotAuthorized",
               "required": [
                 "code",
                 "message"
@@ -3521,6 +3591,7 @@
           "application/json": {
             "schema": {
               "type": "object",
+              "title": "BadRequest",
               "required": [
                 "code",
                 "message"
@@ -3562,6 +3633,7 @@
           "application/json": {
             "schema": {
               "type": "object",
+              "title": "NotFound",
               "required": [
                 "code",
                 "message"
@@ -3665,6 +3737,19 @@
           "type": "string",
           "format": "uuid",
           "example": "b3d9d2d5-4c12-4946-a09d-953e82fae2b0"
+        }
+      },
+      "Currency": {
+        "name": "currency",
+        "description": "Queries beneficiary bank account currency. Default is USD.",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "USD",
+            "EUR"
+          ]
         }
       }
     }

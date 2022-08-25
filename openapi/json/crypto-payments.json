@@ -1,0 +1,2204 @@
+{
+  "openapi": "3.0.2",
+  "servers": [
+    {
+      "url": "api-sandbox.circle.com"
+    }
+  ],
+  "info": {
+    "version": "${version}",
+    "title": "Crypto Payments API",
+    "description": "Crypto Payments collection Circle APIs."
+  },
+  "tags": [
+    {
+      "name": "Payment Intents"
+    },
+    {
+      "name": "Payments"
+    }
+  ],
+  "paths": {
+    "/v1/paymentIntents": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create a payment intent",
+        "operationId": "createPaymentIntent",
+        "tags": [
+          "Payment Intents"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentIntent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created a payment intent.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "CreatePaymentIntentResponse",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PaymentIntent"
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": {
+                        "id": "8755d0ea-14f9-4259-b092-de23c14b6568",
+                        "amount": {
+                          "amount": "3.14",
+                          "currency": "USD"
+                        },
+                        "amountPaid": {
+                          "amount": "0.00",
+                          "currency": "USD"
+                        },
+                        "settlementCurrency": "USD",
+                        "paymentMethods": [
+                          {
+                            "type": "blockchain",
+                            "chain": "ETH"
+                          }
+                        ],
+                        "paymentIds": [],
+                        "timeline": [
+                          {
+                            "status": "created",
+                            "time": "2022-07-21T20:13:35.579331Z"
+                          }
+                        ],
+                        "createDate": "2022-07-21T20:13:35.578678Z",
+                        "updateDate": "2022-07-21T20:19:24.859052Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "List all payment intents",
+        "operationId": "getPaymentIntents",
+        "tags": [
+          "Payment Intents"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "description": "Filters by the most recent `timeline.status` within the payment intent.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "created",
+                "pending",
+                "complete",
+                "expired",
+                "failed"
+              ]
+            }
+          },
+          {
+            "name": "context",
+            "description": "Filters by the most recent `timeline.context` within the payment intent.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "underpaid",
+                "paid",
+                "overpaid"
+              ]
+            }
+          },
+          {
+            "$ref": "#/components/parameters/From"
+          },
+          {
+            "$ref": "#/components/parameters/To"
+          },
+          {
+            "$ref": "#/components/parameters/PageBefore"
+          },
+          {
+            "$ref": "#/components/parameters/PageAfter"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved a list of payment intents.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "GetPaymentIntentsResponse",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PaymentIntent"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": [
+                        {
+                          "idempotencyKey": "ba943ff1-ca16-49b2-ba55-1057e70ca5c7",
+                          "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                          "amount": {
+                            "amount": "3.14",
+                            "currency": "USD"
+                          },
+                          "amountPaid": {
+                            "amount": "3.14",
+                            "currency": "USD"
+                          },
+                          "settlementCurrency": "USD",
+                          "paymentMethods": [
+                            {
+                              "type": "blockchain",
+                              "chain": "ALGO",
+                              "address": "0x8381470ED67C3802402dbbFa0058E8871F017A6F"
+                            }
+                          ],
+                          "fees": [
+                            {
+                              "type": "blockchainLeaseFee",
+                              "amount": "3.14",
+                              "currency": "USD"
+                            }
+                          ],
+                          "paymentIds": [
+                            "69808f36-3e5e-4f37-bf82-ca79e4d70fc1"
+                          ],
+                          "timeline": [
+                            {
+                              "status": "created",
+                              "context": "underpaid",
+                              "time": "2020-04-10T02:13:30.000Z"
+                            }
+                          ],
+                          "expiresOn": "2020-04-10T02:13:30.000Z",
+                          "updateDate": "2020-04-10T02:13:30.000Z",
+                          "createDate": "2020-04-10T02:13:30.000Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          }
+        }
+      }
+    },
+    "/v1/paymentIntents/{id}": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get a payment intent",
+        "operationId": "getPaymentIntent",
+        "tags": [
+          "Payment Intents"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved a payment intent.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "GetPaymentIntentResponse",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PaymentIntent"
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": {
+                        "id": "8755d0ea-14f9-4259-b092-de23c14b6568",
+                        "amount": {
+                          "amount": "3.14",
+                          "currency": "USD"
+                        },
+                        "amountPaid": {
+                          "amount": "0.00",
+                          "currency": "USD"
+                        },
+                        "settlementCurrency": "USD",
+                        "paymentMethods": [
+                          {
+                            "type": "blockchain",
+                            "chain": "ETH"
+                          }
+                        ],
+                        "paymentIds": [],
+                        "timeline": [
+                          {
+                            "status": "created",
+                            "time": "2022-07-21T20:13:35.579331Z"
+                          }
+                        ],
+                        "createDate": "2022-07-21T20:13:35.578678Z",
+                        "updateDate": "2022-07-21T20:19:24.859052Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/paymentIntents/{id}/expire": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Expire a payment intent",
+        "operationId": "expirePaymentIntent",
+        "tags": [
+          "Payment Intents"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {}
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully expired a payment intent.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "ExpirePaymentIntentResponse",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PaymentIntent"
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": {
+                        "id": "8755d0ea-14f9-4259-b092-de23c14b6568",
+                        "amount": {
+                          "amount": "3.14",
+                          "currency": "USD"
+                        },
+                        "amountPaid": {
+                          "amount": "3.14",
+                          "currency": "USD"
+                        },
+                        "settlementCurrency": "USD",
+                        "paymentMethods": [
+                          {
+                            "type": "blockchain",
+                            "chain": "ETH"
+                          }
+                        ],
+                        "paymentIds": [],
+                        "timeline": [
+                          {
+                            "status": "expired",
+                            "context": "underpaid",
+                            "reason": "requested_by_merchant",
+                            "time": "2022-07-21T21:45:54.569Z"
+                          },
+                          {
+                            "status": "created",
+                            "time": "2022-07-21T20:13:35.579331Z"
+                          }
+                        ],
+                        "createDate": "2022-07-21T20:13:35.578678Z",
+                        "updateDate": "2022-07-21T20:19:24.859052Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/payments": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Source"
+          },
+          {
+            "$ref": "#/components/parameters/SettlementId"
+          },
+          {
+            "$ref": "#/components/parameters/PaymentIntentId"
+          },
+          {
+            "$ref": "#/components/parameters/PaymentSourceType"
+          },
+          {
+            "$ref": "#/components/parameters/PaymentStatus"
+          },
+          {
+            "$ref": "#/components/parameters/From"
+          },
+          {
+            "$ref": "#/components/parameters/To"
+          },
+          {
+            "$ref": "#/components/parameters/PageBefore"
+          },
+          {
+            "$ref": "#/components/parameters/PageAfter"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
+        "summary": "List all payments",
+        "operationId": "getPayments",
+        "tags": [
+          "Payments"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved a list of payments.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "GetPaymentsResponse",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "oneOf": [
+                          {
+                            "$ref": "#/components/schemas/FiatPayment"
+                          },
+                          {
+                            "$ref": "#/components/schemas/CryptoPayment"
+                          },
+                          {
+                            "$ref": "#/components/schemas/FiatCancel"
+                          },
+                          {
+                            "$ref": "#/components/schemas/FiatRefund"
+                          }
+                        ],
+                        "discriminator": {
+                          "propertyName": "type",
+                          "mapping": {
+                            "Fiat Payment": "#/components/schemas/FiatPayment",
+                            "Crypto Payment": "#/components/schemas/CryptoPayment",
+                            "Fiat Cancel": "#/components/schemas/FiatCancel",
+                            "Fiat Refund": "#/components/schemas/FiatRefund"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "Fiat Payment": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                          "type": "payment",
+                          "merchantId": "fc988ed5-c129-4f70-a064-e5beb7eb8e32",
+                          "merchantWalletId": "212000",
+                          "amount": {
+                            "amount": "3.14",
+                            "currency": "USD"
+                          },
+                          "source": {
+                            "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                            "type": "card"
+                          },
+                          "description": "Payment",
+                          "status": "pending",
+                          "captured": false,
+                          "captureAmount": {
+                            "amount": "3.14",
+                            "currency": "USD"
+                          },
+                          "captureDate": "2020-04-10T02:13:30.000Z",
+                          "requiredAction": {
+                            "type": "three_d_secure_required",
+                            "redirectUrl": "https://example.org"
+                          },
+                          "cancel": {
+                            "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                            "type": "cancel",
+                            "description": "Payment",
+                            "status": "pending",
+                            "createDate": "2020-04-10T02:13:30.000Z"
+                          },
+                          "refunds": [
+                            {
+                              "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                              "type": "payment",
+                              "amount": {
+                                "amount": "3.14",
+                                "currency": "USD"
+                              },
+                              "description": "Payment",
+                              "status": "pending",
+                              "requiredAction": {
+                                "type": "three_d_secure_required",
+                                "redirectUrl": "https://example.org"
+                              },
+                              "fees": {
+                                "amount": "3.14",
+                                "currency": "USD"
+                              },
+                              "createDate": "2020-04-10T02:13:30.000Z"
+                            }
+                          ],
+                          "fees": {
+                            "amount": "3.14",
+                            "currency": "USD"
+                          },
+                          "channel": "ba943ff1-ca16-49b2-ba55-1057e70ca5c7",
+                          "createDate": "2020-04-10T02:13:30.000Z",
+                          "updateDate": "2020-04-10T02:13:30.000Z"
+                        }
+                      ]
+                    }
+                  },
+                  "Crypto Payment": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "66c56b6a-fc79-338b-8b94-aacc4f0f18de",
+                          "type": "payment",
+                          "status": "paid",
+                          "amount": {
+                            "amount": "1.00",
+                            "currency": "USD"
+                          },
+                          "fees": {
+                            "amount": "0.01",
+                            "currency": "USD"
+                          },
+                          "merchantId": "f1397191-56e6-42fd-be86-0a7b9bd91522",
+                          "merchantWalletId": "1000999922",
+                          "paymentIntentId": "6e4d4047-db14-4c09-b238-1215aee50d03",
+                          "settlementAmount": {
+                            "amount": "1.00",
+                            "currency": "USD"
+                          },
+                          "depositAddress": {
+                            "chain": "ETH",
+                            "address": "0x97de855690955e0da79ce5c1b6804847e7070c7f"
+                          },
+                          "transactionHash": "0x7351585460bd657f320b9afa02a52c26d89272d0d10cc29913eb8b28e64fd906",
+                          "createDate": "2022-07-21T20:16:35.092852Z",
+                          "updateDate": "2022-07-21T20:19:24.719313Z"
+                        }
+                      ]
+                    }
+                  },
+                  "Fiat Cancel": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "2dc266f5-0658-48ec-a81f-9c768279564d",
+                          "type": "cancel",
+                          "status": "confirmed",
+                          "description": "Cancel Payment",
+                          "amount": {
+                            "amount": "10.00",
+                            "currency": "USD"
+                          },
+                          "createDate": "2022-04-21T21:50:34.274Z",
+                          "updateDate": "2022-04-21T21:50:34.647839Z",
+                          "merchantId": "b1e4e9fe-0bf1-43ad-86c7-3ab993b0051b",
+                          "merchantWalletId": "1000174786",
+                          "source": {
+                            "id": "bc9157fe-5d73-48fe-9e77-9f6723bdcfeb",
+                            "type": "card"
+                          },
+                          "originalPayment": {
+                            "id": "2812f549-062a-4bdd-8ee5-b521aa48a84d",
+                            "type": "payment",
+                            "status": "failed",
+                            "createDate": "2022-04-21T21:47:41.501Z",
+                            "updateDate": "2022-04-21T21:50:34.669012Z"
+                          },
+                          "reason": "requested_by_customer"
+                        }
+                      ]
+                    }
+                  },
+                  "Fiat Refund": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "03fbe7da-096a-4763-af77-e43006cd83be",
+                          "type": "refund",
+                          "status": "paid",
+                          "description": "Refund Payment",
+                          "amount": {
+                            "amount": "3.14",
+                            "currency": "USD"
+                          },
+                          "fees": {
+                            "amount": "0.00",
+                            "currency": "USD"
+                          },
+                          "createDate": "2022-04-21T12:49:21.146Z",
+                          "updateDate": "2022-04-21T12:54:10.596976Z",
+                          "merchantId": "b1e4e9fe-0bf1-43ad-86c7-3ab993b0051b",
+                          "merchantWalletId": "1000174786",
+                          "source": {
+                            "id": "45fa5524-41b9-48ca-94cd-f45cb36cce4d",
+                            "type": "card"
+                          },
+                          "originalPayment": {
+                            "id": "895f8db5-1d8c-407d-9533-b5ca3fbcc74e",
+                            "type": "payment",
+                            "status": "paid",
+                            "createDate": "2022-04-06T19:33:29.690Z",
+                            "updateDate": "2022-04-06T19:47:23.681180Z"
+                          },
+                          "reason": "requested_by_customer"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          }
+        }
+      }
+    },
+    "/v1/payments/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get a payment",
+        "operationId": "getPayment",
+        "tags": [
+          "Payments"
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "description": "Successfully retrieved a payment.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "GetPaymentResponse",
+                  "properties": {
+                    "data": {
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/FiatPaymentPolymorphic"
+                        },
+                        {
+                          "$ref": "#/components/schemas/CryptoPayment"
+                        }
+                      ],
+                      "discriminator": {
+                        "propertyName": "type",
+                        "mapping": {
+                          "Fiat Payment": "#/components/schemas/FiatPayment",
+                          "Crypto Payment": "#/components/schemas/CryptoPayment"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "Fiat Payment": {
+                    "value": {
+                      "data": {
+                        "data": {
+                          "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                          "type": "payment",
+                          "merchantId": "fc988ed5-c129-4f70-a064-e5beb7eb8e32",
+                          "merchantWalletId": "212000",
+                          "amount": {
+                            "amount": "3.14",
+                            "currency": "USD"
+                          },
+                          "source": {
+                            "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                            "type": "card"
+                          },
+                          "description": "Payment",
+                          "status": "pending",
+                          "requiredAction": {
+                            "type": "three_d_secure_required",
+                            "redirectUrl": "https://example.org"
+                          },
+                          "verification": {
+                            "avs": "D",
+                            "cvv": "not_requested",
+                            "threeDSecure": "pass",
+                            "eci": "00"
+                          },
+                          "originalPayment": {
+                            "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                            "type": "payment",
+                            "merchantId": "fc988ed5-c129-4f70-a064-e5beb7eb8e32",
+                            "merchantWalletId": "212000",
+                            "amount": {
+                              "amount": "3.14",
+                              "currency": "USD"
+                            },
+                            "source": {
+                              "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                              "type": "card"
+                            },
+                            "description": "Payment",
+                            "status": "pending",
+                            "captured": false,
+                            "captureAmount": {
+                              "amount": "3.14",
+                              "currency": "USD"
+                            },
+                            "captureDate": "2020-04-10T02:13:30.000Z",
+                            "requiredAction": {
+                              "type": "three_d_secure_required",
+                              "redirectUrl": "https://example.org"
+                            },
+                            "cancel": {
+                              "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                              "type": "cancel",
+                              "description": "Payment",
+                              "status": "pending",
+                              "createDate": "2020-04-10T02:13:30.000Z"
+                            },
+                            "refunds": [
+                              {
+                                "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                                "type": "payment",
+                                "amount": {
+                                  "amount": "3.14",
+                                  "currency": "USD"
+                                },
+                                "description": "Payment",
+                                "status": "pending",
+                                "requiredAction": {
+                                  "type": "three_d_secure_required",
+                                  "redirectUrl": "https://example.org"
+                                },
+                                "fees": {
+                                  "amount": "3.14",
+                                  "currency": "USD"
+                                },
+                                "createDate": "2020-04-10T02:13:30.000Z"
+                              }
+                            ],
+                            "fees": {
+                              "amount": "3.14",
+                              "currency": "USD"
+                            },
+                            "channel": "ba943ff1-ca16-49b2-ba55-1057e70ca5c7",
+                            "createDate": "2020-04-10T02:13:30.000Z",
+                            "updateDate": "2020-04-10T02:13:30.000Z"
+                          },
+                          "cancel": {
+                            "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                            "type": "cancel",
+                            "merchantId": "fc988ed5-c129-4f70-a064-e5beb7eb8e32",
+                            "merchantWalletId": "212000",
+                            "amount": {
+                              "amount": "3.14",
+                              "currency": "USD"
+                            },
+                            "source": {
+                              "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                              "type": "card"
+                            },
+                            "description": "Payment",
+                            "status": "pending",
+                            "originalPayment": {
+                              "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                              "type": "payment",
+                              "amount": {
+                                "amount": "3.14",
+                                "currency": "USD"
+                              },
+                              "description": "Payment",
+                              "status": "pending",
+                              "requiredAction": {
+                                "type": "three_d_secure_required",
+                                "redirectUrl": "https://example.org"
+                              },
+                              "fees": {
+                                "amount": "3.14",
+                                "currency": "USD"
+                              },
+                              "createDate": "2020-04-10T02:13:30.000Z"
+                            },
+                            "fees": {
+                              "amount": "3.14",
+                              "currency": "USD"
+                            },
+                            "channel": "ba943ff1-ca16-49b2-ba55-1057e70ca5c7",
+                            "createDate": "2020-04-10T02:13:30.000Z",
+                            "updateDate": "2020-04-10T02:13:30.000Z"
+                          },
+                          "refunds": [
+                            {
+                              "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                              "type": "refund",
+                              "merchantId": "fc988ed5-c129-4f70-a064-e5beb7eb8e32",
+                              "merchantWalletId": "212000",
+                              "amount": {
+                                "amount": "3.14",
+                                "currency": "USD"
+                              },
+                              "source": {
+                                "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                                "type": "card"
+                              },
+                              "description": "Payment",
+                              "status": "pending",
+                              "originalPayment": {
+                                "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                                "type": "payment",
+                                "amount": {
+                                  "amount": "3.14",
+                                  "currency": "USD"
+                                },
+                                "description": "Payment",
+                                "status": "pending",
+                                "requiredAction": {
+                                  "type": "three_d_secure_required",
+                                  "redirectUrl": "https://example.org"
+                                },
+                                "fees": {
+                                  "amount": "3.14",
+                                  "currency": "USD"
+                                },
+                                "createDate": "2020-04-10T02:13:30.000Z"
+                              },
+                              "cancel": {
+                                "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                                "type": "cancel",
+                                "description": "Payment",
+                                "status": "pending",
+                                "createDate": "2020-04-10T02:13:30.000Z"
+                              },
+                              "fees": {
+                                "amount": "3.14",
+                                "currency": "USD"
+                              },
+                              "channel": "ba943ff1-ca16-49b2-ba55-1057e70ca5c7",
+                              "createDate": "2020-04-10T02:13:30.000Z",
+                              "updateDate": "2020-04-10T02:13:30.000Z"
+                            }
+                          ],
+                          "fees": {
+                            "amount": "3.14",
+                            "currency": "USD"
+                          },
+                          "trackingRef": "24910599141085313498894",
+                          "externalRef": "YYYYMMDDXXXXXXXX012345",
+                          "errorCode": "payment_failed",
+                          "metadata": {
+                            "email": "satoshi@circle.com",
+                            "phoneNumber": "+14155555555"
+                          },
+                          "channel": "ba943ff1-ca16-49b2-ba55-1057e70ca5c7",
+                          "riskEvaluation": {
+                            "decision": "approved",
+                            "reason": "3000"
+                          },
+                          "createDate": "2020-04-10T02:13:30.000Z",
+                          "updateDate": "2020-04-10T02:13:30.000Z"
+                        }
+                      }
+                    }
+                  },
+                  "Crypto Payment": {
+                    "value": {
+                      "data": {
+                        "id": "66c56b6a-fc79-338b-8b94-aacc4f0f18de",
+                        "type": "payment",
+                        "status": "paid",
+                        "amount": {
+                          "amount": "1.00",
+                          "currency": "USD"
+                        },
+                        "fees": {
+                          "amount": "0.01",
+                          "currency": "USD"
+                        },
+                        "merchantId": "f1397191-56e6-42fd-be86-0a7b9bd91522",
+                        "merchantWalletId": "1000999922",
+                        "paymentIntentId": "6e4d4047-db14-4c09-b238-1215aee50d03",
+                        "settlementAmount": {
+                          "amount": "1.00",
+                          "currency": "USD"
+                        },
+                        "depositAddress": {
+                          "chain": "ETH",
+                          "address": "0x97de855690955e0da79ce5c1b6804847e7070c7f"
+                        },
+                        "transactionHash": "0x7351585460bd657f320b9afa02a52c26d89272d0d10cc29913eb8b28e64fd906",
+                        "createDate": "2022-07-21T20:16:35.092852Z",
+                        "updateDate": "2022-07-21T20:19:24.719313Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "parameters": {
+      "From": {
+        "name": "from",
+        "description": "Queries items created since the specified date-time (inclusive).",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2020-04-10T02:13:30.000Z"
+        }
+      },
+      "To": {
+        "name": "to",
+        "description": "Queries items created before the specified date-time (inclusive).",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2020-04-10T02:13:30.000Z"
+        }
+      },
+      "PageBefore": {
+        "name": "pageBefore",
+        "description": "A collection ID value used for pagination.\n\nIt marks the exclusive end of a page. When provided, the collection resource will return the next `n` items before\nthe id, with `n` being specified by `pageSize`.\n\nThe items will be returned in the natural order of the collection.\n\nThe resource will return the first page if neither `pageAfter` nor `pageBefore` are specified.\n\nSHOULD NOT be used in conjuction with pageAfter.\n",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PageAfter": {
+        "name": "pageAfter",
+        "description": "A collection ID value used for pagination.\n\nIt marks the exclusive begin of a page. When provided, the collection resource will return the next `n` items after\nthe id, with `n` being specified by `pageSize`.\n\nThe items will be returned in the natural order of the collection.\n\nThe resource will return the first page if neither `pageAfter` nor `pageBefore` are specified.\n\nSHOULD NOT be used in conjuction with pageBefore.\n",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PageSize": {
+        "name": "pageSize",
+        "description": "Limits the number of items to be returned.\n\nSome collections have a strict upper bound that will disregard this value. In case the specified value is higher\nthan the allowed limit, the collection limit will be used.\n\nIf avoided, the collection will determine the page size itself.\n",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "example": 5
+        }
+      },
+      "IdPath": {
+        "name": "id",
+        "description": "Universally unique identifier (UUID v4) of a resource.",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "b3d9d2d5-4c12-4946-a09d-953e82fae2b0"
+        }
+      },
+      "Source": {
+        "name": "source",
+        "description": "Universally unique identifier (UUID v4) for the source. Filters results to fetch only payments made from the provdided source.",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "b3d9d2d5-4c12-4946-a09d-953e82fae2b0"
+        }
+      },
+      "SettlementId": {
+        "name": "settlementId",
+        "description": "Queries items with the specified settlement id. Matches any settlement id if unspecified.",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "b48c8962-8e9f-40c3-9f1d-d9adde2ffe61"
+        }
+      },
+      "PaymentIntentId": {
+        "name": "paymentIntentId",
+        "description": "Queries items with the specified payment intent id.",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "b48c8962-8e9f-40c3-9f1d-d9adde2ffe61"
+        }
+      },
+      "PaymentSourceType": {
+        "name": "type",
+        "description": "Source account type. Filters the results to fetch all payments made from a specified account type. Matches any source type if unspecified.",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "card",
+              "wire",
+              "ach",
+              "sepa"
+            ]
+          }
+        }
+      },
+      "PaymentStatus": {
+        "name": "status",
+        "description": "Queries items with the specified status. Matches any status if unspecified.",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "confirmed",
+            "paid",
+            "failed",
+            "action_required"
+          ]
+        }
+      }
+    },
+    "headers": {
+      "XRequestId": {
+        "description": "Universally unique identifier (UUID v4) for the request. Helpful for identifying a request when communicating with Circle support.",
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "2adba88e-9d63-44bc-b975-9b6ae3440dde"
+        }
+      }
+    },
+    "schemas": {
+      "IdempotencyKey": {
+        "type": "string",
+        "description": "Universally unique identifier (UUID v4) idempotency key. This key is utilized to ensure exactly-once execution of mutating requests.",
+        "format": "uuid",
+        "example": "ba943ff1-ca16-49b2-ba55-1057e70ca5c7"
+      },
+      "CryptoPaymentsMoney": {
+        "type": "object",
+        "required": [
+          "amount",
+          "currency"
+        ],
+        "properties": {
+          "amount": {
+            "description": "Magnitude of the amount, in units of the currency, with a `.`.",
+            "type": "string",
+            "example": "3.14"
+          },
+          "currency": {
+            "description": "Currency code.",
+            "type": "string",
+            "enum": [
+              "USD",
+              "ETH",
+              "BTC"
+            ]
+          }
+        }
+      },
+      "Chain": {
+        "type": "string",
+        "description": "A blockchain that a given currency is available on.",
+        "enum": [
+          "ALGO",
+          "AVAX",
+          "BTC",
+          "ETH",
+          "FLOW",
+          "HBAR",
+          "MATIC",
+          "SOL",
+          "TRX",
+          "XLM"
+        ]
+      },
+      "PaymentMethodBlockchain": {
+        "type": "object",
+        "required": [
+          "type",
+          "chain"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "blockchain"
+            ]
+          },
+          "chain": {
+            "$ref": "#/components/schemas/Chain"
+          },
+          "address": {
+            "type": "string",
+            "readOnly": true,
+            "example": "0x8381470ED67C3802402dbbFa0058E8871F017A6F"
+          }
+        }
+      },
+      "PaymentIntentFees": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "type",
+          "amount",
+          "currency"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "blockchainLeaseFee",
+              "totalPaymentFees"
+            ]
+          },
+          "amount": {
+            "description": "Magnitude of the amount, in units of the currency, with a `.`.",
+            "type": "string",
+            "example": "3.14"
+          },
+          "currency": {
+            "description": "Currency code.",
+            "type": "string",
+            "enum": [
+              "USD"
+            ]
+          }
+        }
+      },
+      "Timeline": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "status",
+          "time"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "created",
+              "pending",
+              "complete",
+              "expired",
+              "failed"
+            ]
+          },
+          "context": {
+            "type": "string",
+            "enum": [
+              "underpaid",
+              "paid",
+              "overpaid"
+            ]
+          },
+          "time": {
+            "description": "ISO-8601 UTC date/time format.",
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UTCTimestampReadOnly": {
+        "type": "string",
+        "readOnly": true,
+        "description": "ISO-8601 UTC date/time format.",
+        "example": "2020-04-10T02:13:30.000Z"
+      },
+      "PaymentIntent": {
+        "type": "object",
+        "required": [
+          "idempotencyKey",
+          "amount",
+          "settlementCurrency",
+          "paymentMethods"
+        ],
+        "properties": {
+          "idempotencyKey": {
+            "$ref": "#/components/schemas/IdempotencyKey"
+          },
+          "id": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Unique system generated identifier for the entity.",
+            "format": "uuid",
+            "example": "b8627ae8-732b-4d25-b947-1df8f4007a29"
+          },
+          "amount": {
+            "$ref": "#/components/schemas/CryptoPaymentsMoney"
+          },
+          "amountPaid": {
+            "description": "Sum of the the amount paid.",
+            "type": "object",
+            "readOnly": true,
+            "required": [
+              "amount",
+              "currency"
+            ],
+            "properties": {
+              "amount": {
+                "description": "Magnitude of the amount, in units of the currency, with a `.`.",
+                "type": "string",
+                "example": "3.14"
+              },
+              "currency": {
+                "description": "Currency code.",
+                "type": "string",
+                "enum": [
+                  "USD"
+                ]
+              }
+            }
+          },
+          "settlementCurrency": {
+            "description": "Desired currency for the payments to settle in.",
+            "type": "string",
+            "enum": [
+              "USD",
+              "BTC",
+              "ETH"
+            ]
+          },
+          "paymentMethods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentMethodBlockchain"
+            }
+          },
+          "fees": {
+            "type": "array",
+            "readOnly": true,
+            "items": {
+              "$ref": "#/components/schemas/PaymentIntentFees"
+            }
+          },
+          "paymentIds": {
+            "description": "List of associated payments.",
+            "type": "array",
+            "readOnly": true,
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "example": "69808f36-3e5e-4f37-bf82-ca79e4d70fc1"
+            }
+          },
+          "timeline": {
+            "description": "State management timeline.",
+            "type": "array",
+            "readOnly": true,
+            "items": {
+              "$ref": "#/components/schemas/Timeline"
+            }
+          },
+          "expiresOn": {
+            "$ref": "#/components/schemas/UTCTimestampReadOnly"
+          },
+          "updateDate": {
+            "$ref": "#/components/schemas/UTCTimestampReadOnly"
+          },
+          "createDate": {
+            "$ref": "#/components/schemas/UTCTimestampReadOnly"
+          }
+        }
+      },
+      "Id": {
+        "type": "string",
+        "description": "Unique system generated identifier for the entity.",
+        "format": "uuid",
+        "example": "b8627ae8-732b-4d25-b947-1df8f4007a29"
+      },
+      "IdMerchant": {
+        "type": "string",
+        "description": "Unique system generated identifier for the merchant.",
+        "format": "uuid",
+        "example": "fc988ed5-c129-4f70-a064-e5beb7eb8e32"
+      },
+      "MerchantWalletId": {
+        "type": "string",
+        "description": "Unique system generated identifier for the wallet of the merchant.",
+        "maxLength": 36,
+        "example": "212000"
+      },
+      "FiatMoneyUsd": {
+        "type": "object",
+        "required": [
+          "amount",
+          "currency"
+        ],
+        "properties": {
+          "amount": {
+            "description": "Magnitude of the amount, in units of the currency, with a `.`.",
+            "type": "string",
+            "example": "3.14"
+          },
+          "currency": {
+            "description": "Currency code.",
+            "type": "string",
+            "enum": [
+              "USD"
+            ]
+          }
+        }
+      },
+      "SourceResponse": {
+        "type": "object",
+        "description": "The payment source.",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of the source.",
+            "enum": [
+              "card",
+              "ach",
+              "wire",
+              "sepa"
+            ]
+          }
+        }
+      },
+      "PaymentStatus": {
+        "type": "string",
+        "description": "Enumerated status of the payment. `pending` means the payment is waiting to be processed. `confirmed` means the payment has been approved by the bank and the merchant can treat it as successful, but settlement funds are not yet available to the merchant.  `paid` means settlement funds have been received and are available to the merchant. `failed` means something went wrong (most commonly that the payment was denied). `action_required` means that additional steps are required to process this payment; refer to `requiredAction` for more details. Terminal states are `paid` and `failed`.",
+        "enum": [
+          "pending",
+          "confirmed",
+          "paid",
+          "failed",
+          "action_required"
+        ]
+      },
+      "UTCTimestamp": {
+        "type": "string",
+        "description": "ISO-8601 UTC date/time format.",
+        "example": "2020-04-10T02:13:30.000Z"
+      },
+      "RequiredAction": {
+        "type": "object",
+        "description": "When the payment status is `action_required`, this object summarizes the required additional steps.",
+        "required": [
+          "type",
+          "redirectUrl"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The type of action that is required to proceed with the payment. Currently only one type is supported.",
+            "enum": [
+              "three_d_secure_required"
+            ]
+          },
+          "redirectUrl": {
+            "type": "string",
+            "description": "The URL to bring the user to in order to complete the payment.",
+            "example": "https://example.org"
+          }
+        }
+      },
+      "CancelRefundReversalStatus": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "confirmed",
+          "paid",
+          "failed"
+        ],
+        "description": "Enumerated status of the payment. `pending` means the payment is waiting to be processed. `confirmed` means the payment has been approved by the bank and the merchant can treat it as successful, but settlement funds are not yet available to the merchant.  `paid` means settlement funds have been received and are available to the merchant. `failed` means something went wrong (most commonly that the payment was denied). Terminal states are `paid` and `failed`."
+      },
+      "PaymentInfoCancel": {
+        "type": "object",
+        "description": "Status information of the related cancel. This property is only present on canceled payment or refund items.",
+        "nullable": true,
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of the payment object.",
+            "enum": [
+              "cancel"
+            ]
+          },
+          "description": {
+            "description": "Enumerated description of the payment item.",
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "Payment"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/CancelRefundReversalStatus"
+          },
+          "createDate": {
+            "$ref": "#/components/schemas/UTCTimestamp"
+          }
+        }
+      },
+      "PaymentInfoPaymentAndRefund": {
+        "type": "object",
+        "description": "Status information of the related payment. This property is only present on refund or cancel items.",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of the payment object.",
+            "enum": [
+              "payment",
+              "refund"
+            ]
+          },
+          "amount": {
+            "$ref": "#/components/schemas/FiatMoneyUsd"
+          },
+          "description": {
+            "type": "string",
+            "description": "Enumerated description of the payment item.",
+            "nullable": true,
+            "enum": [
+              "Payment"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/PaymentStatus"
+          },
+          "requiredAction": {
+            "$ref": "#/components/schemas/RequiredAction"
+          },
+          "fees": {
+            "$ref": "#/components/schemas/FiatMoneyUsd"
+          },
+          "createDate": {
+            "$ref": "#/components/schemas/UTCTimestamp"
+          }
+        }
+      },
+      "Channel": {
+        "type": "string",
+        "format": "uuid",
+        "description": "The channel identifier that can be set for the payment. When not provided, the default channel is used.",
+        "example": "ba943ff1-ca16-49b2-ba55-1057e70ca5c7"
+      },
+      "FiatPayment": {
+        "type": "object",
+        "description": "Status information of the related payment. This property is only present on refund or cancel items.",
+        "required": [
+          "id",
+          "type",
+          "merchantId",
+          "amount",
+          "source",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "type": {
+            "description": "Type of the payment object.",
+            "type": "string",
+            "enum": [
+              "payment"
+            ]
+          },
+          "merchantId": {
+            "$ref": "#/components/schemas/IdMerchant"
+          },
+          "merchantWalletId": {
+            "$ref": "#/components/schemas/MerchantWalletId"
+          },
+          "amount": {
+            "$ref": "#/components/schemas/FiatMoneyUsd"
+          },
+          "source": {
+            "$ref": "#/components/schemas/SourceResponse"
+          },
+          "description": {
+            "description": "Enumerated description of the payment.",
+            "type": "string",
+            "enum": [
+              "Payment"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/PaymentStatus"
+          },
+          "captured": {
+            "description": "Determines if a payment has successfully been captured. This property is only present for payments that did not use auto capture.",
+            "type": "boolean"
+          },
+          "captureAmount": {
+            "$ref": "#/components/schemas/FiatMoneyUsd"
+          },
+          "captureDate": {
+            "$ref": "#/components/schemas/UTCTimestamp"
+          },
+          "requiredAction": {
+            "$ref": "#/components/schemas/RequiredAction"
+          },
+          "cancel": {
+            "$ref": "#/components/schemas/PaymentInfoCancel"
+          },
+          "refunds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentInfoPaymentAndRefund"
+            }
+          },
+          "fees": {
+            "$ref": "#/components/schemas/FiatMoneyUsd"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/Channel"
+          },
+          "createDate": {
+            "$ref": "#/components/schemas/UTCTimestamp"
+          },
+          "updateDate": {
+            "$ref": "#/components/schemas/UTCTimestamp"
+          }
+        }
+      },
+      "CryptoPayment": {
+        "type": "object",
+        "description": "Status information of the related payment. This property is only present on refund or cancel items.",
+        "required": [
+          "id",
+          "type",
+          "merchantId",
+          "amount",
+          "source",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "type": {
+            "description": "Type of the payment object.",
+            "type": "string",
+            "enum": [
+              "payment"
+            ]
+          },
+          "merchantId": {
+            "$ref": "#/components/schemas/IdMerchant"
+          },
+          "merchantWalletId": {
+            "$ref": "#/components/schemas/MerchantWalletId"
+          },
+          "amount": {
+            "$ref": "#/components/schemas/FiatMoneyUsd"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PaymentStatus"
+          },
+          "fees": {
+            "$ref": "#/components/schemas/FiatMoneyUsd"
+          },
+          "paymentIntentId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "6e4d4047-db14-4c09-b238-1215aee50d03"
+          },
+          "settlementAmount": {
+            "$ref": "#/components/schemas/FiatMoneyUsd"
+          },
+          "depositAddress": {
+            "type": "object",
+            "properties": {
+              "chain": {
+                "$ref": "#/components/schemas/Chain"
+              },
+              "address": {
+                "type": "string",
+                "example": "0x97de855690955e0da79ce5c1b6804847e7070c7f"
+              }
+            }
+          },
+          "transactionHash": {
+            "type": "string",
+            "example": "0x7351585460bd657f320b9afa02a52c26d89272d0d10cc29913eb8b28e64fd906"
+          },
+          "createDate": {
+            "$ref": "#/components/schemas/UTCTimestamp"
+          },
+          "updateDate": {
+            "$ref": "#/components/schemas/UTCTimestamp"
+          }
+        }
+      },
+      "FiatCancel": {
+        "type": "object",
+        "description": "Status information of the related cancel. This property is only present on canceled payment or refund items.",
+        "nullable": true,
+        "required": [
+          "id",
+          "type",
+          "merchantId",
+          "amount",
+          "source",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of the payment object.",
+            "enum": [
+              "cancel"
+            ]
+          },
+          "merchantId": {
+            "$ref": "#/components/schemas/IdMerchant"
+          },
+          "merchantWalletId": {
+            "$ref": "#/components/schemas/MerchantWalletId"
+          },
+          "amount": {
+            "$ref": "#/components/schemas/FiatMoneyUsd"
+          },
+          "source": {
+            "$ref": "#/components/schemas/SourceResponse"
+          },
+          "description": {
+            "description": "Enumerated description of the payment.",
+            "type": "string",
+            "enum": [
+              "Payment"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/CancelRefundReversalStatus"
+          },
+          "originalPayment": {
+            "$ref": "#/components/schemas/PaymentInfoPaymentAndRefund"
+          },
+          "fees": {
+            "$ref": "#/components/schemas/FiatMoneyUsd"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/Channel"
+          },
+          "createDate": {
+            "$ref": "#/components/schemas/UTCTimestamp"
+          },
+          "updateDate": {
+            "$ref": "#/components/schemas/UTCTimestamp"
+          }
+        }
+      },
+      "FiatRefund": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "merchantId",
+          "amount",
+          "source",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "type": {
+            "description": "Type of the payment object.",
+            "type": "string",
+            "enum": [
+              "refund"
+            ]
+          },
+          "merchantId": {
+            "$ref": "#/components/schemas/IdMerchant"
+          },
+          "merchantWalletId": {
+            "$ref": "#/components/schemas/MerchantWalletId"
+          },
+          "amount": {
+            "$ref": "#/components/schemas/FiatMoneyUsd"
+          },
+          "source": {
+            "$ref": "#/components/schemas/SourceResponse"
+          },
+          "description": {
+            "description": "Enumerated description of the payment.",
+            "type": "string",
+            "enum": [
+              "Payment"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/CancelRefundReversalStatus"
+          },
+          "originalPayment": {
+            "$ref": "#/components/schemas/PaymentInfoPaymentAndRefund"
+          },
+          "cancel": {
+            "$ref": "#/components/schemas/PaymentInfoCancel"
+          },
+          "fees": {
+            "$ref": "#/components/schemas/FiatMoneyUsd"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/Channel"
+          },
+          "createDate": {
+            "$ref": "#/components/schemas/UTCTimestamp"
+          },
+          "updateDate": {
+            "$ref": "#/components/schemas/UTCTimestamp"
+          }
+        }
+      },
+      "AvsResults": {
+        "type": "string",
+        "description": "Status of the AVS check. Raw AVS response, expressed as an upper-case letter. `not_requested` indicates check was not made. `pending` is pending/processing.",
+        "example": "D"
+      },
+      "CvvResults": {
+        "description": "Enumerated status of the check. `not_requested` indicates check was not made. `pass` indicates value is correct. `fail` indicates value is incorrect. `unavailable` indicates card issuer did not do the provided check. `pending` indicates check is pending/processing.",
+        "type": "string",
+        "enum": [
+          "not_requested",
+          "pass",
+          "fail",
+          "unavailable",
+          "pending"
+        ]
+      },
+      "ThreeDSResult": {
+        "type": "string",
+        "description": "Enumerated status of the check. `pass` indicates successful 3DS authentication. `fail` indicates failed 3DS authentication.",
+        "enum": [
+          "pass",
+          "fail"
+        ]
+      },
+      "Eci": {
+        "type": "string",
+        "description": "ECI (electronic commerce indicator) value returned by Directory Servers (namely Visa, MasterCard, JCB, and American Express) indicating the outcome of authentication attempted on transactions enforced by 3DS.",
+        "enum": [
+          "00",
+          "01",
+          "02",
+          "05",
+          "06",
+          "07"
+        ]
+      },
+      "PaymentVerificationResponse": {
+        "type": "object",
+        "description": "Indicates the status of the payment verification. This property will be present once the payment is confirmed.",
+        "required": [
+          "avs",
+          "cvv"
+        ],
+        "properties": {
+          "avs": {
+            "$ref": "#/components/schemas/AvsResults"
+          },
+          "cvv": {
+            "$ref": "#/components/schemas/CvvResults"
+          },
+          "threeDSecure": {
+            "$ref": "#/components/schemas/ThreeDSResult"
+          },
+          "eci": {
+            "$ref": "#/components/schemas/Eci"
+          }
+        }
+      },
+      "ExternalRef": {
+        "type": "string",
+        "description": "External network identifier which will be present once provided from the applicable network. \n\nExamples:\n* **Input/Output Message Accountability Data (IMAD/OMAD)**: unique number given to each FedWire payment when using the Federal Reserve Bank Service which can be used to investigate and track wire transfers.\n",
+        "example": "YYYYMMDDXXXXXXXX012345"
+      },
+      "PaymentErrorCode": {
+        "type": "string",
+        "description": "Indicates the failure reason of a payment. Only present for payments in failed state. Possible values are [`payment_failed`, `payment_fraud_detected`, `payment_denied`, `payment_not_supported_by_issuer`, `payment_not_funded`, `payment_unprocessable`, `payment_stopped_by_issuer`, `payment_canceled`, `payment_returned`, `payment_failed_balance_check`, `card_failed`, `card_invalid`, `card_address_mismatch`, `card_zip_mismatch`, `card_cvv_invalid`, `card_expired`, `card_limit_violated`, `card_not_honored`, `card_cvv_required`, `credit_card_not_allowed`, `card_account_ineligible`, `card_network_unsupported`, `channel_invalid`, `unauthorized_transaction`, `bank_account_ineligible`, `bank_transaction_error`, `invalid_account_number`, `invalid_wire_rtn`, `invalid_ach_rtn`, `vendor_inactive`]'",
+        "nullable": true,
+        "enum": [
+          "payment_failed",
+          "payment_fraud_detected",
+          "payment_denied",
+          "payment_not_supported_by_issuer",
+          "payment_not_funded",
+          "payment_unprocessable",
+          "payment_stopped_by_issuer",
+          "payment_canceled",
+          "payment_returned",
+          "payment_failed_balance_check",
+          "card_failed",
+          "card_invalid",
+          "card_address_mismatch",
+          "card_zip_mismatch",
+          "card_cvv_invalid",
+          "card_expired",
+          "card_limit_violated",
+          "card_not_honored",
+          "card_cvv_required",
+          "card_restricted,",
+          "card_account_ineligible",
+          "card_network_unsupported",
+          "channel_invalid",
+          "unauthorized_transaction",
+          "bank_account_ineligible",
+          "bank_transaction_error",
+          "invalid_account_number",
+          "invalid_wire_rtn",
+          "invalid_ach_rtn",
+          "ref_id_invalid",
+          "account_name_mismatch",
+          "account_number_mismatch",
+          "account_ineligible",
+          "wallet_address_mismatch",
+          "customer_name_mismatch",
+          "institution_name_mismatch",
+          "vendor_inactive"
+        ]
+      },
+      "Email": {
+        "type": "string",
+        "description": "Email of the user.",
+        "maxLength": 1024,
+        "example": "satoshi@circle.com"
+      },
+      "PhoneNumber": {
+        "type": "string",
+        "description": "Phone number of the user in E.164 format. We recommend using a library such as [libphonenumber](https://github.com/google/libphonenumber) to parse and validate phone numbers.",
+        "maxLength": 16,
+        "pattern": "/\\+?[1-9]\\d{1,14}/",
+        "example": "+14155555555"
+      },
+      "MetadataPhoneEmail": {
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "$ref": "#/components/schemas/Email"
+          },
+          "phoneNumber": {
+            "$ref": "#/components/schemas/PhoneNumber"
+          }
+        }
+      },
+      "RiskEvaluation": {
+        "type": "object",
+        "description": "Results of risk evaluation. Only present if the payment is denied by Circle's risk service.",
+        "nullable": true,
+        "properties": {
+          "decision": {
+            "description": "Enumerated decision of the account.",
+            "type": "string",
+            "enum": [
+              "approved",
+              "denied",
+              "review"
+            ]
+          },
+          "reason": {
+            "description": "Risk reason for the definitive decision outcome.",
+            "type": "string",
+            "nullable": true,
+            "example": "3000"
+          }
+        }
+      },
+      "FiatPaymentPolymorphic": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "merchantId",
+          "amount",
+          "source",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "type": {
+            "description": "Type of the payment object.",
+            "type": "string",
+            "enum": [
+              "payment",
+              "refund",
+              "cancel"
+            ]
+          },
+          "merchantId": {
+            "$ref": "#/components/schemas/IdMerchant"
+          },
+          "merchantWalletId": {
+            "$ref": "#/components/schemas/MerchantWalletId"
+          },
+          "amount": {
+            "$ref": "#/components/schemas/FiatMoneyUsd"
+          },
+          "source": {
+            "$ref": "#/components/schemas/SourceResponse"
+          },
+          "description": {
+            "description": "Enumerated description of the payment.",
+            "type": "string",
+            "enum": [
+              "Payment"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/PaymentStatus"
+          },
+          "requiredAction": {
+            "$ref": "#/components/schemas/RequiredAction"
+          },
+          "verification": {
+            "$ref": "#/components/schemas/PaymentVerificationResponse"
+          },
+          "originalPayment": {
+            "$ref": "#/components/schemas/FiatPayment"
+          },
+          "cancel": {
+            "$ref": "#/components/schemas/FiatCancel"
+          },
+          "refunds": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/FiatRefund"
+            }
+          },
+          "fees": {
+            "$ref": "#/components/schemas/FiatMoneyUsd"
+          },
+          "trackingRef": {
+            "description": "Payment tracking reference. Will be present once known.",
+            "type": "string",
+            "nullable": true,
+            "example": "24910599141085313498894"
+          },
+          "externalRef": {
+            "$ref": "#/components/schemas/ExternalRef"
+          },
+          "errorCode": {
+            "$ref": "#/components/schemas/PaymentErrorCode"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/MetadataPhoneEmail"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/Channel"
+          },
+          "riskEvaluation": {
+            "$ref": "#/components/schemas/RiskEvaluation"
+          },
+          "createDate": {
+            "$ref": "#/components/schemas/UTCTimestamp"
+          },
+          "updateDate": {
+            "$ref": "#/components/schemas/UTCTimestamp"
+          }
+        }
+      }
+    },
+    "responses": {
+      "NotAuthorized": {
+        "description": "The request has not been applied because it lacks valid authentication credentials.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/XRequestId"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "title": "NotAuthorized",
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Something went wrong."
+                }
+              },
+              "example": {
+                "code": 401,
+                "message": "Malformed authorization."
+              }
+            },
+            "examples": {
+              "response": {
+                "value": {
+                  "code": 401,
+                  "message": "Malformed authorization."
+                }
+              }
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "The request cannot be processed due to a client error.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/XRequestId"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "title": "BadRequest",
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Something went wrong."
+                }
+              },
+              "example": {
+                "code": 400,
+                "message": "Bad request."
+              }
+            },
+            "examples": {
+              "response": {
+                "value": {
+                  "code": 400,
+                  "message": "Bad request."
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The specified resource was not found.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/XRequestId"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "title": "NotFound",
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Something went wrong."
+                }
+              },
+              "example": {
+                "code": 404,
+                "message": "Not found."
+              }
+            },
+            "examples": {
+              "response": {
+                "value": {
+                  "code": 404,
+                  "message": "Not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

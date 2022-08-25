@@ -1,29 +1,30 @@
 openapi: 3.0.2
 servers:
-  - url: api-sandbox.circle.com
+- url: api-sandbox.circle.com
 info:
   version: ${version}
   title: Core Functionality
-  description: APIs for managing your account balance. These endpoints are available with all Circle APIs.
+  description: APIs for managing your account balance. These endpoints are available
+    with all Circle APIs.
 tags:
-  - name: Balances
-  - name: Payouts
-  - name: Wires
-  - name: Signet
-  - name: SEN
-  - name: Transfers
-  - name: Addresses
-  - name: Deposits
+- name: Balances
+- name: Payouts
+- name: Wires
+- name: Signet
+- name: SEN
+- name: Transfers
+- name: Addresses
+- name: Deposits
 paths:
   /v1/businessAccount/balances:
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: List all balances
       description: Retrieves the balance of funds that are available for use.
       operationId: getBusinessAccountBalances
       tags:
-        - Balances
+      - Balances
       responses:
         '200':
           description: Successfully retrieved balances.
@@ -42,44 +43,48 @@ paths:
                   value:
                     data:
                       available:
-                        - amount: '3.14'
-                          currency: USD
+                      - amount: '3.14'
+                        currency: USD
                       unsettled:
-                        - amount: '3.14'
-                          currency: USD
+                      - amount: '3.14'
+                        currency: USD
         '401':
           $ref: '#/components/responses/NotAuthorized'
   /v1/businessAccount/payouts:
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/destination'
-        - name: type
-          description: Destination bank account type. Filters the results to fetch all payouts made to a specified destination bank account type. This query parameter can be passed multiple times to fetch results matching multiple destination bank account types.
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - wire
-        - name: status
-          description: Queries items with the specified status. Matches any status if unspecified.
-          in: query
-          required: false
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/PayoutStatus'
-        - $ref: '#/components/parameters/From'
-        - $ref: '#/components/parameters/To'
-        - $ref: '#/components/parameters/PageBefore'
-        - $ref: '#/components/parameters/PageAfter'
-        - $ref: '#/components/parameters/PageSize'
+      - $ref: '#/components/parameters/destination'
+      - name: type
+        description: Destination bank account type. Filters the results to fetch all
+          payouts made to a specified destination bank account type. This query parameter
+          can be passed multiple times to fetch results matching multiple destination
+          bank account types.
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - wire
+      - name: status
+        description: Queries items with the specified status. Matches any status if
+          unspecified.
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/PayoutStatus'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      - $ref: '#/components/parameters/PageBefore'
+      - $ref: '#/components/parameters/PageAfter'
+      - $ref: '#/components/parameters/PageSize'
       summary: List all payouts
       operationId: getBusinessAccountPayouts
       tags:
-        - Payouts
+      - Payouts
       responses:
         '200':
           description: Successfully retrieved a list of payouts.
@@ -99,55 +104,55 @@ paths:
                 response:
                   value:
                     data:
-                      - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        sourceWalletId: '53535335'
-                        destination:
-                          type: wire
-                          id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                          name: COMMERZBANK AG ****3000
+                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      sourceWalletId: '53535335'
+                      destination:
+                        type: wire
+                        id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                        name: COMMERZBANK AG ****3000
+                      amount:
+                        amount: '3.14'
+                        currency: USD
+                      fees:
+                        amount: '3.14'
+                        currency: USD
+                      status: pending
+                      trackingRef: CIR-6ESOQANEP3NAO
+                      errorCode: insufficient_funds
+                      riskEvaluation:
+                        decision: approved
+                        reason: '3000'
+                      adjustments:
+                        fxCredit:
+                          amount: '3.14'
+                          currency: USD
+                        fxDebit:
+                          amount: '3.14'
+                          currency: USD
+                      return:
+                        id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                        payoutId: abdb500d-4a59-457c-801f-2d418c8703ac
                         amount:
                           amount: '3.14'
                           currency: USD
                         fees:
                           amount: '3.14'
                           currency: USD
+                        reason: payout_returned
                         status: pending
-                        trackingRef: CIR-6ESOQANEP3NAO
-                        errorCode: insufficient_funds
-                        riskEvaluation:
-                          decision: approved
-                          reason: '3000'
-                        adjustments:
-                          fxCredit:
-                            amount: '3.14'
-                            currency: USD
-                          fxDebit:
-                            amount: '3.14'
-                            currency: USD
-                        return:
-                          id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                          payoutId: abdb500d-4a59-457c-801f-2d418c8703ac
-                          amount:
-                            amount: '3.14'
-                            currency: USD
-                          fees:
-                            amount: '3.14'
-                            currency: USD
-                          reason: payout_returned
-                          status: pending
-                          createDate: '2020-04-10T02:13:30.000Z'
-                          updateDate: '2020-04-10T02:13:30.000Z'
                         createDate: '2020-04-10T02:13:30.000Z'
                         updateDate: '2020-04-10T02:13:30.000Z'
+                      createDate: '2020-04-10T02:13:30.000Z'
+                      updateDate: '2020-04-10T02:13:30.000Z'
         '401':
           $ref: '#/components/responses/NotAuthorized'
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a payout
       operationId: createBusinessAccountPayout
       tags:
-        - Payouts
+      - Payouts
       requestBody:
         content:
           application/json:
@@ -217,13 +222,13 @@ paths:
   /v1/businessAccount/payouts/{id}:
     get:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get a payout
       operationId: getBusinessAccountPayout
       tags:
-        - Payouts
+      - Payouts
       responses:
         '200':
           description: Successfully retrieved a payout.
@@ -288,11 +293,11 @@ paths:
   /v1/businessAccount/banks/wires:
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a Wire bank account
       operationId: createBusinessAccountWireBankAccount
       tags:
-        - Wires
+      - Wires
       requestBody:
         content:
           application/json:
@@ -343,11 +348,11 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: List all Wire bank accounts
       operationId: getBusinessAccountWireBankAccounts
       tags:
-        - Wires
+      - Wires
       responses:
         '200':
           description: Successfully retrieved a list of bank accounts.
@@ -357,6 +362,7 @@ paths:
           content:
             application/json:
               schema:
+                title: GetBusinessAccountWireBankAccountsResponse
                 properties:
                   data:
                     type: array
@@ -366,40 +372,40 @@ paths:
                 response:
                   value:
                     data:
-                      - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        status: pending
-                        description: WELLS FARGO BANK, NA ****0010
-                        trackingRef: CIR13FB13A
-                        fingerprint: eb170539-9e1c-4e92-bf4f-1d09534fdca2
-                        billingDetails:
-                          name: Satoshi Nakamoto
-                          city: Boston
-                          country: US
-                          line1: 100 Money Street
-                          line2: Suite 1
-                          district: MA
-                          postalCode: '01234'
-                        bankAddress:
-                          bankName: SAN FRANCISCO
-                          city: SAN FRANCISCO
-                          country: US
-                          line1: 100 Money Street
-                          line2: Suite 1
-                          district: CA
-                        createDate: '2020-04-10T02:13:30.000Z'
-                        updateDate: '2020-04-10T02:13:30.000Z'
+                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      status: pending
+                      description: WELLS FARGO BANK, NA ****0010
+                      trackingRef: CIR13FB13A
+                      fingerprint: eb170539-9e1c-4e92-bf4f-1d09534fdca2
+                      billingDetails:
+                        name: Satoshi Nakamoto
+                        city: Boston
+                        country: US
+                        line1: 100 Money Street
+                        line2: Suite 1
+                        district: MA
+                        postalCode: '01234'
+                      bankAddress:
+                        bankName: SAN FRANCISCO
+                        city: SAN FRANCISCO
+                        country: US
+                        line1: 100 Money Street
+                        line2: Suite 1
+                        district: CA
+                      createDate: '2020-04-10T02:13:30.000Z'
+                      updateDate: '2020-04-10T02:13:30.000Z'
         '401':
           $ref: '#/components/responses/NotAuthorized'
   /v1/businessAccount/banks/wires/{id}:
     get:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get a Wire bank account
       operationId: getBusinessAccountWireBankAccount
       tags:
-        - Wires
+      - Wires
       responses:
         '200':
           description: Successfully retrieved a bank account for wire transfers.
@@ -446,17 +452,20 @@ paths:
   /v1/businessAccount/banks/wires/{id}/instructions:
     get:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/Currency'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get Wire instructions
-      description: Get the wire transfer instructions into the Circle bank account given your bank account id.
+      description: Get the wire transfer instructions into the Circle bank account
+        given your bank account id.
       operationId: getBusinessAccountWireInstructionsBankAccount
       tags:
-        - Wires
+      - Wires
       responses:
         '200':
-          description: Successfully retrieved wire transfer instructions for the bank account.
+          description: Successfully retrieved wire transfer instructions for the bank
+            account.
           headers:
             X-Request-Id:
               $ref: '#/components/headers/XRequestId'
@@ -493,11 +502,11 @@ paths:
   /v1/businessAccount/banks/signet:
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a Signet bank account (Production Only)
       operationId: createBusinessAccountSignetBankAccount
       tags:
-        - Signet
+      - Signet
       requestBody:
         content:
           application/json:
@@ -532,11 +541,11 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: List all Signet bank accounts (Production Only).
       operationId: getBusinessAccountSignetBankAccounts
       tags:
-        - Signet
+      - Signet
       responses:
         '200':
           description: Successfully retrieved all bank accounts for Signet transfers.
@@ -556,24 +565,24 @@ paths:
                 response:
                   value:
                     data:
-                      - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        status: pending
-                        trackingRef: CIR13FB14A
-                        walletAddress: '0xcac04f0069e4ac9314ac4e608e99278a3bebabcd'
-                        createDate: '2020-04-10T02:13:30.000Z'
-                        updateDate: '2020-04-10T02:13:30.000Z'
+                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      status: pending
+                      trackingRef: CIR13FB14A
+                      walletAddress: '0xcac04f0069e4ac9314ac4e608e99278a3bebabcd'
+                      createDate: '2020-04-10T02:13:30.000Z'
+                      updateDate: '2020-04-10T02:13:30.000Z'
         '401':
           $ref: '#/components/responses/NotAuthorized'
   /v1/businessAccount/banks/signet/{id}:
     get:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get a Signet bank account (Production Only)
       operationId: getBusinessAccountSignetBankAccount
       tags:
-        - Signet
+      - Signet
       responses:
         '200':
           description: Successfully retrieved a bank account for Signet transfers.
@@ -604,17 +613,19 @@ paths:
   /v1/businessAccount/banks/signet/{id}/instructions:
     get:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get Signet instructions (Production Only)
-      description: Get the Signet transfer instructions into the Circle bank account given your bank account id (only available on Production now).
+      description: Get the Signet transfer instructions into the Circle bank account
+        given your bank account id (only available on Production now).
       operationId: getBusinessAccountSignetInstructionsBankAccount
       tags:
-        - Signet
+      - Signet
       responses:
         '200':
-          description: Successfully retrieved Signet transfer instructions for the bank account.
+          description: Successfully retrieved Signet transfer instructions for the
+            bank account.
           headers:
             X-Request-Id:
               $ref: '#/components/headers/XRequestId'
@@ -638,11 +649,11 @@ paths:
   /v1/businessAccount/banks/sen:
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a Silvergate SEN bank account (BETA)
       operationId: createBusinessAccountSenBankAccount
       tags:
-        - SEN
+      - SEN
       requestBody:
         content:
           application/json:
@@ -678,20 +689,22 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: List all Silvergate SEN bank accounts (BETA).
       operationId: getBusinessAccountSenBankAccounts
       tags:
-        - SEN
+      - SEN
       responses:
         '200':
-          description: Successfully retrieved all bank accounts for Silvergate SEN transfers.
+          description: Successfully retrieved all bank accounts for Silvergate SEN
+            transfers.
           headers:
             X-Request-Id:
               $ref: '#/components/headers/XRequestId'
           content:
             application/json:
               schema:
+                title: GetBusinessAccountSenBankAccountsResponse
                 properties:
                   data:
                     type: array
@@ -701,25 +714,25 @@ paths:
                 response:
                   value:
                     data:
-                      - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        status: pending
-                        description: SILVERGATE BANK ****1111
-                        trackingRef: CIR13FB14A
-                        createDate: '2020-04-10T02:13:30.000Z'
-                        updateDate: '2020-04-10T02:13:30.000Z'
-                        currency: USD
+                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      status: pending
+                      description: SILVERGATE BANK ****1111
+                      trackingRef: CIR13FB14A
+                      createDate: '2020-04-10T02:13:30.000Z'
+                      updateDate: '2020-04-10T02:13:30.000Z'
+                      currency: USD
         '401':
           $ref: '#/components/responses/NotAuthorized'
   /v1/businessAccount/banks/sen/{id}:
     get:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get a Silvergate SEN bank account (BETA)
       operationId: getBusinessAccountSenBankAccount
       tags:
-        - SEN
+      - SEN
       responses:
         '200':
           description: Successfully retrieved a bank account for Silvergate SEN transfers.
@@ -751,17 +764,19 @@ paths:
   /v1/businessAccount/banks/sen/{id}/instructions:
     get:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get Silvergate SEN instructions (BETA)
-      description: Get the Silvergate SEN transfer instructions into the Circle bank account given your bank account id (BETA).
+      description: Get the Silvergate SEN transfer instructions into the Circle bank
+        account given your bank account id (BETA).
       operationId: getBusinessAccountSenInstructionsBankAccount
       tags:
-        - SEN
+      - SEN
       responses:
         '200':
-          description: Successfully retrieved Sen transfer instructions for the bank account.
+          description: Successfully retrieved Sen transfer instructions for the bank
+            account.
           headers:
             X-Request-Id:
               $ref: '#/components/headers/XRequestId'
@@ -786,12 +801,13 @@ paths:
   /v1/businessAccount/transfers:
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a transfer
-      description: A transfer can be made from an existing business account to a blockchain location.
+      description: A transfer can be made from an existing business account to a blockchain
+        location.
       operationId: createBusinessAccountTransfer
       tags:
-        - Transfers
+      - Transfers
       requestBody:
         content:
           application/json:
@@ -819,15 +835,15 @@ paths:
                         type: wallet
                         id: '12345'
                         identities:
-                          - type: individual
-                            name: Satoshi Nakamoto
-                            addresses:
-                              - line1: 100 Money Street
-                                line2: Suite 1
-                                city: Boston
-                                district: MA
-                                postalCode: '01234'
-                                country: US
+                        - type: individual
+                          name: Satoshi Nakamoto
+                          addresses:
+                          - line1: 100 Money Street
+                            line2: Suite 1
+                            city: Boston
+                            district: MA
+                            postalCode: '01234'
+                            country: US
                       destination:
                         type: blockchain
                         address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
@@ -836,24 +852,30 @@ paths:
                       amount:
                         amount: '3.14'
                         currency: USD
+                      fees:
+                      - amount: '10.00'
+                        currency: USD
+                        type: network
                       transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
                       status: pending
                       errorCode: transfer_failed
                       createDate: '2020-04-10T02:13:30.000Z'
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/From'
-        - $ref: '#/components/parameters/To'
-        - $ref: '#/components/parameters/PageBefore'
-        - $ref: '#/components/parameters/PageAfter'
-        - $ref: '#/components/parameters/PageSize'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      - $ref: '#/components/parameters/PageBefore'
+      - $ref: '#/components/parameters/PageAfter'
+      - $ref: '#/components/parameters/PageSize'
       summary: List all transfers
-      description: Searches for transfers from your business account. If the date parameters are omitted, returns the most recent transfers. This endpoint returns up to 50 transfers in descending chronological order or pageSize, if provided.
+      description: Searches for transfers from your business account. If the date
+        parameters are omitted, returns the most recent transfers. This endpoint returns
+        up to 50 transfers in descending chronological order or pageSize, if provided.
       operationId: searchBusinessAccountTransfers
       tags:
-        - Transfers
+      - Transfers
       responses:
         '200':
           description: Successfully retrieved a list of transfers.
@@ -873,44 +895,48 @@ paths:
                 response:
                   value:
                     data:
-                      - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        source:
-                          type: wallet
-                          id: '12345'
-                          identities:
-                            - type: individual
-                              name: Satoshi Nakamoto
-                              addresses:
-                                - line1: 100 Money Street
-                                  line2: Suite 1
-                                  city: Boston
-                                  district: MA
-                                  postalCode: '01234'
-                                  country: US
-                        destination:
-                          type: blockchain
-                          address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
-                          addressTag: '123456789'
-                          chain: ALGO
-                        amount:
-                          amount: '3.14'
-                          currency: USD
-                        transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
-                        status: pending
-                        errorCode: transfer_failed
-                        createDate: '2020-04-10T02:13:30.000Z'
+                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      source:
+                        type: wallet
+                        id: '12345'
+                        identities:
+                        - type: individual
+                          name: Satoshi Nakamoto
+                          addresses:
+                          - line1: 100 Money Street
+                            line2: Suite 1
+                            city: Boston
+                            district: MA
+                            postalCode: '01234'
+                            country: US
+                      destination:
+                        type: blockchain
+                        address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+                        addressTag: '123456789'
+                        chain: ALGO
+                      amount:
+                        amount: '3.14'
+                        currency: USD
+                      fees:
+                      - amount: '10.00'
+                        currency: USD
+                        type: network
+                      transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
+                      status: pending
+                      errorCode: transfer_failed
+                      createDate: '2020-04-10T02:13:30.000Z'
         '401':
           $ref: '#/components/responses/NotAuthorized'
   /v1/businessAccount/transfers/{id}:
     get:
       parameters:
-        - $ref: '#/components/parameters/IdPath'
+      - $ref: '#/components/parameters/IdPath'
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Get a transfer
       operationId: getBusinessAccountTransfer
       tags:
-        - Transfers
+      - Transfers
       responses:
         '200':
           headers:
@@ -933,15 +959,15 @@ paths:
                         type: wallet
                         id: '12345'
                         identities:
-                          - type: individual
-                            name: Satoshi Nakamoto
-                            addresses:
-                              - line1: 100 Money Street
-                                line2: Suite 1
-                                city: Boston
-                                district: MA
-                                postalCode: '01234'
-                                country: US
+                        - type: individual
+                          name: Satoshi Nakamoto
+                          addresses:
+                          - line1: 100 Money Street
+                            line2: Suite 1
+                            city: Boston
+                            district: MA
+                            postalCode: '01234'
+                            country: US
                       destination:
                         type: blockchain
                         address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
@@ -950,6 +976,10 @@ paths:
                       amount:
                         amount: '3.14'
                         currency: USD
+                      fees:
+                      - amount: '10.00'
+                        currency: USD
+                        type: network
                       transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
                       status: pending
                       errorCode: transfer_failed
@@ -957,13 +987,19 @@ paths:
   /v1/businessAccount/wallets/addresses/deposit:
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a deposit address
-      description: |
-        Generates a new blockchain address for a wallet for a given currency/chain pair. Circle may reuse addresses on blockchains that support reuse. For example, if you're requesting two addresses for depositing USD and ETH, both on Ethereum, you may see the same Ethereum address returned. Depositing cryptocurrency to a generated address will credit the associated wallet with the value of the deposit.
+      description: 'Generates a new blockchain address for a wallet for a given currency/chain
+        pair. Circle may reuse addresses on blockchains that support reuse. For example,
+        if you''re requesting two addresses for depositing USD and ETH, both on Ethereum,
+        you may see the same Ethereum address returned. Depositing cryptocurrency
+        to a generated address will credit the associated wallet with the value of
+        the deposit.
+
+        '
       operationId: generateBusinessAccountDepositAddress
       tags:
-        - Addresses
+      - Addresses
       requestBody:
         content:
           application/json:
@@ -996,11 +1032,11 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: List all deposit addresses
       operationId: getBusinessAccountDepositAddresses
       tags:
-        - Addresses
+      - Addresses
       responses:
         '200':
           description: Successfully retrieved a list of deposit addresses.
@@ -1020,22 +1056,24 @@ paths:
                 response:
                   value:
                     data:
-                      - address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
-                        addressTag: '123456789'
-                        currency: USD
-                        chain: ALGO
+                    - address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+                      addressTag: '123456789'
+                      currency: USD
+                      chain: ALGO
         '401':
           $ref: '#/components/responses/NotAuthorized'
   /v1/businessAccount/wallets/addresses/recipient:
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a recipient address
-      description: |
-        Stores an external blockchain address. Once added, the recipient address must be verified to ensure that you know and trust each new address.
+      description: 'Stores an external blockchain address. Once added, the recipient
+        address must be verified to ensure that you know and trust each new address.
+
+        '
       operationId: createBusinessAccountRecipientAddress
       tags:
-        - Addresses
+      - Addresses
       requestBody:
         content:
           application/json:
@@ -1070,19 +1108,22 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/From'
-        - $ref: '#/components/parameters/To'
-        - $ref: '#/components/parameters/PageBefore'
-        - $ref: '#/components/parameters/PageAfter'
-        - $ref: '#/components/parameters/PageSize'
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      - $ref: '#/components/parameters/PageBefore'
+      - $ref: '#/components/parameters/PageAfter'
+      - $ref: '#/components/parameters/PageSize'
       summary: List all recipient addresses
-      description: |
-        Returns a list of recipient addresses that have each been verified and are eligible for transfers. Any recipient addresses pending verification are not included in the response.
+      description: 'Returns a list of recipient addresses that have each been verified
+        and are eligible for transfers. Any recipient addresses pending verification
+        are not included in the response.
+
+        '
       operationId: getBusinessAccountRecipientAddresses
       tags:
-        - Addresses
+      - Addresses
       responses:
         '200':
           description: Successfully retrieved a list of recipient addresses.
@@ -1102,36 +1143,39 @@ paths:
                 response:
                   value:
                     data:
-                      - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
-                        addressTag: '123456789'
-                        chain: ALGO
-                        currency: USD
-                        description: My USDC address at a cryptocurrency exchange
+                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+                      addressTag: '123456789'
+                      chain: ALGO
+                      currency: USD
+                      description: My USDC address at a cryptocurrency exchange
         '401':
           $ref: '#/components/responses/NotAuthorized'
   /v1/businessAccount/deposits:
     get:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       parameters:
-        - name: type
-          description: Unique identifier for the deposit type. Filters results to fetch deposits made by this specific type.
-          in: query
-          schema:
-            type: string
-            enum:
-              - wire
-        - $ref: '#/components/parameters/From'
-        - $ref: '#/components/parameters/To'
-        - $ref: '#/components/parameters/PageBefore'
-        - $ref: '#/components/parameters/PageAfter'
-        - $ref: '#/components/parameters/PageSize'
+      - name: type
+        description: Unique identifier for the deposit type. Filters results to fetch
+          deposits made by this specific type.
+        in: query
+        schema:
+          type: string
+          enum:
+          - wire
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      - $ref: '#/components/parameters/PageBefore'
+      - $ref: '#/components/parameters/PageAfter'
+      - $ref: '#/components/parameters/PageSize'
       summary: List all deposits
-      description: Searches for deposits sent to your business account. If the date parameters are omitted, returns the most recent deposits. This endpoint returns up to 50 deposits in descending chronological order or pageSize, if provided.
+      description: Searches for deposits sent to your business account. If the date
+        parameters are omitted, returns the most recent deposits. This endpoint returns
+        up to 50 deposits in descending chronological order or pageSize, if provided.
       operationId: searchBusinessAccountDeposits
       tags:
-        - Deposits
+      - Deposits
       responses:
         '200':
           description: Successfully retrieved a list of deposits.
@@ -1151,34 +1195,36 @@ paths:
                 response:
                   value:
                     data:
-                      - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        sourceWalletId: 9b57048d-2365-4ff5-956b-0199170d1035
-                        destination:
-                          type: wallet
-                          id: '12345'
-                        amount:
-                          amount: '3.14'
-                          currency: USD
-                        fee:
-                          amount: '3.14'
-                          currency: USD
-                        status: pending
-                        riskEvaluation:
-                          decision: approved
-                          reason: '3000'
-                        createDate: '2020-04-10T02:13:30.000Z'
-                        updateDate: '2020-04-10T02:13:30.000Z'
+                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      sourceWalletId: 9b57048d-2365-4ff5-956b-0199170d1035
+                      destination:
+                        type: wallet
+                        id: '12345'
+                      amount:
+                        amount: '3.14'
+                        currency: USD
+                      fee:
+                        amount: '3.14'
+                        currency: USD
+                      status: pending
+                      riskEvaluation:
+                        decision: approved
+                        reason: '3000'
+                      createDate: '2020-04-10T02:13:30.000Z'
+                      updateDate: '2020-04-10T02:13:30.000Z'
         '401':
           $ref: '#/components/responses/NotAuthorized'
   /v1/mocks/payments/sen:
     post:
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       summary: Create a mock Silvergate SEN payment
-      description: In the sandbox environment, initiate a mock SEN transfer that mimics the behavior of funds sent through the Silvergate SEN account linked to master wallet.
+      description: In the sandbox environment, initiate a mock SEN transfer that mimics
+        the behavior of funds sent through the Silvergate SEN account linked to master
+        wallet.
       operationId: createSenPayment
       tags:
-        - Deposits
+      - Deposits
       requestBody:
         content:
           application/json:
@@ -1219,7 +1265,8 @@ components:
       scheme: bearer
   headers:
     XRequestId:
-      description: Universally unique identifier (UUID v4) for the request. Helpful for identifying a request when communicating with Circle support.
+      description: Universally unique identifier (UUID v4) for the request. Helpful
+        for identifying a request when communicating with Circle support.
       schema:
         type: string
         format: uuid
@@ -1228,8 +1275,8 @@ components:
     Money:
       type: object
       required:
-        - amount
-        - currency
+      - amount
+      - currency
       properties:
         amount:
           type: string
@@ -1239,34 +1286,39 @@ components:
           type: string
           description: Currency code for the amount.
           enum:
-            - USD
-            - EUR
-            - BTC
-            - ETH
+          - USD
+          - EUR
+          - BTC
+          - ETH
     Balances:
       type: object
       description: Available and unsettled balances of the merchant.
       required:
-        - available
-        - unsettled
+      - available
+      - unsettled
       properties:
         available:
           type: array
-          description: List of currency balances (one for each currency) that are currently available to spend.
+          description: List of currency balances (one for each currency) that are
+            currently available to spend.
           items:
             $ref: '#/components/schemas/Money'
         unsettled:
           type: array
-          description: List of currency balances (one for each currency) that have been captured but are currently in the process of settling and will become available to spend at some point in the future.
+          description: List of currency balances (one for each currency) that have
+            been captured but are currently in the process of settling and will become
+            available to spend at some point in the future.
           items:
             $ref: '#/components/schemas/Money'
     PayoutStatus:
       type: string
-      description: Status of the payout. Status `pending` indicates that the payout is in process; `complete` indicates it finished successfully; `failed` indicates it failed.
+      description: Status of the payout. Status `pending` indicates that the payout
+        is in process; `complete` indicates it finished successfully; `failed` indicates
+        it failed.
       enum:
-        - pending
-        - complete
-        - failed
+      - pending
+      - complete
+      - failed
     Id:
       type: string
       description: Unique system generated identifier for the entity.
@@ -1276,15 +1328,15 @@ components:
       type: string
       description: The destination bank account type.
       enum:
-        - wire
-        - ach
-        - sepa
+      - wire
+      - ach
+      - sepa
     BankDestination:
       type: object
       description: The destination bank account.
       required:
-        - type
-        - id
+      - type
+      - id
       properties:
         type:
           $ref: '#/components/schemas/PayoutDestinationType'
@@ -1292,14 +1344,15 @@ components:
           $ref: '#/components/schemas/Id'
         name:
           type: string
-          description: Bank name plus last four digits of the bank account number or IBAN.
+          description: Bank name plus last four digits of the bank account number
+            or IBAN.
           readOnly: true
           example: COMMERZBANK AG ****3000
     FiatMoney:
       type: object
       required:
-        - amount
-        - currency
+      - amount
+      - currency
       properties:
         amount:
           description: Magnitude of the amount, in units of the currency, with a `.`.
@@ -1309,13 +1362,13 @@ components:
           description: Currency code.
           type: string
           enum:
-            - USD
-            - EUR
+          - USD
+          - EUR
     FiatMoneyUsd:
       type: object
       required:
-        - amount
-        - currency
+      - amount
+      - currency
       properties:
         amount:
           description: Magnitude of the amount, in units of the currency, with a `.`.
@@ -1325,42 +1378,57 @@ components:
           description: Currency code.
           type: string
           enum:
-            - USD
+          - USD
     PayoutErrorCode:
       type: string
       nullable: true
-      description: Indicates the failure reason of a payout. Only present for payouts in failed state. Possible values are [`insufficient_funds`, `transaction_denied`, `transaction_failed`, `transaction_returned`, `bank_transaction_error`, `fiat_account_limit_exceeded`, `invalid_bank_account_number`, `invalid_ach_rtn`, `invalid_wire_rtn`, `vendor_inactive`]'
+      description: Indicates the failure reason of a payout. Only present for payouts
+        in failed state. Possible values are [`insufficient_funds`, `transaction_denied`,
+        `transaction_failed`, `transaction_returned`, `bank_transaction_error`, `fiat_account_limit_exceeded`,
+        `invalid_bank_account_number`, `invalid_ach_rtn`, `invalid_wire_rtn`, `vendor_inactive`]'
       enum:
-        - insufficient_funds
-        - transaction_denied
-        - transaction_failed
-        - transaction_returned
-        - bank_transaction_error
-        - fiat_account_limit_exceeded
-        - invalid_bank_account_number
-        - invalid_ach_rtn
-        - invalid_wire_rtn
-        - vendor_inactive
+      - insufficient_funds
+      - transaction_denied
+      - transaction_failed
+      - transaction_returned
+      - bank_transaction_error
+      - fiat_account_limit_exceeded
+      - invalid_bank_account_number
+      - invalid_ach_rtn
+      - invalid_wire_rtn
+      - vendor_inactive
     RiskEvaluation:
       type: object
-      description: Results of risk evaluation. Only present if the payment is denied by Circle's risk service.
+      description: Results of risk evaluation. Only present if the payment is denied
+        by Circle's risk service.
       nullable: true
       properties:
         decision:
           description: Enumerated decision of the account.
           type: string
           enum:
-            - approved
-            - denied
-            - review
+          - approved
+          - denied
+          - review
         reason:
           description: Risk reason for the definitive decision outcome.
           type: string
           nullable: true
           example: '3000'
+    FinalAdjustments:
+      type: object
+      description: Final adjustment which increases (credits) or decreases (debits)
+        the total returned amount to the source wallet.
+      nullable: true
+      properties:
+        fxCredit:
+          $ref: '#/components/schemas/FiatMoneyUsd'
+        fxDebit:
+          $ref: '#/components/schemas/FiatMoneyUsd'
     IdPayout:
       type: string
-      description: Universally unique identifier (UUID v4) of the payout that is associated with the return.
+      description: Universally unique identifier (UUID v4) of the payout that is associated
+        with the return.
       format: uuid
       example: abdb500d-4a59-457c-801f-2d418c8703ac
     UTCTimestamp:
@@ -1369,7 +1437,8 @@ components:
       example: '2020-04-10T02:13:30.000Z'
     UnwithdrawalObject:
       type: object
-      description: Return information if the payout is returned by bank. Only present if `errorCode` of payout is `transaction_returned`.
+      description: Return information if the payout is returned by bank. Only present
+        if `errorCode` of payout is `transaction_returned`.
       nullable: true
       properties:
         id:
@@ -1386,11 +1455,13 @@ components:
           example: payout_returned
         status:
           type: string
-          description: Status of the return. A `pending` status indicates that the return is in process; `complete` indicates it finished successfully; `failed` indicates it failed.
+          description: Status of the return. A `pending` status indicates that the
+            return is in process; `complete` indicates it finished successfully; `failed`
+            indicates it failed.
           enum:
-            - pending
-            - complete
-            - failed
+          - pending
+          - complete
+          - failed
         createDate:
           $ref: '#/components/schemas/UTCTimestamp'
         updateDate:
@@ -1421,14 +1492,7 @@ components:
         riskEvaluation:
           $ref: '#/components/schemas/RiskEvaluation'
         adjustments:
-          description: Final adjustment which increases (credits) or decreases (debits) the total returned amount to the source wallet.
-          nullable: true
-          type: object
-          properties:
-            fxCredit:
-              $ref: '#/components/schemas/FiatMoneyUsd'
-            fxDebit:
-              $ref: '#/components/schemas/FiatMoneyUsd'
+          $ref: '#/components/schemas/FinalAdjustments'
         return:
           $ref: '#/components/schemas/UnwithdrawalObject'
         createDate:
@@ -1437,29 +1501,30 @@ components:
           $ref: '#/components/schemas/UTCTimestamp'
     IdempotencyKey:
       type: string
-      description: Universally unique identifier (UUID v4) idempotency key. This key is utilized to ensure exactly-once execution of mutating requests.
+      description: Universally unique identifier (UUID v4) idempotency key. This key
+        is utilized to ensure exactly-once execution of mutating requests.
       format: uuid
       example: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
     BusinessAccountDestinationRequest:
       type: object
       description: The destination bank account.
       required:
-        - type
-        - id
+      - type
+      - id
       properties:
         type:
           type: string
           enum:
-            - wire
-            - sen
+          - wire
+          - sen
         id:
           $ref: '#/components/schemas/Id'
     BusinessAccountPayoutCreationRequest:
       type: object
       required:
-        - idempotencyKey
-        - destination
-        - amount
+      - idempotencyKey
+      - destination
+      - amount
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -1468,24 +1533,28 @@ components:
         amount:
           $ref: '#/components/schemas/FiatMoney'
     ExternalFiatAccountStatus:
-      description: Status of the account. A `pending` status indicates that the linking is in-progress; `complete` indicates the account was linked successfully; `failed` indicates it failed.
+      description: Status of the account. A `pending` status indicates that the linking
+        is in-progress; `complete` indicates the account was linked successfully;
+        `failed` indicates it failed.
       type: string
       enum:
-        - pending
-        - complete
-        - failed
+      - pending
+      - complete
+      - failed
     Fingerprint:
       type: string
-      description: A UUID that uniquely identifies the account number. If the same account is used more than once, each card object will have a different id, but the fingerprint will stay the same.
+      description: A UUID that uniquely identifies the account number. If the same
+        account is used more than once, each card object will have a different id,
+        but the fingerprint will stay the same.
       example: eb170539-9e1c-4e92-bf4f-1d09534fdca2
     BillingDetails:
       type: object
       required:
-        - name
-        - city
-        - country
-        - line1
-        - postalCode
+      - name
+      - city
+      - country
+      - line1
+      - postalCode
       properties:
         name:
           type: string
@@ -1499,7 +1568,8 @@ components:
           example: Boston
         country:
           type: string
-          description: Country portion of the address. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.
+          description: Country portion of the address. Formatted as a two-letter country
+            code specified in ISO 3166-1 alpha-2.
           maxLength: 2
           example: US
         line1:
@@ -1513,7 +1583,9 @@ components:
           maxLength: 1024
           example: Suite 1
         district:
-          description: State / County / Province / Region portion of the address. If the country is US or Canada, then district is required and should use the two-letter code for the subdivision.
+          description: State / County / Province / Region portion of the address.
+            If the country is US or Canada, then district is required and should use
+            the two-letter code for the subdivision.
           type: string
           maxLength: 16
           example: MA
@@ -1524,23 +1596,27 @@ components:
           example: '01234'
     BankAddress:
       type: object
-      description: The address details for the bank, as provided during bank account creation.
+      description: The address details for the bank, as provided during bank account
+        creation.
       required:
-        - country
+      - country
       properties:
         bankName:
           type: string
-          description: Name of the bank. This property is required for bank accounts outside of the US that do not support IBAN'
+          description: Name of the bank. This property is required for bank accounts
+            outside of the US that do not support IBAN'
           maxLength: 35
           example: SAN FRANCISCO
         city:
           type: string
-          description: City portion of the address. This property is required for bank accounts outside of the US.
+          description: City portion of the address. This property is required for
+            bank accounts outside of the US.
           maxLength: 35
           example: SAN FRANCISCO
         country:
           type: string
-          description: Country portion of the address. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.
+          description: Country portion of the address. Formatted as a two-letter country
+            code specified in ISO 3166-1 alpha-2.
           maxLength: 2
           example: US
         line1:
@@ -1555,20 +1631,21 @@ components:
           example: Suite 1
         district:
           type: string
-          description: State / County / Province / Region portion of the address. US and Canada use the two-letter code for the subdivision.
+          description: State / County / Province / Region portion of the address.
+            US and Canada use the two-letter code for the subdivision.
           maxLength: 16
           example: CA
     Wire:
       type: object
       required:
-        - id
-        - status
-        - description
-        - trackingRef
-        - fingerprint
-        - billingDetails
-        - createDate
-        - updateDate
+      - id
+      - status
+      - description
+      - trackingRef
+      - fingerprint
+      - billingDetails
+      - createDate
+      - updateDate
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -1576,11 +1653,13 @@ components:
           $ref: '#/components/schemas/ExternalFiatAccountStatus'
         description:
           type: string
-          description: Bank name plus last four digits of the bank account number or IBAN.
+          description: Bank name plus last four digits of the bank account number
+            or IBAN.
           example: WELLS FARGO BANK, NA ****0010
         trackingRef:
           type: string
-          description: Wire tracking ref that needs to be set in the wire reference to beneficiary field.
+          description: Wire tracking ref that needs to be set in the wire reference
+            to beneficiary field.
           example: CIR13FB13A
         fingerprint:
           $ref: '#/components/schemas/Fingerprint'
@@ -1597,11 +1676,11 @@ components:
       title: US Bank Account
       description: Relevant fields for U.S. bank accounts.
       required:
-        - idempotencyKey
-        - accountNumber
-        - routingNumber
-        - billingDetails
-        - bankAddress
+      - idempotencyKey
+      - accountNumber
+      - routingNumber
+      - billingDetails
+      - bankAddress
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -1612,7 +1691,8 @@ components:
           minLength: 6
           maxLength: 35
         routingNumber:
-          description: ABA routing number for the bank account. Note this has to be specific for bank wire transfers.
+          description: ABA routing number for the bank account. Note this has to be
+            specific for bank wire transfers.
           type: string
           example: '121000248'
         billingDetails:
@@ -1623,22 +1703,25 @@ components:
       type: object
       description: The address of the bank. City and country fields are required.
       required:
-        - city
-        - country
+      - city
+      - country
       properties:
         bankName:
           type: string
-          description: Name of the bank. This property is required for bank accounts outside of the US that do not support IBAN'
+          description: Name of the bank. This property is required for bank accounts
+            outside of the US that do not support IBAN'
           maxLength: 35
           example: SAN FRANCISCO
         city:
           type: string
-          description: City portion of the address. This property is required for bank accounts outside of the US.
+          description: City portion of the address. This property is required for
+            bank accounts outside of the US.
           maxLength: 1024
           example: SAN FRANCISCO
         country:
           type: string
-          description: Country portion of the address. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.
+          description: Country portion of the address. Formatted as a two-letter country
+            code specified in ISO 3166-1 alpha-2.
           maxLength: 2
           example: US
         line1:
@@ -1653,7 +1736,8 @@ components:
           example: Suite 1
         district:
           type: string
-          description: State / County / Province / Region portion of the address. US and Canada use the two-letter code for the subdivision.
+          description: State / County / Province / Region portion of the address.
+            US and Canada use the two-letter code for the subdivision.
           maxLength: 16
           example: CA
     WireCreationRequestIban:
@@ -1661,10 +1745,10 @@ components:
       title: Non US Bank Account - IBAN Supported
       description: Relevant fields for non-U.S. bank accounts that support IBAN.
       required:
-        - idempotencyKey
-        - iban
-        - billingDetails
-        - bankAddress
+      - idempotencyKey
+      - iban
+      - billingDetails
+      - bankAddress
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -1678,25 +1762,29 @@ components:
           $ref: '#/components/schemas/BankAddressIbanSupported'
     BankAddressNonIban:
       type: object
-      description: The address of the bank. BankName, City and Country fields are required.
+      description: The address of the bank. BankName, City and Country fields are
+        required.
       required:
-        - bankName
-        - city
-        - country
+      - bankName
+      - city
+      - country
       properties:
         bankName:
           type: string
-          description: Name of the bank. This property is required for bank accounts outside of the US that do not support IBAN'
+          description: Name of the bank. This property is required for bank accounts
+            outside of the US that do not support IBAN'
           maxLength: 35
           example: SAN FRANCISCO
         city:
           type: string
-          description: City portion of the address. This property is required for bank accounts outside of the US.
+          description: City portion of the address. This property is required for
+            bank accounts outside of the US.
           maxLength: 1024
           example: SAN FRANCISCO
         country:
           type: string
-          description: Country portion of the address. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.
+          description: Country portion of the address. Formatted as a two-letter country
+            code specified in ISO 3166-1 alpha-2.
           maxLength: 2
           example: US
         line1:
@@ -1711,7 +1799,8 @@ components:
           example: Suite 1
         district:
           type: string
-          description: State / County / Province / Region portion of the address. US and Canada use the two-letter code for the subdivision.
+          description: State / County / Province / Region portion of the address.
+            US and Canada use the two-letter code for the subdivision.
           maxLength: 16
           example: CA
     WireCreationRequestAccountNumber:
@@ -1719,18 +1808,18 @@ components:
       title: Non US Bank Account - IBAN Not Supported
       description: Relevant fields for non-U.S. banks that do NOT support IBAN.
       required:
-        - idempotencyKey
-        - accountNumber
-        - routingNumber
-        - billingDetails
-        - bankAddress
+      - idempotencyKey
+      - accountNumber
+      - routingNumber
+      - billingDetails
+      - bankAddress
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
         accountNumber:
           description: Account number that identifies the bank account.
           type: string
-          example: '0321800123'
+          example: 0321800123
           minLength: 6
           maxLength: 35
         routingNumber:
@@ -1743,11 +1832,13 @@ components:
           $ref: '#/components/schemas/BankAddressNonIban'
     WireCreationRequest:
       type: object
-      description: Request object used to create a bank account (wires). Different fields are required depending on the bank country, see the guide documentation for the list of supported bank countries along with which ones support IBAN.
+      description: Request object used to create a bank account (wires). Different
+        fields are required depending on the bank country, see the guide documentation
+        for the list of supported bank countries along with which ones support IBAN.
       oneOf:
-        - $ref: '#/components/schemas/WireCreationRequestUS'
-        - $ref: '#/components/schemas/WireCreationRequestIban'
-        - $ref: '#/components/schemas/WireCreationRequestAccountNumber'
+      - $ref: '#/components/schemas/WireCreationRequestUS'
+      - $ref: '#/components/schemas/WireCreationRequestIban'
+      - $ref: '#/components/schemas/WireCreationRequestAccountNumber'
     WireInstructionBeneficiary:
       type: object
       properties:
@@ -1800,14 +1891,16 @@ components:
           example: '02110'
         country:
           type: string
-          description: Country code of the beneficiary's bank. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.
+          description: Country code of the beneficiary's bank. Formatted as a two-letter
+            country code specified in ISO 3166-1 alpha-2.
           example: US
     WireInstruction:
       type: object
       properties:
         trackingRef:
           type: string
-          description: Circle tracking reference that needs to be set in the wire reference field.
+          description: Circle tracking reference that needs to be set in the wire
+            reference field.
           example: CIR13FB13A
         beneficiary:
           $ref: '#/components/schemas/WireInstructionBeneficiary'
@@ -1816,12 +1909,12 @@ components:
     SignetFiatAccountResponse:
       type: object
       required:
-        - id
-        - status
-        - trackingRef
-        - walletAddress
-        - createDate
-        - updateDate
+      - id
+      - status
+      - trackingRef
+      - walletAddress
+      - createDate
+      - updateDate
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -1829,7 +1922,8 @@ components:
           $ref: '#/components/schemas/ExternalFiatAccountStatus'
         trackingRef:
           type: string
-          description: Tracking ref that needs to be set in the public description field when you send the funds to Circle Signet wallet.
+          description: Tracking ref that needs to be set in the public description
+            field when you send the funds to Circle Signet wallet.
           example: CIR13FB14A
         walletAddress:
           type: string
@@ -1842,8 +1936,8 @@ components:
     SignetFiatAccountCreationRequest:
       type: object
       required:
-        - idempotencyKey
-        - walletAddress
+      - idempotencyKey
+      - walletAddress
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -1856,21 +1950,23 @@ components:
       properties:
         trackingRef:
           type: string
-          description: Circle tracking reference that needs to be set in the signet public description field.
+          description: Circle tracking reference that needs to be set in the signet
+            public description field.
           example: CIR13FB14A
         walletAddress:
           type: string
-          description: Circle wallet address that needs to be set in the signet recipient wallet field.
+          description: Circle wallet address that needs to be set in the signet recipient
+            wallet field.
           example: '0x7e4f4fe03243ac7b291ebaee90b2bb27025a1234'
     SenFiatAccountResponse:
       type: object
       required:
-        - id
-        - status
-        - description
-        - trackingRef
-        - createDate
-        - updateDate
+      - id
+      - status
+      - description
+      - trackingRef
+      - createDate
+      - updateDate
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -1882,7 +1978,8 @@ components:
           example: SILVERGATE BANK ****1111
         trackingRef:
           type: string
-          description: Circle tracking reference that needs to be set in the memo field..
+          description: Circle tracking reference that needs to be set in the memo
+            field..
           example: CIR13FB14A
         createDate:
           $ref: '#/components/schemas/UTCTimestamp'
@@ -1895,8 +1992,8 @@ components:
     SenFiatAccountCreationRequest:
       type: object
       required:
-        - idempotencyKey
-        - accountNumber
+      - idempotencyKey
+      - accountNumber
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -1913,37 +2010,85 @@ components:
       properties:
         trackingRef:
           type: string
-          description: Circle tracking reference that needs to be set in the memo field.
+          description: Circle tracking reference that needs to be set in the memo
+            field.
           example: CIR13FB14A
         accountNumber:
           type: string
-          description: Circle corporate Silvergate SEN account number that needs to be set as destination.
+          description: Circle corporate Silvergate SEN account number that needs to
+            be set as destination.
           example: '11111111'
         currency:
           type: string
           description: Currency of Circle corporate Silvergate SEN account.
           example: USD
+    IdentityAddress:
+      type: object
+      required:
+      - line1
+      - city
+      - district
+      - postalCode
+      - country
+      properties:
+        line1:
+          type: string
+          description: Line one of the street address.
+          maxLength: 1024
+          example: 100 Money Street
+        line2:
+          type: string
+          description: Line two of the street address.
+          maxLength: 1024
+          example: Suite 1
+        city:
+          type: string
+          description: City portion of the address.
+          maxLength: 1024
+          example: Boston
+        district:
+          description: State / County / Province / Region portion of the address.
+            If the country is US or Canada, then district is required and should use
+            the two-letter code for the subdivision.
+          type: string
+          maxLength: 16
+          example: MA
+        postalCode:
+          type: string
+          description: Postal / ZIP code of the address.
+          maxLength: 16
+          example: '01234'
+        country:
+          type: string
+          description: Country portion of the address. Formatted as a two-letter country
+            code specified in ISO 3166-1 alpha-2.
+          maxLength: 2
+          example: US
     Identity:
       type: object
-      description: |
-        The identity of the originator. Identities are required when:
-          * `destination.type: "blockchain"`
-          * `destination.chain: "ETH"`
-          * `amount.amount` >= $3,000 in value
+      description: "The identity of the originator. Identities are required when:\n\
+        \  * `destination.type: \"blockchain\"`\n  * `destination.chain: \"ETH\"`\n\
+        \  * `amount.amount` >= $3,000 in value\n"
       required:
-        - type
-        - name
-        - addresses
+      - type
+      - name
+      - addresses
       properties:
         type:
           type: string
-          description: |
-            The type of identity for the originator.
+          description: 'The type of identity for the originator.
+
             * `individual` - A uniquely distinguishable individual.
-            * `business` - Any entity other than a natural person that can establish a permanent customer relationship with an affected entity or otherwise own property. This can include companies, foundations, anstalt, partnerships, associations and other relevantly similar entities.
+
+            * `business` - Any entity other than a natural person that can establish
+            a permanent customer relationship with an affected entity or otherwise
+            own property. This can include companies, foundations, anstalt, partnerships,
+            associations and other relevantly similar entities.
+
+            '
           enum:
-            - individual
-            - business
+          - individual
+          - business
         name:
           type: string
           description: Full name of the identity.
@@ -1952,55 +2097,18 @@ components:
         addresses:
           type: array
           items:
-            type: object
-            required:
-              - line1
-              - city
-              - district
-              - postalCode
-              - country
-            properties:
-              line1:
-                type: string
-                description: Line one of the street address.
-                maxLength: 1024
-                example: 100 Money Street
-              line2:
-                type: string
-                description: Line two of the street address.
-                maxLength: 1024
-                example: Suite 1
-              city:
-                type: string
-                description: City portion of the address.
-                maxLength: 1024
-                example: Boston
-              district:
-                description: State / County / Province / Region portion of the address. If the country is US or Canada, then district is required and should use the two-letter code for the subdivision.
-                type: string
-                maxLength: 16
-                example: MA
-              postalCode:
-                type: string
-                description: Postal / ZIP code of the address.
-                maxLength: 16
-                example: '01234'
-              country:
-                type: string
-                description: Country portion of the address. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.
-                maxLength: 2
-                example: US
+            $ref: '#/components/schemas/IdentityAddress'
     TransferSourceWalletLocation:
       description: A source wallet location.
       type: object
       required:
-        - type
-        - id
+      - type
+      - id
       properties:
         type:
           type: string
           enum:
-            - wallet
+          - wallet
         id:
           type: string
           description: The id of the wallet.
@@ -2013,27 +2121,27 @@ components:
       type: string
       description: A blockchain that a given currency is available on.
       enum:
-        - ALGO
-        - AVAX
-        - BTC
-        - ETH
-        - FLOW
-        - HBAR
-        - MATIC
-        - SOL
-        - TRX
-        - XLM
+      - ALGO
+      - AVAX
+      - BTC
+      - ETH
+      - FLOW
+      - HBAR
+      - MATIC
+      - SOL
+      - TRX
+      - XLM
     TransferSourceBlockchainLocation:
       description: A source blockchain address.
       type: object
       required:
-        - type
-        - chain
+      - type
+      - chain
       properties:
         type:
           type: string
           enum:
-            - blockchain
+          - blockchain
         chain:
           $ref: '#/components/schemas/Chain'
         identities:
@@ -2043,31 +2151,35 @@ components:
     TransferSourceLocation:
       description: A source of funds.
       oneOf:
-        - $ref: '#/components/schemas/TransferSourceWalletLocation'
-        - $ref: '#/components/schemas/TransferSourceBlockchainLocation'
+      - $ref: '#/components/schemas/TransferSourceWalletLocation'
+      - $ref: '#/components/schemas/TransferSourceBlockchainLocation'
       discriminator:
         propertyName: type
     Address:
       type: string
-      description: An alphanumeric string representing a blockchain address. Will be in different formats for different chains. It is important to preserve the exact formatting and capitalization of the address.
+      description: An alphanumeric string representing a blockchain address. Will
+        be in different formats for different chains. It is important to preserve
+        the exact formatting and capitalization of the address.
       example: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
     AddressTag:
       type: string
-      description: The secondary identifier for a blockchain address. An example of this is the memo field on the Stellar network, which can be text, id, or hash format.
+      description: The secondary identifier for a blockchain address. An example of
+        this is the memo field on the Stellar network, which can be text, id, or hash
+        format.
       nullable: true
       example: '123456789'
     TransferDestinationBlockchainLocation:
       description: A destination blockchain address.
       type: object
       required:
-        - type
-        - chain
-        - address
+      - type
+      - chain
+      - address
       properties:
         type:
           type: string
           enum:
-            - blockchain
+          - blockchain
         address:
           $ref: '#/components/schemas/Address'
         addressTag:
@@ -2078,48 +2190,74 @@ components:
       description: A destination wallet location.
       type: object
       required:
-        - type
-        - id
+      - type
+      - id
       properties:
         type:
           type: string
           enum:
-            - wallet
+          - wallet
         id:
           type: string
           description: The id of the wallet.
           example: '12345'
         address:
           type: string
-          description: An alphanumeric string which indicates the wallet address used to receive the transfer. Will only be set when the transfer source is a blockchain address.
+          description: An alphanumeric string which indicates the wallet address used
+            to receive the transfer. Will only be set when the transfer source is
+            a blockchain address.
           example: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
         addressTag:
           $ref: '#/components/schemas/AddressTag'
     TransferDestinationLocation:
       description: A destination of funds.
       oneOf:
-        - $ref: '#/components/schemas/TransferDestinationBlockchainLocation'
-        - $ref: '#/components/schemas/TransferDestinationWalletLocation'
+      - $ref: '#/components/schemas/TransferDestinationBlockchainLocation'
+      - $ref: '#/components/schemas/TransferDestinationWalletLocation'
       discriminator:
         propertyName: type
+    Fee:
+      type: object
+      required:
+      - amount
+      - currency
+      - type
+      properties:
+        amount:
+          type: string
+          description: Magnitude of the fee amount, in units of the currency, with
+            a `.`.
+          example: '10.00'
+        currency:
+          type: string
+          description: Currency code for the amount.
+          enum:
+          - USD
+        type:
+          type: string
+          description: Category of the fee.
+          enum:
+          - network
     TransferErrorCode:
       type: string
-      description: Indicates the failure reason of a transfer. Only present for transfers in a `failed` state. Possible values are `insufficient_funds`, `blockchain_error` and `transfer_denied` and `transfer_failed`
+      description: Indicates the failure reason of a transfer. Only present for transfers
+        in a `failed` state. Possible values are `insufficient_funds`, `blockchain_error`
+        and `transfer_denied` and `transfer_failed`
       nullable: true
       enum:
-        - transfer_failed
-        - transfer_denied
-        - blockchain_error
-        - insufficient_funds
+      - transfer_failed
+      - transfer_denied
+      - blockchain_error
+      - insufficient_funds
     Transfer:
       type: object
       description: A transfer of funds.
       required:
-        - id
-        - source
-        - destination
-        - amount
-        - status
+      - id
+      - source
+      - destination
+      - amount
+      - status
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -2129,17 +2267,27 @@ components:
           $ref: '#/components/schemas/TransferDestinationLocation'
         amount:
           $ref: '#/components/schemas/Money'
+        fees:
+          description: An array of fees applied to a transaction. This is only available
+            when there is at least one non-zero fee.
+          readOnly: true
+          type: array
+          items:
+            $ref: '#/components/schemas/Fee'
         transactionHash:
-          description: A hash that uniquely identifies the onchain transaction. This is only available where either source or destination are of type blockchain.
+          description: A hash that uniquely identifies the onchain transaction. This
+            is only available where either source or destination are of type blockchain.
           type: string
           example: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
         status:
-          description: Status of the transfer. Status `pending` indicates that the transfer is in the process of running; `complete` indicates it finished successfully; `failed` indicates it failed.
+          description: Status of the transfer. Status `pending` indicates that the
+            transfer is in the process of running; `complete` indicates it finished
+            successfully; `failed` indicates it failed.
           type: string
           enum:
-            - pending
-            - complete
-            - failed
+          - pending
+          - complete
+          - failed
         errorCode:
           $ref: '#/components/schemas/TransferErrorCode'
         createDate:
@@ -2149,13 +2297,13 @@ components:
     TransferRequestVerifiedBlockchainLocation:
       type: object
       required:
-        - type
-        - addressId
+      - type
+      - addressId
       properties:
         type:
           type: string
           enum:
-            - verified_blockchain
+          - verified_blockchain
         addressId:
           type: string
           description: The ID of the verified blockchain recipient address.
@@ -2164,9 +2312,9 @@ components:
     BusinessAccountTransferCreationRequest:
       type: object
       required:
-        - idempotencyKey
-        - destination
-        - amount
+      - idempotencyKey
+      - destination
+      - amount
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -2179,10 +2327,10 @@ components:
       description: A currency associated with a balance or address.
       nullable: true
       enum:
-        - USD
-        - EUR
-        - BTC
-        - ETH
+      - USD
+      - EUR
+      - BTC
+      - ETH
     AddressObject:
       type: object
       properties:
@@ -2197,9 +2345,9 @@ components:
     BusinessAccountGenerateAddressRequest:
       type: object
       required:
-        - idempotencyKey
-        - currency
-        - chain
+      - idempotencyKey
+      - currency
+      - chain
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -2228,12 +2376,13 @@ components:
           $ref: '#/components/schemas/BusinessAccountDescription'
     BusinessAccountRecipientAddressCreationRequest:
       type: object
-      description: Adds a recipient address. The currency parameter will default to USD for all chains except for BTC where it defaults to BTC.
+      description: Adds a recipient address. The currency parameter will default to
+        USD for all chains except for BTC where it defaults to BTC.
       required:
-        - idempotencyKey
-        - address
-        - chain
-        - description
+      - idempotencyKey
+      - address
+      - chain
+      - description
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
@@ -2250,13 +2399,13 @@ components:
     WalletLocation:
       type: object
       required:
-        - type
-        - id
+      - type
+      - id
       properties:
         type:
           type: string
           enum:
-            - wallet
+          - wallet
         id:
           type: string
           description: The id of the wallet.
@@ -2265,17 +2414,18 @@ components:
       type: object
       description: A deposit
       required:
-        - id
-        - destination
-        - amount
-        - status
-        - createDate
+      - id
+      - destination
+      - amount
+      - status
+      - createDate
       properties:
         id:
           $ref: '#/components/schemas/Id'
         sourceWalletId:
           type: string
-          description: The identifier for the bank account where the funds were deposited from.
+          description: The identifier for the bank account where the funds were deposited
+            from.
           format: uuid
           example: 9b57048d-2365-4ff5-956b-0199170d1035
         destination:
@@ -2286,11 +2436,13 @@ components:
           $ref: '#/components/schemas/FiatMoneyUsd'
         status:
           type: string
-          description: Status of the deposit. Status `pending` indicates that the deposit is in the process of running; `complete` indicates it finished successfully; `failed` indicates it failed.
+          description: Status of the deposit. Status `pending` indicates that the
+            deposit is in the process of running; `complete` indicates it finished
+            successfully; `failed` indicates it failed.
           enum:
-            - pending
-            - complete
-            - failed
+          - pending
+          - complete
+          - failed
         riskEvaluation:
           $ref: '#/components/schemas/RiskEvaluation'
         createDate:
@@ -2300,22 +2452,25 @@ components:
     MockSenPaymentBeneficiaryBankInstruction:
       type: object
       required:
-        - accountNumber
+      - accountNumber
       properties:
         accountNumber:
           type: string
-          description: Circle corporate Silvergate SEN account number that needs to be set as destination.
+          description: Circle corporate Silvergate SEN account number that needs to
+            be set as destination.
           example: '11111111'
     MockSenPaymentRequest:
       type: object
       required:
-        - trackingRef
-        - amount
-        - beneficiaryBank
+      - trackingRef
+      - amount
+      - beneficiaryBank
       properties:
         trackingRef:
           type: string
-          description: Circle tracking reference that needs to be set in the memo filed. This field is retrievable through the response during SEN account creation or via the bank instruction endpoint.
+          description: Circle tracking reference that needs to be set in the memo
+            filed. This field is retrievable through the response during SEN account
+            creation or via the bank instruction endpoint.
           example: CIR13FB13A
         amount:
           $ref: '#/components/schemas/FiatMoney'
@@ -2326,7 +2481,9 @@ components:
       properties:
         trackingRef:
           type: string
-          description: Wire tracking reference that needs to be set in the wire reference to beneficiary field. This field is retrievable through the response during wire creation or via the bank instruction endpoint.
+          description: Wire tracking reference that needs to be set in the wire reference
+            to beneficiary field. This field is retrievable through the response during
+            wire creation or via the bank instruction endpoint.
           example: CIR13FB13A
         amount:
           $ref: '#/components/schemas/FiatMoneyUsd'
@@ -2334,14 +2491,17 @@ components:
           $ref: '#/components/schemas/MockSenPaymentBeneficiaryBankInstruction'
         status:
           type: string
-          description: Enumerated status of the wire payment. Status `pending` indicates that the wire payment is in process; `processed` indicates it finished successfully; `failed` indicates it failed.
+          description: Enumerated status of the wire payment. Status `pending` indicates
+            that the wire payment is in process; `processed` indicates it finished
+            successfully; `failed` indicates it failed.
           enum:
-            - pending
-            - processed
-            - failed
+          - pending
+          - processed
+          - failed
   responses:
     NotAuthorized:
-      description: The request has not been applied because it lacks valid authentication credentials.
+      description: The request has not been applied because it lacks valid authentication
+        credentials.
       headers:
         X-Request-Id:
           $ref: '#/components/headers/XRequestId'
@@ -2349,9 +2509,10 @@ components:
         application/json:
           schema:
             type: object
+            title: NotAuthorized
             required:
-              - code
-              - message
+            - code
+            - message
             properties:
               code:
                 type: integer
@@ -2376,9 +2537,10 @@ components:
         application/json:
           schema:
             type: object
+            title: BadRequest
             required:
-              - code
-              - message
+            - code
+            - message
             properties:
               code:
                 type: integer
@@ -2403,9 +2565,10 @@ components:
         application/json:
           schema:
             type: object
+            title: NotFound
             required:
-              - code
-              - message
+            - code
+            - message
             properties:
               code:
                 type: integer
@@ -2424,7 +2587,9 @@ components:
   parameters:
     destination:
       name: destination
-      description: Universally unique identifier (UUID v4) for the destination bank account. Filters the results to fetch all payouts made to a destination bank account.
+      description: Universally unique identifier (UUID v4) for the destination bank
+        account. Filters the results to fetch all payouts made to a destination bank
+        account.
       in: query
       required: false
       schema:
@@ -2451,47 +2616,68 @@ components:
         example: '2020-04-10T02:13:30.000Z'
     PageBefore:
       name: pageBefore
-      description: |
-        A collection ID value used for pagination.
+      description: 'A collection ID value used for pagination.
 
-        It marks the exclusive end of a page. When provided, the collection resource will return the next `n` items before
+
+        It marks the exclusive end of a page. When provided, the collection resource
+        will return the next `n` items before
+
         the id, with `n` being specified by `pageSize`.
+
 
         The items will be returned in the natural order of the collection.
 
-        The resource will return the first page if neither `pageAfter` nor `pageBefore` are specified.
+
+        The resource will return the first page if neither `pageAfter` nor `pageBefore`
+        are specified.
+
 
         SHOULD NOT be used in conjuction with pageAfter.
+
+        '
       in: query
       required: false
       schema:
         type: string
     PageAfter:
       name: pageAfter
-      description: |
-        A collection ID value used for pagination.
+      description: 'A collection ID value used for pagination.
 
-        It marks the exclusive begin of a page. When provided, the collection resource will return the next `n` items after
+
+        It marks the exclusive begin of a page. When provided, the collection resource
+        will return the next `n` items after
+
         the id, with `n` being specified by `pageSize`.
+
 
         The items will be returned in the natural order of the collection.
 
-        The resource will return the first page if neither `pageAfter` nor `pageBefore` are specified.
+
+        The resource will return the first page if neither `pageAfter` nor `pageBefore`
+        are specified.
+
 
         SHOULD NOT be used in conjuction with pageBefore.
+
+        '
       in: query
       required: false
       schema:
         type: string
     PageSize:
       name: pageSize
-      description: |
-        Limits the number of items to be returned.
+      description: 'Limits the number of items to be returned.
 
-        Some collections have a strict upper bound that will disregard this value. In case the specified value is higher
+
+        Some collections have a strict upper bound that will disregard this value.
+        In case the specified value is higher
+
         than the allowed limit, the collection limit will be used.
 
+
         If avoided, the collection will determine the page size itself.
+
+        '
       in: query
       required: false
       schema:
@@ -2507,3 +2693,13 @@ components:
         type: string
         format: uuid
         example: b3d9d2d5-4c12-4946-a09d-953e82fae2b0
+    Currency:
+      name: currency
+      description: Queries beneficiary bank account currency. Default is USD.
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - USD
+        - EUR
