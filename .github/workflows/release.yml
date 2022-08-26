@@ -2,7 +2,7 @@ on:
   push:
     branches: [master]
 
-name: Generate Github Release
+name: Generate Github Release and Changelog
 jobs:
   get-spec-version:
     name: Get OpenAPI document version from VERSION file
