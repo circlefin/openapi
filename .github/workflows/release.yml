@@ -1,0 +1,27 @@
+on:
+  push:
+    branches: [master]
+
+name: Generate Github Release
+jobs:
+  get-spec-version:
+    name: Get OpenAPI document version from VERSION file
+    runs-on: ubuntu-latest
+    outputs:
+      spec-version: ${{ steps.get-version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: get-version
+        run: echo "::set-output name=version::$(cat VERSION)"
+
+  release-please:
+    name: Create Github Release and Changelog
+    needs: get-spec-version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/release-please-action@v3
+        id: release
+        with:
+          release-type: simple
+          package-name: circle-openapi
+          release-as: ${{ needs.get-spec-version.outputs.spec-version }}
