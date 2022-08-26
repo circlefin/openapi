@@ -15,7 +15,6 @@ jobs:
         run: echo "::set-output name=version::$(cat VERSION)"
 
   release-please:
-    name: Create Github Release and Changelog
     needs: get-spec-version
     runs-on: ubuntu-latest
     steps:
