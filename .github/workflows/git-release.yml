@@ -16,7 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - id: parse-changelog
+
+      - name: Extract latest section from CHANGELOG.md
+        id: parse-changelog
         run: |
           i=0
           header_start=-1
