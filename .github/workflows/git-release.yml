@@ -1,0 +1,61 @@
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - 'VERSION'
+
+env:
+  CHANGELOG_FILE: CHANGELOG.md
+  VERSION_FILE: VERSION
+
+name: Create Release
+
+jobs:
+  create-git-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Extract latest section from CHANGELOG.md
+        id: parse-changelog
+        run: |
+          i=0
+          header_start=-1
+          release_message=""
+
+          while read p; do
+              if [[ $p == \#\#\ * ]]
+              then
+                  if [[ $header_start -gt -1 ]]
+                  then
+                      break
+                  fi
+                  header_start=$i
+              fi
+
+              if [[ $header_start -gt -1 ]]
+              then
+                  release_message="$release_message\n$p"
+              fi
+              ((i=i+1))
+          done < $CHANGELOG_FILE
+
+          echo "::set-output name=latestSection::$release_message"
+          echo "$release_message"
+      
+      - id: get-version
+        run: echo "::set-output name=version::$(cat $VERSION_FILE)"
+
+      - name: Unescape special characters
+        run: printf "${{ steps.parse-changelog.outputs.latestSection }}" > unescaped-release-notes.md
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.get-version.outputs.version }}
+          release_name: v${{ steps.get-version.outputs.version }}
+          body_path: unescaped-release-notes.md
