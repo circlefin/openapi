@@ -5,5 +5,5 @@
 
 ### Bug Fixes
 
-* include all usdc supported chains
+* include all usdc supported chains 
 

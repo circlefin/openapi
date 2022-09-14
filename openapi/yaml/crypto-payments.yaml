@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: api-sandbox.circle.com
 info:
-  version: ${version}
+  version: 1.0.1
   title: Crypto Payments API
   description: Crypto Payments collection Circle APIs.
 tags:

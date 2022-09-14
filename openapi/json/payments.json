@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "${version}",
+    "version": "1.0.1",
     "title": "Payments API",
     "description": "APIs for accepting payments."
   },
