@@ -2,16 +2,15 @@
 
 This repository contains [OpenAPI specifications][openapi] for Circle's API.
 
-[Changelog](https://github.com/circlefin/openapi/releases/)
+All files currrently use OpenAPI version 3.0, and can be found under the `openapi/{json or yaml}` directory:
 
-
-Files can be found in the `openapi/{json or yaml}` directory:
-
-* `account-doc.{json,yaml}:` OpenAPI 3.0 spec for APIs to manage your account balance.
-* `accounts-doc.{json,yaml}:` OpenAPI 3.0 spec for APIs to manage custodial wallets.
-* `general-doc.{json,yaml}:` OpenAPI 3.0 spec for common endpoints shared across all Circle APIs.
-* `payments-doc.{json,yaml}:` OpenAPI 3.0 spec for APIs to accept payments.
-* `payouts-doc.{json,yaml}:` OpenAPI 3.0 spec for APIs to make payouts.
+* `account.{json,yaml}:` APIs to manage your account balance.
+* `accounts.{json,yaml}:` APIs to manage custodial wallets.
+* `circle-apis.{json,yaml}:` all Circle APIs combined into one file.
+* `crypto-payments.{json,yaml}:` Crypto Payments collection Circle APIs.
+* `general.{json,yaml}:` common endpoints shared across all Circle APIs.
+* `payments.{json,yaml}:` APIs to accept payments.
+* `payouts.{json,yaml}:` APIs to make payouts.
 
 
 [openapi]: https://www.openapis.org/
