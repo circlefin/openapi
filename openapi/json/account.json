@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "1.0.1",
+    "version": "1.0.2",
     "title": "Core Functionality",
     "description": "APIs for managing your account balance. These endpoints are available with all Circle APIs."
   },
@@ -1917,7 +1917,7 @@
         ],
         "summary": "Create a mock Silvergate SEN payment",
         "description": "In the sandbox environment, initiate a mock SEN transfer that mimics the behavior of funds sent through the Silvergate SEN account linked to master wallet.",
-        "operationId": "createSenPayment",
+        "operationId": "createMockSenPayment",
         "tags": [
           "Deposits"
         ],

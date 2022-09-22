@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: api-sandbox.circle.com
 info:
-  version: 1.0.1
+  version: 1.0.2
   title: Accounts API
   description: APIs to manage custodial wallets.
 tags:

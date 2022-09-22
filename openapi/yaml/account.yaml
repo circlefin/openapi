@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: api-sandbox.circle.com
 info:
-  version: 1.0.1
+  version: 1.0.2
   title: Core Functionality
   description: APIs for managing your account balance. These endpoints are available
     with all Circle APIs.
@@ -1222,7 +1222,7 @@ paths:
       description: In the sandbox environment, initiate a mock SEN transfer that mimics
         the behavior of funds sent through the Silvergate SEN account linked to master
         wallet.
-      operationId: createSenPayment
+      operationId: createMockSenPayment
       tags:
       - Deposits
       requestBody:

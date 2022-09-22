@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: api-sandbox.circle.com
 info:
-  version: 1.0.1
+  version: 1.0.2
   title: Payouts API
   description: APIs for making payouts.
 tags:
@@ -791,7 +791,7 @@ paths:
       summary: Create a mock ACH bank account
       description: In the sandbox environment, create a mock ACH account and retrieve
         a processor token that can be used to link an ACH account.
-      operationId: createAchAccount
+      operationId: createMockACHBankAccount
       tags:
       - ACH
       requestBody:
