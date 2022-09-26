@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "1.0.1",
+    "version": "1.0.2",
     "title": "Accounts API",
     "description": "APIs to manage custodial wallets."
   },

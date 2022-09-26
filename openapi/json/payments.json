@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "1.0.1",
+    "version": "1.0.2",
     "title": "Payments API",
     "description": "APIs for accepting payments."
   },
@@ -1219,7 +1219,7 @@
         ],
         "summary": "Create a mock Wire payment",
         "description": "In the sandbox environment, initiate a mock wire payment that mimics the behavior of funds sent through the bank (wire) account linked to master wallet.",
-        "operationId": "createWirePayment",
+        "operationId": "createMockWirePayment",
         "tags": [
           "Payments"
         ],
@@ -1288,7 +1288,7 @@
         ],
         "summary": "Create a mock SEPA payment",
         "description": "In the sandbox environment, initiate a mock SEPA payment that mimics the behavior of funds sent through the bank (SEPA) account linked to master wallet.",
-        "operationId": "createSepaPayment",
+        "operationId": "createMockSepaPayment",
         "tags": [
           "Payments"
         ],
@@ -1968,7 +1968,7 @@
           }
         ],
         "summary": "Update a card",
-        "operationId": "UpdateCard",
+        "operationId": "updateCard",
         "tags": [
           "Cards"
         ],
@@ -2473,7 +2473,7 @@
         ],
         "summary": "Create a mock ACH bank account",
         "description": "In the sandbox environment, create a mock ACH account and retrieve a processor token that can be used to link an ACH account.",
-        "operationId": "createAchAccount",
+        "operationId": "createMockACHBankAccount",
         "tags": [
           "ACH"
         ],
