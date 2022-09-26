@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "1.0.2",
+    "version": "1.0.3",
     "title": "API Overview",
     "description": "Common endpoints shared across all Circle APIs."
   },
@@ -41,7 +41,7 @@
       "get": {
         "summary": "Ping",
         "description": "Checks that the service is running.",
-        "operationId": "rootPing",
+        "operationId": "ping",
         "tags": [
           "Health"
         ],
@@ -181,7 +181,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "GetListSubscriptionsResponse",
+                  "title": "ListSubscriptionsResponse",
                   "properties": {
                     "data": {
                       "type": "array",
@@ -225,7 +225,7 @@
         ],
         "summary": "Create a notification subscription",
         "description": "Subscribe to receiving notifications at a given endpoint. The endpoint should be able to handle AWS SNS subscription requests. For more details see https://docs.aws.amazon.com/mobile/sdkforxamarin/developerguide/sns-send-http.html. Note, the sandbox environment allows a maximum of 3 active subscriptions; otherwise, this is limited to 1 active subscription and subsequent create requests will be rejected with a Limit Exceeded error.\n",
-        "operationId": "subscribe",
+        "operationId": "createSubscribtion",
         "tags": [
           "Subscriptions"
         ],
@@ -244,7 +244,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "SubscribeResponse",
+                  "title": "CreateSubscribtionResponse",
                   "properties": {
                     "data": {
                       "$ref": "#/components/schemas/SubscriptionResponse"
@@ -296,7 +296,7 @@
         ],
         "summary": "Remove a notification subscription",
         "description": "To remove a subscription, all its subscription requests' statuses must be either 'confirmed', 'deleted' or a combination of those. A subscription with at least one 'pending' subscription request cannot be removed.",
-        "operationId": "unsubscribe",
+        "operationId": "deleteSubscribtion",
         "tags": [
           "Subscriptions"
         ],
@@ -311,7 +311,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "DeleteUnsubscribeResponse",
+                  "title": "DeleteSubscribtionResponse",
                   "properties": {
                     "data": {
                       "$ref": "#/components/schemas/UnsubscribeResponse"
@@ -397,7 +397,7 @@
       "get": {
         "summary": "List all stablecoins",
         "description": "Retrieves total circulating supply for supported stablecoins across all chains. This endpoint is rate limited to one call per minute (based on IP).",
-        "operationId": "getStablecoins",
+        "operationId": "listStablecoins",
         "tags": [
           "Stablecoins"
         ],
@@ -407,7 +407,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "GetStablecoinsResponse",
+                  "title": "ListStablecoinsResponse",
                   "properties": {
                     "data": {
                       "$ref": "#/components/schemas/Stablecoins"

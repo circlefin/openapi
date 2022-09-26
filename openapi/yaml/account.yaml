@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: api-sandbox.circle.com
 info:
-  version: 1.0.2
+  version: 1.0.3
   title: Core Functionality
   description: APIs for managing your account balance. These endpoints are available
     with all Circle APIs.
@@ -22,7 +22,7 @@ paths:
       - bearerAuth: []
       summary: List all balances
       description: Retrieves the balance of funds that are available for use.
-      operationId: getBusinessAccountBalances
+      operationId: listBusinessBalances
       tags:
       - Balances
       responses:
@@ -34,7 +34,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetBusinessAccountBalancesResponse
+                title: ListBusinessBalancesResponse
                 properties:
                   data:
                     $ref: '#/components/schemas/Balances'
@@ -55,7 +55,7 @@ paths:
       security:
       - bearerAuth: []
       parameters:
-      - $ref: '#/components/parameters/destination'
+      - $ref: '#/components/parameters/Destination'
       - name: type
         description: Destination bank account type. Filters the results to fetch all
           payouts made to a specified destination bank account type. This query parameter
@@ -82,7 +82,7 @@ paths:
       - $ref: '#/components/parameters/PageAfter'
       - $ref: '#/components/parameters/PageSize'
       summary: List all payouts
-      operationId: getBusinessAccountPayouts
+      operationId: listBusinessPayouts
       tags:
       - Payouts
       responses:
@@ -94,12 +94,12 @@ paths:
           content:
             application/json:
               schema:
-                title: GetBusinessAccountPayoutsResponse
+                title: ListBusinessPayoutsResponse
                 properties:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/PayoutBusinessAccount'
+                      $ref: '#/components/schemas/BusinessPayout'
               examples:
                 response:
                   value:
@@ -150,14 +150,14 @@ paths:
       security:
       - bearerAuth: []
       summary: Create a payout
-      operationId: createBusinessAccountPayout
+      operationId: createBusinessPayout
       tags:
       - Payouts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BusinessAccountPayoutCreationRequest'
+              $ref: '#/components/schemas/BusinessPayoutCreationRequest'
       responses:
         '201':
           description: Successfully created a payout.
@@ -167,10 +167,10 @@ paths:
           content:
             application/json:
               schema:
-                title: CreateBusinessAccountPayoutResponse
+                title: CreateBusinessPayoutResponse
                 properties:
                   data:
-                    $ref: '#/components/schemas/PayoutBusinessAccount'
+                    $ref: '#/components/schemas/BusinessPayout'
               examples:
                 response:
                   value:
@@ -226,7 +226,7 @@ paths:
       security:
       - bearerAuth: []
       summary: Get a payout
-      operationId: getBusinessAccountPayout
+      operationId: getBusinessPayout
       tags:
       - Payouts
       responses:
@@ -238,10 +238,10 @@ paths:
           content:
             application/json:
               schema:
-                title: GetBusinessAccountPayoutResponse
+                title: GetBusinessPayoutResponse
                 properties:
                   data:
-                    $ref: '#/components/schemas/PayoutBusinessAccount'
+                    $ref: '#/components/schemas/BusinessPayout'
               examples:
                 response:
                   value:
@@ -295,7 +295,7 @@ paths:
       security:
       - bearerAuth: []
       summary: Create a Wire bank account
-      operationId: createBusinessAccountWireBankAccount
+      operationId: createBusinessWireAccount
       tags:
       - Wires
       requestBody:
@@ -312,7 +312,7 @@ paths:
           content:
             application/json:
               schema:
-                title: CreateBusinessAccountWireBankAccountResponse
+                title: CreateBusinessWireAccountResponse
                 properties:
                   data:
                     $ref: '#/components/schemas/Wire'
@@ -350,7 +350,7 @@ paths:
       security:
       - bearerAuth: []
       summary: List all Wire bank accounts
-      operationId: getBusinessAccountWireBankAccounts
+      operationId: listBusinessWireAccounts
       tags:
       - Wires
       responses:
@@ -362,7 +362,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetBusinessAccountWireBankAccountsResponse
+                title: ListBusinessWireAccountsResponse
                 properties:
                   data:
                     type: array
@@ -403,7 +403,7 @@ paths:
       security:
       - bearerAuth: []
       summary: Get a Wire bank account
-      operationId: getBusinessAccountWireBankAccount
+      operationId: getBusinessWireAccount
       tags:
       - Wires
       responses:
@@ -415,7 +415,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetBusinessAccountWireBankAccountResponse
+                title: GetBusinessWireAccountResponse
                 properties:
                   data:
                     $ref: '#/components/schemas/Wire'
@@ -459,7 +459,7 @@ paths:
       summary: Get Wire instructions
       description: Get the wire transfer instructions into the Circle bank account
         given your bank account id.
-      operationId: getBusinessAccountWireInstructionsBankAccount
+      operationId: getBusinessWireAccountInstructions
       tags:
       - Wires
       responses:
@@ -472,7 +472,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetBusinessAccountWireInstructionsBankAccountResponse
+                title: GetBusinessWireAccountInstructionsResponse
                 properties:
                   data:
                     $ref: '#/components/schemas/WireInstruction'
@@ -504,7 +504,7 @@ paths:
       security:
       - bearerAuth: []
       summary: Create a Signet bank account (Production Only)
-      operationId: createBusinessAccountSignetBankAccount
+      operationId: createBusinessSignetAccount
       tags:
       - Signet
       requestBody:
@@ -521,7 +521,7 @@ paths:
           content:
             application/json:
               schema:
-                title: CreateBusinessAccountSignetBankAccountResponse
+                title: CreateBusinessSignetAccountResponse
                 properties:
                   data:
                     $ref: '#/components/schemas/SignetFiatAccountResponse'
@@ -543,7 +543,7 @@ paths:
       security:
       - bearerAuth: []
       summary: List all Signet bank accounts (Production Only).
-      operationId: getBusinessAccountSignetBankAccounts
+      operationId: listBusinessSignetAccounts
       tags:
       - Signet
       responses:
@@ -555,7 +555,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetBusinessAccountSignetBankAccountsResponse
+                title: ListBusinessSignetAccountsResponse
                 properties:
                   data:
                     type: array
@@ -580,7 +580,7 @@ paths:
       security:
       - bearerAuth: []
       summary: Get a Signet bank account (Production Only)
-      operationId: getBusinessAccountSignetBankAccount
+      operationId: getBusinessSignetAccount
       tags:
       - Signet
       responses:
@@ -592,7 +592,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetBusinessAccountSignetBankAccountResponse
+                title: GetBusinessSignetAccountResponse
                 properties:
                   data:
                     $ref: '#/components/schemas/SignetFiatAccountResponse'
@@ -619,7 +619,7 @@ paths:
       summary: Get Signet instructions (Production Only)
       description: Get the Signet transfer instructions into the Circle bank account
         given your bank account id (only available on Production now).
-      operationId: getBusinessAccountSignetInstructionsBankAccount
+      operationId: getBusinessSignetAccountInstructions
       tags:
       - Signet
       responses:
@@ -632,7 +632,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetBusinessAccountSignetInstructionsBankAccountResponse
+                title: ListBusinessSignetAccountInstructionsResponse
                 properties:
                   data:
                     $ref: '#/components/schemas/SignetInstruction'
@@ -651,7 +651,7 @@ paths:
       security:
       - bearerAuth: []
       summary: Create a Silvergate SEN bank account (BETA)
-      operationId: createBusinessAccountSenBankAccount
+      operationId: createBusinessSenAccount
       tags:
       - SEN
       requestBody:
@@ -668,7 +668,7 @@ paths:
           content:
             application/json:
               schema:
-                title: CreateBusinessAccountSenBankAccountResponse
+                title: CreateBusinessSenAccountResponse
                 properties:
                   data:
                     $ref: '#/components/schemas/SenFiatAccountResponse'
@@ -691,7 +691,7 @@ paths:
       security:
       - bearerAuth: []
       summary: List all Silvergate SEN bank accounts (BETA).
-      operationId: getBusinessAccountSenBankAccounts
+      operationId: listBusinessSenAccounts
       tags:
       - SEN
       responses:
@@ -704,7 +704,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetBusinessAccountSenBankAccountsResponse
+                title: ListBusinessSenAccountsResponse
                 properties:
                   data:
                     type: array
@@ -730,7 +730,7 @@ paths:
       security:
       - bearerAuth: []
       summary: Get a Silvergate SEN bank account (BETA)
-      operationId: getBusinessAccountSenBankAccount
+      operationId: getBusinessSenAccount
       tags:
       - SEN
       responses:
@@ -742,7 +742,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetBusinessAccountSenBankAccountResponse
+                title: GetBusinessSenAccountResponse
                 properties:
                   data:
                     $ref: '#/components/schemas/SenFiatAccountResponse'
@@ -770,7 +770,7 @@ paths:
       summary: Get Silvergate SEN instructions (BETA)
       description: Get the Silvergate SEN transfer instructions into the Circle bank
         account given your bank account id (BETA).
-      operationId: getBusinessAccountSenInstructionsBankAccount
+      operationId: getBusinessSenAccountInstructions
       tags:
       - SEN
       responses:
@@ -783,7 +783,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetBusinessAccountSenInstructionsBankAccountResponse
+                title: GetBusinessSenAccountInstructionsResponse
                 properties:
                   data:
                     $ref: '#/components/schemas/SenInstruction'
@@ -805,14 +805,14 @@ paths:
       summary: Create a transfer
       description: A transfer can be made from an existing business account to a blockchain
         location.
-      operationId: createBusinessAccountTransfer
+      operationId: createBusinessTransfer
       tags:
       - Transfers
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BusinessAccountTransferCreationRequest'
+              $ref: '#/components/schemas/BusinessTransferCreationRequest'
       responses:
         '201':
           headers:
@@ -822,7 +822,7 @@ paths:
           content:
             application/json:
               schema:
-                title: CreateBusinessAccountTransferResponse
+                title: CreateBusinessTransferResponse
                 properties:
                   data:
                     $ref: '#/components/schemas/Transfer'
@@ -873,7 +873,7 @@ paths:
       description: Searches for transfers from your business account. If the date
         parameters are omitted, returns the most recent transfers. This endpoint returns
         up to 50 transfers in descending chronological order or pageSize, if provided.
-      operationId: searchBusinessAccountTransfers
+      operationId: listBusinessTransfers
       tags:
       - Transfers
       responses:
@@ -885,7 +885,7 @@ paths:
           content:
             application/json:
               schema:
-                title: SearchBusinessAccountTransfersResponse
+                title: ListBusinessTransfersResponse
                 properties:
                   data:
                     type: array
@@ -934,7 +934,7 @@ paths:
       security:
       - bearerAuth: []
       summary: Get a transfer
-      operationId: getBusinessAccountTransfer
+      operationId: getBusinessTransfer
       tags:
       - Transfers
       responses:
@@ -946,7 +946,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetBusinessAccountTransferResponse
+                title: GetBusinessTransferResponse
                 properties:
                   data:
                     $ref: '#/components/schemas/Transfer'
@@ -997,14 +997,14 @@ paths:
         the deposit.
 
         '
-      operationId: generateBusinessAccountDepositAddress
+      operationId: createBusinessDepositAddress
       tags:
       - Addresses
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BusinessAccountGenerateAddressRequest'
+              $ref: '#/components/schemas/BusinessGenerateAddressRequest'
       responses:
         '201':
           description: Successfully generated a new deposit address.
@@ -1014,7 +1014,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GenerateBusinessAccountDepositAddressResponse
+                title: CreateBusinessDepositAddressResponse
                 properties:
                   data:
                     $ref: '#/components/schemas/AddressObject'
@@ -1034,7 +1034,7 @@ paths:
       security:
       - bearerAuth: []
       summary: List all deposit addresses
-      operationId: getBusinessAccountDepositAddresses
+      operationId: getBusinessDepositAddress
       tags:
       - Addresses
       responses:
@@ -1046,7 +1046,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetBusinessAccountDepositAddressesResponse
+                title: GetBusinessDepositAddressResponse
                 properties:
                   data:
                     type: array
@@ -1071,14 +1071,14 @@ paths:
         address must be verified to ensure that you know and trust each new address.
 
         '
-      operationId: createBusinessAccountRecipientAddress
+      operationId: createBusinessRecipientAddress
       tags:
       - Addresses
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BusinessAccountRecipientAddressCreationRequest'
+              $ref: '#/components/schemas/BusinessRecipientAddressCreationRequest'
       responses:
         '200':
           description: Successfully added a recipient address.
@@ -1088,10 +1088,10 @@ paths:
           content:
             application/json:
               schema:
-                title: CreateBusinessAccountRecipientAddressResponse
+                title: CreateBusinessRecipientAddressResponse
                 properties:
                   data:
-                    $ref: '#/components/schemas/BusinessAccountRecipientAddressObject'
+                    $ref: '#/components/schemas/BusinessRecipientAddressObject'
               examples:
                 response:
                   value:
@@ -1121,7 +1121,7 @@ paths:
         are not included in the response.
 
         '
-      operationId: getBusinessAccountRecipientAddresses
+      operationId: listBusinessRecipientAddresses
       tags:
       - Addresses
       responses:
@@ -1133,12 +1133,12 @@ paths:
           content:
             application/json:
               schema:
-                title: GetBusinessAccountRecipientAddressesResponse
+                title: listBusinessRecipientAddressesResponse
                 properties:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/BusinessAccountRecipientAddressObject'
+                      $ref: '#/components/schemas/BusinessRecipientAddressObject'
               examples:
                 response:
                   value:
@@ -1173,7 +1173,7 @@ paths:
       description: Searches for deposits sent to your business account. If the date
         parameters are omitted, returns the most recent deposits. This endpoint returns
         up to 50 deposits in descending chronological order or pageSize, if provided.
-      operationId: searchBusinessAccountDeposits
+      operationId: listBusinessDeposits
       tags:
       - Deposits
       responses:
@@ -1185,12 +1185,12 @@ paths:
           content:
             application/json:
               schema:
-                title: SearchBusinessAccountDepositsResponse
+                title: ListBusinessDepositsResponse
                 properties:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/BusinessAccountDeposit'
+                      $ref: '#/components/schemas/BusinessDeposit'
               examples:
                 response:
                   value:
@@ -1431,7 +1431,7 @@ components:
         with the return.
       format: uuid
       example: abdb500d-4a59-457c-801f-2d418c8703ac
-    UTCTimestamp:
+    UtcTimestamp:
       type: string
       description: ISO-8601 UTC date/time format.
       example: '2020-04-10T02:13:30.000Z'
@@ -1463,10 +1463,10 @@ components:
           - complete
           - failed
         createDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
         updateDate:
-          $ref: '#/components/schemas/UTCTimestamp'
-    PayoutBusinessAccount:
+          $ref: '#/components/schemas/UtcTimestamp'
+    BusinessPayout:
       type: object
       properties:
         id:
@@ -1496,16 +1496,16 @@ components:
         return:
           $ref: '#/components/schemas/UnwithdrawalObject'
         createDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
         updateDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
     IdempotencyKey:
       type: string
       description: Universally unique identifier (UUID v4) idempotency key. This key
         is utilized to ensure exactly-once execution of mutating requests.
       format: uuid
       example: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
-    BusinessAccountDestinationRequest:
+    BusinessDestinationRequest:
       type: object
       description: The destination bank account.
       required:
@@ -1519,7 +1519,7 @@ components:
           - sen
         id:
           $ref: '#/components/schemas/Id'
-    BusinessAccountPayoutCreationRequest:
+    BusinessPayoutCreationRequest:
       type: object
       required:
       - idempotencyKey
@@ -1529,7 +1529,7 @@ components:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
         destination:
-          $ref: '#/components/schemas/BusinessAccountDestinationRequest'
+          $ref: '#/components/schemas/BusinessDestinationRequest'
         amount:
           $ref: '#/components/schemas/FiatMoney'
     ExternalFiatAccountStatus:
@@ -1668,10 +1668,10 @@ components:
         bankAddress:
           $ref: '#/components/schemas/BankAddress'
         createDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
         updateDate:
-          $ref: '#/components/schemas/UTCTimestamp'
-    WireCreationRequestUS:
+          $ref: '#/components/schemas/UtcTimestamp'
+    WireCreationRequestUs:
       type: object
       title: US Bank Account
       description: Relevant fields for U.S. bank accounts.
@@ -1836,7 +1836,7 @@ components:
         fields are required depending on the bank country, see the guide documentation
         for the list of supported bank countries along with which ones support IBAN.
       oneOf:
-      - $ref: '#/components/schemas/WireCreationRequestUS'
+      - $ref: '#/components/schemas/WireCreationRequestUs'
       - $ref: '#/components/schemas/WireCreationRequestIban'
       - $ref: '#/components/schemas/WireCreationRequestAccountNumber'
     WireInstructionBeneficiary:
@@ -1930,9 +1930,9 @@ components:
           description: Your signet wallet address.
           example: '0xcac04f0069e4ac9314ac4e608e99278a3bebabcd'
         createDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
         updateDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
     SignetFiatAccountCreationRequest:
       type: object
       required:
@@ -1982,9 +1982,9 @@ components:
             field..
           example: CIR13FB14A
         createDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
         updateDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
         currency:
           type: string
           description: Currency of the fiat account.
@@ -2309,7 +2309,7 @@ components:
           description: The ID of the verified blockchain recipient address.
           example: f1f36b85-cafe-484e-a46b-02340bfdb927
           format: uuid
-    BusinessAccountTransferCreationRequest:
+    BusinessTransferCreationRequest:
       type: object
       required:
       - idempotencyKey
@@ -2342,7 +2342,7 @@ components:
           $ref: '#/components/schemas/Currency'
         chain:
           $ref: '#/components/schemas/Chain'
-    BusinessAccountGenerateAddressRequest:
+    BusinessGenerateAddressRequest:
       type: object
       required:
       - idempotencyKey
@@ -2355,11 +2355,11 @@ components:
           $ref: '#/components/schemas/Currency'
         chain:
           $ref: '#/components/schemas/Chain'
-    BusinessAccountDescription:
+    AddressDescription:
       type: string
       description: An identifier or sentence that describes the recipient.
       example: My USDC address at a cryptocurrency exchange
-    BusinessAccountRecipientAddressObject:
+    BusinessRecipientAddressObject:
       type: object
       properties:
         id:
@@ -2373,8 +2373,8 @@ components:
         currency:
           $ref: '#/components/schemas/Currency'
         description:
-          $ref: '#/components/schemas/BusinessAccountDescription'
-    BusinessAccountRecipientAddressCreationRequest:
+          $ref: '#/components/schemas/AddressDescription'
+    BusinessRecipientAddressCreationRequest:
       type: object
       description: Adds a recipient address. The currency parameter will default to
         USD for all chains except for BTC where it defaults to BTC.
@@ -2395,7 +2395,7 @@ components:
         currency:
           $ref: '#/components/schemas/Currency'
         description:
-          $ref: '#/components/schemas/BusinessAccountDescription'
+          $ref: '#/components/schemas/AddressDescription'
     WalletLocation:
       type: object
       required:
@@ -2410,7 +2410,7 @@ components:
           type: string
           description: The id of the wallet.
           example: '12345'
-    BusinessAccountDeposit:
+    BusinessDeposit:
       type: object
       description: A deposit
       required:
@@ -2446,9 +2446,9 @@ components:
         riskEvaluation:
           $ref: '#/components/schemas/RiskEvaluation'
         createDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
         updateDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
     MockSenPaymentBeneficiaryBankInstruction:
       type: object
       required:
@@ -2585,7 +2585,7 @@ components:
                 code: 404
                 message: Not found.
   parameters:
-    destination:
+    Destination:
       name: destination
       description: Universally unique identifier (UUID v4) for the destination bank
         account. Filters the results to fetch all payouts made to a destination bank

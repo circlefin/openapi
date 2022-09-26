@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: api-sandbox.circle.com
 info:
-  version: 1.0.2
+  version: 1.0.3
   title: Accounts API
   description: APIs to manage custodial wallets.
 tags:
@@ -58,7 +58,7 @@ paths:
       - $ref: '#/components/parameters/PageSize'
       summary: List all wallets
       description: Retrieves a list of a user's wallets.
-      operationId: getWallets
+      operationId: listWallets
       tags:
       - Wallets
       responses:
@@ -70,7 +70,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetWalletsResponse
+                title: ListWalletsResponse
                 properties:
                   data:
                     type: array
@@ -187,7 +187,7 @@ paths:
       - $ref: '#/components/parameters/PageSize'
       summary: List all addresses
       description: Retrieves a list of addresses associated with a wallet.
-      operationId: getAddresses
+      operationId: listAddresses
       tags:
       - Wallets
       responses:
@@ -199,7 +199,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetAddressesResponse
+                title: ListAddressesResponse
                 properties:
                   data:
                     type: array
@@ -367,7 +367,7 @@ paths:
         If the date parameters are omitted, returns the most recent transfers. This
         endpoint returns up to 50 transfers in descending chronological order or pageSize,
         if provided.
-      operationId: searchTransfers
+      operationId: listTransfers
       tags:
       - Transfers
       responses:
@@ -379,7 +379,7 @@ paths:
           content:
             application/json:
               schema:
-                title: SearchTransfersResponse
+                title: ListTransfersResponse
                 properties:
                   data:
                     type: array
@@ -1095,7 +1095,7 @@ components:
           type: string
           nullable: true
           example: '3000'
-    UTCTimestamp:
+    UtcTimestamp:
       type: string
       description: ISO-8601 UTC date/time format.
       example: '2020-04-10T02:13:30.000Z'
@@ -1143,7 +1143,7 @@ components:
         riskEvaluation:
           $ref: '#/components/schemas/RiskEvaluation'
         createDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
   responses:
     BadRequest:
       description: The request cannot be processed due to a client error.

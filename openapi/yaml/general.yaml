@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: api-sandbox.circle.com
 info:
-  version: 1.0.2
+  version: 1.0.3
   title: API Overview
   description: Common endpoints shared across all Circle APIs.
 tags:
@@ -24,7 +24,7 @@ paths:
     get:
       summary: Ping
       description: Checks that the service is running.
-      operationId: rootPing
+      operationId: ping
       tags:
       - Health
       responses:
@@ -112,7 +112,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetListSubscriptionsResponse
+                title: ListSubscriptionsResponse
                 properties:
                   data:
                     type: array
@@ -141,7 +141,7 @@ paths:
         requests will be rejected with a Limit Exceeded error.
 
         '
-      operationId: subscribe
+      operationId: createSubscribtion
       tags:
       - Subscriptions
       requestBody:
@@ -155,7 +155,7 @@ paths:
           content:
             application/json:
               schema:
-                title: SubscribeResponse
+                title: CreateSubscribtionResponse
                 properties:
                   data:
                     $ref: '#/components/schemas/SubscriptionResponse'
@@ -184,7 +184,7 @@ paths:
       description: To remove a subscription, all its subscription requests' statuses
         must be either 'confirmed', 'deleted' or a combination of those. A subscription
         with at least one 'pending' subscription request cannot be removed.
-      operationId: unsubscribe
+      operationId: deleteSubscribtion
       tags:
       - Subscriptions
       responses:
@@ -196,7 +196,7 @@ paths:
           content:
             application/json:
               schema:
-                title: DeleteUnsubscribeResponse
+                title: DeleteSubscribtionResponse
                 properties:
                   data:
                     $ref: '#/components/schemas/UnsubscribeResponse'
@@ -249,7 +249,7 @@ paths:
       description: Retrieves total circulating supply for supported stablecoins across
         all chains. This endpoint is rate limited to one call per minute (based on
         IP).
-      operationId: getStablecoins
+      operationId: listStablecoins
       tags:
       - Stablecoins
       responses:
@@ -258,7 +258,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetStablecoinsResponse
+                title: ListStablecoinsResponse
                 properties:
                   data:
                     $ref: '#/components/schemas/Stablecoins'

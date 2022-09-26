@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "1.0.2",
+    "version": "1.0.3",
     "title": "Crypto Payments API",
     "description": "Crypto Payments collection Circle APIs."
   },
@@ -112,7 +112,7 @@
           }
         ],
         "summary": "List all payment intents",
-        "operationId": "getPaymentIntents",
+        "operationId": "listPaymentIntents",
         "tags": [
           "Payment Intents"
         ],
@@ -174,7 +174,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "GetPaymentIntentsResponse",
+                  "title": "ListPaymentIntentsResponse",
                   "properties": {
                     "data": {
                       "type": "array",
@@ -459,7 +459,7 @@
           }
         ],
         "summary": "List all payments",
-        "operationId": "getPayments",
+        "operationId": "listPayments",
         "tags": [
           "Payments"
         ],
@@ -474,7 +474,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "GetPaymentsResponse",
+                  "title": "ListPaymentsResponse",
                   "properties": {
                     "data": {
                       "type": "array",
@@ -1264,7 +1264,7 @@
           }
         }
       },
-      "UTCTimestampReadOnly": {
+      "UtcTimestampReadOnly": {
         "type": "string",
         "readOnly": true,
         "description": "ISO-8601 UTC date/time format.",
@@ -1356,13 +1356,13 @@
             }
           },
           "expiresOn": {
-            "$ref": "#/components/schemas/UTCTimestampReadOnly"
+            "$ref": "#/components/schemas/UtcTimestampReadOnly"
           },
           "updateDate": {
-            "$ref": "#/components/schemas/UTCTimestampReadOnly"
+            "$ref": "#/components/schemas/UtcTimestampReadOnly"
           },
           "createDate": {
-            "$ref": "#/components/schemas/UTCTimestampReadOnly"
+            "$ref": "#/components/schemas/UtcTimestampReadOnly"
           }
         }
       },
@@ -1435,7 +1435,7 @@
           "action_required"
         ]
       },
-      "UTCTimestamp": {
+      "UtcTimestamp": {
         "type": "string",
         "description": "ISO-8601 UTC date/time format.",
         "example": "2020-04-10T02:13:30.000Z"
@@ -1499,7 +1499,7 @@
             "$ref": "#/components/schemas/CancelRefundReversalStatus"
           },
           "createDate": {
-            "$ref": "#/components/schemas/UTCTimestamp"
+            "$ref": "#/components/schemas/UtcTimestamp"
           }
         }
       },
@@ -1539,7 +1539,7 @@
             "$ref": "#/components/schemas/FiatMoneyUsd"
           },
           "createDate": {
-            "$ref": "#/components/schemas/UTCTimestamp"
+            "$ref": "#/components/schemas/UtcTimestamp"
           }
         }
       },
@@ -1601,7 +1601,7 @@
             "$ref": "#/components/schemas/FiatMoneyUsd"
           },
           "captureDate": {
-            "$ref": "#/components/schemas/UTCTimestamp"
+            "$ref": "#/components/schemas/UtcTimestamp"
           },
           "requiredAction": {
             "$ref": "#/components/schemas/RequiredAction"
@@ -1622,10 +1622,10 @@
             "$ref": "#/components/schemas/Channel"
           },
           "createDate": {
-            "$ref": "#/components/schemas/UTCTimestamp"
+            "$ref": "#/components/schemas/UtcTimestamp"
           },
           "updateDate": {
-            "$ref": "#/components/schemas/UTCTimestamp"
+            "$ref": "#/components/schemas/UtcTimestamp"
           }
         }
       },
@@ -1691,10 +1691,10 @@
             "example": "0x7351585460bd657f320b9afa02a52c26d89272d0d10cc29913eb8b28e64fd906"
           },
           "createDate": {
-            "$ref": "#/components/schemas/UTCTimestamp"
+            "$ref": "#/components/schemas/UtcTimestamp"
           },
           "updateDate": {
-            "$ref": "#/components/schemas/UTCTimestamp"
+            "$ref": "#/components/schemas/UtcTimestamp"
           }
         }
       },
@@ -1753,10 +1753,10 @@
             "$ref": "#/components/schemas/Channel"
           },
           "createDate": {
-            "$ref": "#/components/schemas/UTCTimestamp"
+            "$ref": "#/components/schemas/UtcTimestamp"
           },
           "updateDate": {
-            "$ref": "#/components/schemas/UTCTimestamp"
+            "$ref": "#/components/schemas/UtcTimestamp"
           }
         }
       },
@@ -1816,10 +1816,10 @@
             "$ref": "#/components/schemas/Channel"
           },
           "createDate": {
-            "$ref": "#/components/schemas/UTCTimestamp"
+            "$ref": "#/components/schemas/UtcTimestamp"
           },
           "updateDate": {
-            "$ref": "#/components/schemas/UTCTimestamp"
+            "$ref": "#/components/schemas/UtcTimestamp"
           }
         }
       },
@@ -1839,7 +1839,7 @@
           "pending"
         ]
       },
-      "ThreeDSResult": {
+      "ThreeDsResult": {
         "type": "string",
         "description": "Enumerated status of the check. `pass` indicates successful 3DS authentication. `fail` indicates failed 3DS authentication.",
         "enum": [
@@ -1874,7 +1874,7 @@
             "$ref": "#/components/schemas/CvvResults"
           },
           "threeDSecure": {
-            "$ref": "#/components/schemas/ThreeDSResult"
+            "$ref": "#/components/schemas/ThreeDsResult"
           },
           "eci": {
             "$ref": "#/components/schemas/Eci"
@@ -2068,10 +2068,10 @@
             "$ref": "#/components/schemas/RiskEvaluation"
           },
           "createDate": {
-            "$ref": "#/components/schemas/UTCTimestamp"
+            "$ref": "#/components/schemas/UtcTimestamp"
           },
           "updateDate": {
-            "$ref": "#/components/schemas/UTCTimestamp"
+            "$ref": "#/components/schemas/UtcTimestamp"
           }
         }
       }

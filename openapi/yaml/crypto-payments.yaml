@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: api-sandbox.circle.com
 info:
-  version: 1.0.2
+  version: 1.0.3
   title: Crypto Payments API
   description: Crypto Payments collection Circle APIs.
 tags:
@@ -66,7 +66,7 @@ paths:
       security:
       - bearerAuth: []
       summary: List all payment intents
-      operationId: getPaymentIntents
+      operationId: listPaymentIntents
       tags:
       - Payment Intents
       parameters:
@@ -108,7 +108,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetPaymentIntentsResponse
+                title: ListPaymentIntentsResponse
                 properties:
                   data:
                     type: array
@@ -269,7 +269,7 @@ paths:
       - $ref: '#/components/parameters/PageAfter'
       - $ref: '#/components/parameters/PageSize'
       summary: List all payments
-      operationId: getPayments
+      operationId: listPayments
       tags:
       - Payments
       responses:
@@ -281,7 +281,7 @@ paths:
           content:
             application/json:
               schema:
-                title: GetPaymentsResponse
+                title: ListPaymentsResponse
                 properties:
                   data:
                     type: array
@@ -916,7 +916,7 @@ components:
           description: ISO-8601 UTC date/time format.
           type: string
           format: date-time
-    UTCTimestampReadOnly:
+    UtcTimestampReadOnly:
       type: string
       readOnly: true
       description: ISO-8601 UTC date/time format.
@@ -988,11 +988,11 @@ components:
           items:
             $ref: '#/components/schemas/Timeline'
         expiresOn:
-          $ref: '#/components/schemas/UTCTimestampReadOnly'
+          $ref: '#/components/schemas/UtcTimestampReadOnly'
         updateDate:
-          $ref: '#/components/schemas/UTCTimestampReadOnly'
+          $ref: '#/components/schemas/UtcTimestampReadOnly'
         createDate:
-          $ref: '#/components/schemas/UTCTimestampReadOnly'
+          $ref: '#/components/schemas/UtcTimestampReadOnly'
     Id:
       type: string
       description: Unique system generated identifier for the entity.
@@ -1053,7 +1053,7 @@ components:
       - paid
       - failed
       - action_required
-    UTCTimestamp:
+    UtcTimestamp:
       type: string
       description: ISO-8601 UTC date/time format.
       example: '2020-04-10T02:13:30.000Z'
@@ -1111,7 +1111,7 @@ components:
         status:
           $ref: '#/components/schemas/CancelRefundReversalStatus'
         createDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
     PaymentInfoPaymentAndRefund:
       type: object
       description: Status information of the related payment. This property is only
@@ -1140,7 +1140,7 @@ components:
         fees:
           $ref: '#/components/schemas/FiatMoneyUsd'
         createDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
     Channel:
       type: string
       format: uuid
@@ -1188,7 +1188,7 @@ components:
         captureAmount:
           $ref: '#/components/schemas/FiatMoneyUsd'
         captureDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
         requiredAction:
           $ref: '#/components/schemas/RequiredAction'
         cancel:
@@ -1202,9 +1202,9 @@ components:
         channel:
           $ref: '#/components/schemas/Channel'
         createDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
         updateDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
     CryptoPayment:
       type: object
       description: Status information of the related payment. This property is only
@@ -1252,9 +1252,9 @@ components:
           type: string
           example: '0x7351585460bd657f320b9afa02a52c26d89272d0d10cc29913eb8b28e64fd906'
         createDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
         updateDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
     FiatCancel:
       type: object
       description: Status information of the related cancel. This property is only
@@ -1297,9 +1297,9 @@ components:
         channel:
           $ref: '#/components/schemas/Channel'
         createDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
         updateDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
     FiatRefund:
       type: object
       required:
@@ -1341,9 +1341,9 @@ components:
         channel:
           $ref: '#/components/schemas/Channel'
         createDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
         updateDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
     AvsResults:
       type: string
       description: Status of the AVS check. Raw AVS response, expressed as an upper-case
@@ -1361,7 +1361,7 @@ components:
       - fail
       - unavailable
       - pending
-    ThreeDSResult:
+    ThreeDsResult:
       type: string
       description: Enumerated status of the check. `pass` indicates successful 3DS
         authentication. `fail` indicates failed 3DS authentication.
@@ -1393,7 +1393,7 @@ components:
         cvv:
           $ref: '#/components/schemas/CvvResults'
         threeDSecure:
-          $ref: '#/components/schemas/ThreeDSResult'
+          $ref: '#/components/schemas/ThreeDsResult'
         eci:
           $ref: '#/components/schemas/Eci'
     ExternalRef:
@@ -1560,9 +1560,9 @@ components:
         riskEvaluation:
           $ref: '#/components/schemas/RiskEvaluation'
         createDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
         updateDate:
-          $ref: '#/components/schemas/UTCTimestamp'
+          $ref: '#/components/schemas/UtcTimestamp'
   responses:
     NotAuthorized:
       description: The request has not been applied because it lacks valid authentication
