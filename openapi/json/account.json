@@ -2,38 +2,46 @@
   "openapi": "3.0.2",
   "servers": [
     {
-      "url": "api-sandbox.circle.com"
+      "url": "https://api-sandbox.circle.com"
     }
   ],
   "info": {
-    "version": "1.0.3",
+    "version": "1.1.0",
     "title": "Core Functionality",
-    "description": "APIs for managing your account balance. These endpoints are available with all Circle APIs."
+    "description": "All of Circle's APIs share a common set of core functionality that lets you manage your Circle Account in a programmatic way.\n\nWith a Circle Account your business can deposit traditional money from 80+ countries and seamlessly convert them into \"digital currency dollars\": USDC. You can then use USDC for everyday payments and treasury flows.\n"
   },
   "tags": [
     {
-      "name": "Balances"
+      "name": "Balances",
+      "description": "Get information on settled and unsettled balances."
     },
     {
-      "name": "Payouts"
+      "name": "Payouts",
+      "description": "Create and get information on 1st party payouts."
     },
     {
-      "name": "Wires"
+      "name": "Wires",
+      "description": "Create, get instructions, and get information on 1st party bank accounts for wire transfers."
     },
     {
-      "name": "Signet"
+      "name": "Signet",
+      "description": "Create and get information on Signet accounts."
     },
     {
-      "name": "SEN"
+      "name": "SEN",
+      "description": "Create and get information on SEN accounts."
     },
     {
-      "name": "Transfers"
+      "name": "Transfers",
+      "description": "Create and get information on 1st party transfers."
     },
     {
-      "name": "Addresses"
+      "name": "Addresses",
+      "description": "Generate and get information on blockchain addresses."
     },
     {
-      "name": "Deposits"
+      "name": "Deposits",
+      "description": "Get information on 1st party deposits."
     }
   ],
   "paths": {
@@ -98,6 +106,113 @@
       }
     },
     "/v1/businessAccount/payouts": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create a payout",
+        "operationId": "createBusinessPayout",
+        "tags": [
+          "Payouts"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BusinessPayoutCreationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created a payout.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "CreateBusinessPayoutResponse",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/BusinessPayout"
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": {
+                        "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                        "sourceWalletId": "53535335",
+                        "destination": {
+                          "type": "wire",
+                          "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                          "name": "COMMERZBANK AG ****3000"
+                        },
+                        "amount": {
+                          "amount": "3.14",
+                          "currency": "USD"
+                        },
+                        "fees": {
+                          "amount": "3.14",
+                          "currency": "USD"
+                        },
+                        "status": "pending",
+                        "trackingRef": "CIR-6ESOQANEP3NAO",
+                        "errorCode": "insufficient_funds",
+                        "riskEvaluation": {
+                          "decision": "approved",
+                          "reason": "3000"
+                        },
+                        "adjustments": {
+                          "fxCredit": {
+                            "amount": "3.14",
+                            "currency": "USD"
+                          },
+                          "fxDebit": {
+                            "amount": "3.14",
+                            "currency": "USD"
+                          }
+                        },
+                        "return": {
+                          "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                          "payoutId": "abdb500d-4a59-457c-801f-2d418c8703ac",
+                          "amount": {
+                            "amount": "3.14",
+                            "currency": "USD"
+                          },
+                          "fees": {
+                            "amount": "3.14",
+                            "currency": "USD"
+                          },
+                          "reason": "payout_returned",
+                          "status": "pending",
+                          "createDate": "2020-04-10T02:13:30.000Z",
+                          "updateDate": "2020-04-10T02:13:30.000Z"
+                        },
+                        "createDate": "2020-04-10T02:13:30.000Z",
+                        "updateDate": "2020-04-10T02:13:30.000Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          }
+        }
+      },
       "get": {
         "security": [
           {
@@ -127,6 +242,7 @@
             "required": false,
             "schema": {
               "type": "array",
+              "uniqueItems": true,
               "items": {
                 "$ref": "#/components/schemas/PayoutStatus"
               }
@@ -236,113 +352,6 @@
                 }
               }
             }
-          },
-          "401": {
-            "$ref": "#/components/responses/NotAuthorized"
-          }
-        }
-      },
-      "post": {
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "summary": "Create a payout",
-        "operationId": "createBusinessPayout",
-        "tags": [
-          "Payouts"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BusinessPayoutCreationRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Successfully created a payout.",
-            "headers": {
-              "X-Request-Id": {
-                "$ref": "#/components/headers/XRequestId"
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "CreateBusinessPayoutResponse",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/BusinessPayout"
-                    }
-                  }
-                },
-                "examples": {
-                  "response": {
-                    "value": {
-                      "data": {
-                        "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
-                        "sourceWalletId": "53535335",
-                        "destination": {
-                          "type": "wire",
-                          "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
-                          "name": "COMMERZBANK AG ****3000"
-                        },
-                        "amount": {
-                          "amount": "3.14",
-                          "currency": "USD"
-                        },
-                        "fees": {
-                          "amount": "3.14",
-                          "currency": "USD"
-                        },
-                        "status": "pending",
-                        "trackingRef": "CIR-6ESOQANEP3NAO",
-                        "errorCode": "insufficient_funds",
-                        "riskEvaluation": {
-                          "decision": "approved",
-                          "reason": "3000"
-                        },
-                        "adjustments": {
-                          "fxCredit": {
-                            "amount": "3.14",
-                            "currency": "USD"
-                          },
-                          "fxDebit": {
-                            "amount": "3.14",
-                            "currency": "USD"
-                          }
-                        },
-                        "return": {
-                          "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
-                          "payoutId": "abdb500d-4a59-457c-801f-2d418c8703ac",
-                          "amount": {
-                            "amount": "3.14",
-                            "currency": "USD"
-                          },
-                          "fees": {
-                            "amount": "3.14",
-                            "currency": "USD"
-                          },
-                          "reason": "payout_returned",
-                          "status": "pending",
-                          "createDate": "2020-04-10T02:13:30.000Z",
-                          "updateDate": "2020-04-10T02:13:30.000Z"
-                        },
-                        "createDate": "2020-04-10T02:13:30.000Z",
-                        "updateDate": "2020-04-10T02:13:30.000Z"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
             "$ref": "#/components/responses/NotAuthorized"
@@ -2059,13 +2068,14 @@
         "format": "uuid",
         "example": "b8627ae8-732b-4d25-b947-1df8f4007a29"
       },
-      "PayoutDestinationType": {
+      "BusinessAccountPayoutDestinationType": {
         "type": "string",
         "description": "The destination bank account type.",
         "enum": [
           "wire",
           "ach",
-          "sepa"
+          "sepa",
+          "signet"
         ]
       },
       "BankDestination": {
@@ -2077,7 +2087,7 @@
         ],
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/PayoutDestinationType"
+            "$ref": "#/components/schemas/BusinessAccountPayoutDestinationType"
           },
           "id": {
             "$ref": "#/components/schemas/Id"
@@ -2085,7 +2095,6 @@
           "name": {
             "type": "string",
             "description": "Bank name plus last four digits of the bank account number or IBAN.",
-            "readOnly": true,
             "example": "COMMERZBANK AG ****3000"
           }
         }
@@ -2301,7 +2310,8 @@
             "type": "string",
             "enum": [
               "wire",
-              "sen"
+              "sen",
+              "signet"
             ]
           },
           "id": {
@@ -3233,7 +3243,6 @@
           },
           "fees": {
             "description": "An array of fees applied to a transaction. This is only available when there is at least one non-zero fee.",
-            "readOnly": true,
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Fee"

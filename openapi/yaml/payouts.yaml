@@ -1,27 +1,160 @@
 openapi: 3.0.2
 servers:
-- url: api-sandbox.circle.com
+- url: https://api-sandbox.circle.com
 info:
-  version: 1.0.3
+  version: 1.1.0
   title: Payouts API
-  description: APIs for making payouts.
+  description: The Circle Payouts API allows you to programmatically make fast, global
+    payouts to your customers, vendors, and suppliers. Use traditional methods like
+    bank wires and ACH, or make payouts on supported blockchains.
 tags:
 - name: Payouts
-- name: On-chain payouts
+  description: Create and get information on wire, ACH, SEPA and address book payouts.
+- name: Crypto Address Book
+  description: Manage blockchain addresses with metadata.
 - name: Wires
+  description: Create, get instructions, and get information on bank accounts for
+    wire transfers.
 - name: ACH
+  description: Link and get information on bank account for ACH payments.
 - name: SEPA
+  description: Create and get information on SEPA accounts.
 - name: Returns
+  description: Get information on returned payouts.
+- name: Crypto Exchange Rates
+  description: Pull estimated exchange rate for crypto currencies.
 paths:
   /v1/payouts:
+    post:
+      security:
+      - bearerAuth: []
+      summary: Create a payout
+      description: "\nCreate a wire, ACH, SEPA or crypto payout.  \n\nThe following\
+        \ table includes the supported pairs of amount.currency and toAmount.currency\
+        \ for address book payouts:\n\n| amount.currency  | toAmount.currency |\n\
+        | ---------------- | ------------      |\n| USD              | USD       \
+        \        |\n| USD              | BTC               |\n| USD              |\
+        \ ETH               |\n| USD              | MTC               |\n| EUR   \
+        \           | EUR               |\n| BTC              | USD              \
+        \ |\n| BTC              | BTC               |\n| ETH              | USD  \
+        \             |\n| ETH              | ETH               |\n"
+      operationId: createPayout
+      tags:
+      - Payouts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/FiatPayoutCreationRequest'
+              - $ref: '#/components/schemas/CryptoPayoutCreationRequest'
+      responses:
+        '201':
+          description: Successfully created a payout.
+          headers:
+            X-Request-Id:
+              $ref: '#/components/headers/XRequestId'
+          content:
+            application/json:
+              schema:
+                title: CreatePayoutResponse
+                properties:
+                  data:
+                    oneOf:
+                    - $ref: '#/components/schemas/FiatPayout'
+                    - $ref: '#/components/schemas/CryptoPayout'
+              examples:
+                Fiat Payout:
+                  value:
+                    data:
+                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      sourceWalletId: '53535335'
+                      destination:
+                        type: wire
+                        id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                        name: COMMERZBANK AG ****3000
+                      amount:
+                        amount: '3.14'
+                        currency: USD
+                      toAmount:
+                        amount: '3.14'
+                        currency: EUR
+                      fees:
+                        amount: '3.14'
+                        currency: USD
+                      status: pending
+                      trackingRef: CIR-6ESOQANEP3NAO
+                      errorCode: insufficient_funds
+                      riskEvaluation:
+                        decision: approved
+                        reason: '3000'
+                      adjustments:
+                        fxCredit:
+                          amount: '3.14'
+                          currency: USD
+                        fxDebit:
+                          amount: '3.14'
+                          currency: USD
+                      return:
+                        id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                        payoutId: abdb500d-4a59-457c-801f-2d418c8703ac
+                        amount:
+                          amount: '3.14'
+                          currency: USD
+                        fees:
+                          amount: '3.14'
+                          currency: USD
+                        reason: payout_returned
+                        status: pending
+                        createDate: '2020-04-10T02:13:30.000Z'
+                        updateDate: '2020-04-10T02:13:30.000Z'
+                      createDate: '2020-04-10T02:13:30.000Z'
+                      updateDate: '2020-04-10T02:13:30.000Z'
+                Crypto Payout:
+                  value:
+                    data:
+                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      sourceWalletId: '53535335'
+                      destination:
+                        type: address_book
+                        id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      amount:
+                        amount: '3.14'
+                        currency: USD
+                      toAmount:
+                        amount: '3.14'
+                        currency: ETH
+                      fees:
+                        amount: '3.14'
+                        currency: USD
+                      status: pending
+                      errorCode: transaction_denied
+                      riskEvaluation:
+                        decision: denied
+                        reason: '4000'
+                      createDate: '2020-04-10T02:13:30.000Z'
+                      updateDate: '2020-04-10T02:13:30.000Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/NotAuthorized'
     get:
       security:
       - bearerAuth: []
       parameters:
       - name: source
-        description: Universally unique identifier (UUID v4) for the source wallet.
-          Filters the results to fetch all payouts made from a source wallet. If not
-          provided, payouts from all wallets will be returned.
+        description: Identifier for the source wallet. Filters the fetched payout
+          results to only be from a specific source wallet. If not provided, payouts
+          from all wallets will be returned.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '1000565227'
+      - name: destination
+        description: Universally unique identifier (UUID v4) for the destination.
+          Filters the fetched payout results made to a specific destination. If not
+          provided, payouts to all destinations will be returned.
         in: query
         required: false
         schema:
@@ -29,14 +162,15 @@ paths:
           format: uuid
           example: 54c1cbab-c419-450f-ad23-906fa03af7f0
       - name: type
-        description: Destination bank account type. Filters the results to fetch all
-          payouts made to a specified destination bank account type. This query parameter
-          can be passed multiple times to fetch results matching multiple destination
-          bank account types.
+        description: Destination type. Filters the results to fetch all payouts made
+          to a specified destination type. This query parameter can be passed multiple
+          times to fetch results matching multiple destination types. The address_book
+          destination type cannot be combined with other types.
         in: query
         required: false
         schema:
           type: array
+          uniqueItems: true
           items:
             $ref: '#/components/schemas/PayoutDestinationType'
       - name: status
@@ -46,9 +180,40 @@ paths:
         required: false
         schema:
           type: array
+          uniqueItems: true
           items:
             $ref: '#/components/schemas/PayoutStatus'
-      - $ref: '#/components/parameters/Destination'
+      - name: sourceCurrency
+        description: Queries items with the specified source currency `amount.currency`.
+          Matches any source currency if unspecified.
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - USD
+          - EUR
+          - BTC
+          - ETH
+          - MTC
+          - FLW
+          - MAN
+      - name: destinationCurrency
+        description: Queries items with the specified destination currency `toAmount.currency`.
+          Matches any destination currency if unspecified.
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - USD
+          - EUR
+          - BTC
+          - ETH
+          - MTC
+          - FLW
+          - MAN
+      - $ref: '#/components/parameters/Chain'
       - $ref: '#/components/parameters/From'
       - $ref: '#/components/parameters/To'
       - $ref: '#/components/parameters/PageBefore'
@@ -72,80 +237,11 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Payout'
+                      anyOf:
+                      - $ref: '#/components/schemas/FiatPayout'
+                      - $ref: '#/components/schemas/CryptoPayout'
               examples:
-                response:
-                  value:
-                    data:
-                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      sourceWalletId: '53535335'
-                      destination:
-                        type: wire
-                        id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        name: COMMERZBANK AG ****3000
-                      amount:
-                        amount: '3.14'
-                        currency: USD
-                      fees:
-                        amount: '3.14'
-                        currency: USD
-                      status: pending
-                      trackingRef: CIR-6ESOQANEP3NAO
-                      errorCode: insufficient_funds
-                      riskEvaluation:
-                        decision: approved
-                        reason: '3000'
-                      adjustments:
-                        fxCredit:
-                          amount: '3.14'
-                          currency: USD
-                        fxDebit:
-                          amount: '3.14'
-                          currency: USD
-                      return:
-                        id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                        payoutId: abdb500d-4a59-457c-801f-2d418c8703ac
-                        amount:
-                          amount: '3.14'
-                          currency: USD
-                        fees:
-                          amount: '3.14'
-                          currency: USD
-                        reason: payout_returned
-                        status: pending
-                        createDate: '2020-04-10T02:13:30.000Z'
-                        updateDate: '2020-04-10T02:13:30.000Z'
-                      createDate: '2020-04-10T02:13:30.000Z'
-                      updateDate: '2020-04-10T02:13:30.000Z'
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-    post:
-      security:
-      - bearerAuth: []
-      summary: Create a payout
-      operationId: createPayout
-      tags:
-      - Payouts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PayoutCreationRequest'
-      responses:
-        '201':
-          description: Successfully created a payout.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: CreatePayoutResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Payout'
-              examples:
-                response:
+                Fiat Payout:
                   value:
                     data:
                       id: b8627ae8-732b-4d25-b947-1df8f4007a29
@@ -157,6 +253,9 @@ paths:
                       amount:
                         amount: '3.14'
                         currency: USD
+                      toAmount:
+                        amount: '3.14'
+                        currency: EUR
                       fees:
                         amount: '3.14'
                         currency: USD
@@ -188,8 +287,30 @@ paths:
                         updateDate: '2020-04-10T02:13:30.000Z'
                       createDate: '2020-04-10T02:13:30.000Z'
                       updateDate: '2020-04-10T02:13:30.000Z'
-        '400':
-          $ref: '#/components/responses/BadRequest'
+                Crypto Payout:
+                  value:
+                    data:
+                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      sourceWalletId: '53535335'
+                      destination:
+                        type: address_book
+                        id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      amount:
+                        amount: '3.14'
+                        currency: USD
+                      toAmount:
+                        amount: '3.14'
+                        currency: ETH
+                      fees:
+                        amount: '3.14'
+                        currency: USD
+                      status: pending
+                      errorCode: transaction_denied
+                      riskEvaluation:
+                        decision: denied
+                        reason: '4000'
+                      createDate: '2020-04-10T02:13:30.000Z'
+                      updateDate: '2020-04-10T02:13:30.000Z'
         '401':
           $ref: '#/components/responses/NotAuthorized'
   /v1/payouts/{id}:
@@ -214,9 +335,11 @@ paths:
                 title: GetPayoutResponse
                 properties:
                   data:
-                    $ref: '#/components/schemas/DetailedPayout'
+                    oneOf:
+                    - $ref: '#/components/schemas/FiatDetailedPayout'
+                    - $ref: '#/components/schemas/CryptoPayout'
               examples:
-                response:
+                Fiat Payout:
                   value:
                     data:
                       id: b8627ae8-732b-4d25-b947-1df8f4007a29
@@ -228,6 +351,9 @@ paths:
                       amount:
                         amount: '3.14'
                         currency: USD
+                      toAmount:
+                        amount: '3.14'
+                        currency: EUR
                       fees:
                         amount: '3.14'
                         currency: USD
@@ -260,296 +386,266 @@ paths:
                         updateDate: '2020-04-10T02:13:30.000Z'
                       createDate: '2020-04-10T02:13:30.000Z'
                       updateDate: '2020-04-10T02:13:30.000Z'
+                Crypto Payout:
+                  value:
+                    data:
+                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      sourceWalletId: '53535335'
+                      destination:
+                        type: address_book
+                        id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      amount:
+                        amount: '3.14'
+                        currency: USD
+                      toAmount:
+                        amount: '3.14'
+                        currency: ETH
+                      fees:
+                        amount: '3.14'
+                        currency: USD
+                      status: pending
+                      errorCode: transaction_denied
+                      riskEvaluation:
+                        decision: denied
+                        reason: '4000'
+                      createDate: '2020-04-10T02:13:30.000Z'
+                      updateDate: '2020-04-10T02:13:30.000Z'
         '401':
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
-  /v1/transfers:
+  /v1/addressBook/recipients:
     post:
       security:
       - bearerAuth: []
-      summary: Create a transfer
-      description: A transfer can be made from an existing funded wallet to a blockchain
-        address or another wallet.
-      operationId: createTransfer
+      summary: Create a recipient
+      operationId: createAddressBookRecipient
       tags:
-      - On-chain payouts
+      - Crypto Address Book
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TransferCreationRequest'
-            examples:
-              request:
-                value:
-                  idempotencyKey: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
-                  source:
-                    type: wallet
-                    id: '12345'
-                  destination:
-                    type: blockchain
-                    address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
-                    chain: ETH
-                  amount:
-                    amount: '3.14'
-                    currency: USD
-              travel rule:
-                value:
-                  idempotencyKey: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
-                  source:
-                    type: wallet
-                    id: '12345'
-                    identities:
-                    - type: individual
-                      name: Satoshi Nakamoto
-                      addresses:
-                      - line1: 100 Money Street
-                        line2: Suite 1
-                        city: Boston
-                        district: MA
-                        postalCode: '01234'
-                        country: US
-                  destination:
-                    type: blockchain
-                    address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
-                    chain: ETH
-                  amount:
-                    amount: '3000.00'
-                    currency: USD
+              $ref: '#/components/schemas/AddressBookRecipientRequest'
       responses:
         '201':
+          description: Successfully created an address book recipient.
           headers:
             X-Request-Id:
               $ref: '#/components/headers/XRequestId'
-          description: Successfully created a transfer.
           content:
             application/json:
               schema:
-                title: CreateTransferResponse
+                title: CreateAddressBookRecipientResponse
                 properties:
                   data:
-                    $ref: '#/components/schemas/Transfer'
+                    $ref: '#/components/schemas/AddressBookRecipient'
               examples:
                 response:
                   value:
                     data:
-                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      source:
-                        type: wallet
-                        id: '12345'
-                      destination:
-                        type: blockchain
-                        address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
-                        chain: ETH
-                      amount:
-                        amount: '3.14'
-                        currency: USD
-                      transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
+                      id: 8755d0ea-14f9-4259-b092-de23c14b6568
+                      chain: ETH
+                      address: '0x45bfcf1a6289a0b77b4d3f7d12005a05949fd8c3'
+                      metadata:
+                        nickname: sample nickname
+                        email: satoshi@circle.com
+                        bns: sample.circle
                       status: pending
-                      createDate: '2020-04-10T02:13:30.000Z'
-                travel rule:
-                  value:
-                    data:
-                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      source:
-                        type: wallet
-                        id: '12345'
-                        identities:
-                        - type: individual
-                          name: Satoshi Nakamoto
-                          addresses:
-                          - line1: 100 Money Street
-                            line2: Suite 1
-                            city: Boston
-                            district: MA
-                            postalCode: '01234'
-                            country: US
-                      destination:
-                        type: blockchain
-                        address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
-                        chain: ETH
-                      amount:
-                        amount: '3000.00'
-                        currency: USD
-                      transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
-                      status: pending
-                      createDate: '2020-04-10T02:13:30.000Z'
+                      createDate: '2022-07-21T20:13:35.578678Z'
+                      updateDate: '2022-07-21T20:19:24.859052Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/NotAuthorized'
     get:
       security:
       - bearerAuth: []
+      summary: List all recipients
+      operationId: listAddressBookRecipients
+      tags:
+      - Crypto Address Book
       parameters:
-      - name: walletId
-        description: Unique identifier for the source or destination wallet of transfers,
-          if any. May not be used in conjunction with destinationWalletId or sourceWalletId.
-          Useful for fetching all transfers related to a wallet.
+      - name: address
+        description: Filters results to fetch only address book recipients with the
+          provided address.
         in: query
         required: false
         schema:
           type: string
-          example: '12345'
-      - name: sourceWalletId
-        description: Unique identifier for the source wallet of transfers, if any.
+      - name: chain
+        description: Filters results to fetch only address book recipients with the
+          provided chain.
         in: query
         required: false
         schema:
           type: string
-          example: '12345'
-      - name: destinationWalletId
-        description: Unique identifier for the destination wallet of transfers, if
-          any.
+      - name: email
+        description: Filters results to fetch only address book recipients that have
+          the provided email in their metadata.
         in: query
         required: false
         schema:
           type: string
-          example: '12345'
-      - $ref: '#/components/parameters/ReturnIdentities'
+      - name: status
+        description: Filters results to fetch only address book recipients that have
+          the provided status.
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - pending
+          - inactive
+          - active
+          - denied
       - $ref: '#/components/parameters/From'
       - $ref: '#/components/parameters/To'
       - $ref: '#/components/parameters/PageBefore'
       - $ref: '#/components/parameters/PageAfter'
       - $ref: '#/components/parameters/PageSize'
-      summary: List all transfers
-      description: Searches for transfers involving the provided wallets. If no wallet
-        ids are provided, searches all wallets associated with your Circle API account.
-        If the date parameters are omitted, returns the most recent transfers. This
-        endpoint returns up to 50 transfers in descending chronological order or pageSize,
-        if provided.
-      operationId: listTransfers
-      tags:
-      - On-chain payouts
       responses:
         '200':
-          description: Successfully retrieved a list of transfers.
+          description: Successfully retrieved a list of address book recipients.
           headers:
             X-Request-Id:
               $ref: '#/components/headers/XRequestId'
           content:
             application/json:
               schema:
-                title: ListTransfersResponse
+                title: ListAddressBookRecipientsResponse
                 properties:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Transfer'
+                      $ref: '#/components/schemas/AddressBookRecipient'
               examples:
                 response:
                   value:
                     data:
                     - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      source:
-                        type: wallet
-                        id: '12345'
-                      destination:
-                        type: blockchain
-                        address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
-                        addressTag: '123456789'
-                        chain: ALGO
-                      amount:
-                        amount: '3.14'
-                        currency: USD
-                      transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
+                      chain: ALGO
+                      address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+                      addressTag: '123456789'
+                      metadata:
+                        nickname: sample nickname
+                        email: satoshi@circle.com
+                        bns: sample.circle
                       status: pending
                       createDate: '2020-04-10T02:13:30.000Z'
-                travel rule:
-                  value:
-                    data:
-                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      source:
-                        type: wallet
-                        id: '12345'
-                        identities:
-                        - type: individual
-                          name: Satoshi Nakamoto
-                          addresses:
-                          - line1: 100 Money Street
-                            line2: Suite 1
-                            city: Boston
-                            district: MA
-                            postalCode: '01234'
-                            country: US
-                      destination:
-                        type: blockchain
-                        address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
-                        addressTag: '123456789'
-                        chain: ALGO
-                      amount:
-                        amount: '3000.00'
-                        currency: USD
-                      transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
-                      status: pending
-                      createDate: '2020-04-10T02:13:30.000Z'
+                      updateDate: '2020-04-10T02:13:30.000Z'
         '401':
           $ref: '#/components/responses/NotAuthorized'
-  /v1/transfers/{id}:
+  /v1/addressBook/recipients/{id}:
     get:
       parameters:
       - $ref: '#/components/parameters/IdPath'
-      - $ref: '#/components/parameters/ReturnIdentities'
       security:
       - bearerAuth: []
-      summary: Get a transfer
-      operationId: getTransfer
+      summary: Get a recipient
+      operationId: getAddressBookRecipient
       tags:
-      - On-chain payouts
+      - Crypto Address Book
+      responses:
+        '200':
+          description: Successfully retrieved an address book recipient.
+          headers:
+            X-Request-Id:
+              $ref: '#/components/headers/XRequestId'
+          content:
+            application/json:
+              schema:
+                title: GetAddressBookRecipientResponse
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AddressBookRecipient'
+              examples:
+                response:
+                  value:
+                    data:
+                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      chain: ALGO
+                      address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+                      addressTag: '123456789'
+                      metadata:
+                        nickname: sample nickname
+                        email: satoshi@circle.com
+                        bns: sample.circle
+                      status: pending
+                      createDate: '2020-04-10T02:13:30.000Z'
+                      updateDate: '2020-04-10T02:13:30.000Z'
+        '401':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      parameters:
+      - $ref: '#/components/parameters/IdPath'
+      security:
+      - bearerAuth: []
+      summary: Modify a recipient
+      operationId: modifyAddressBookRecipient
+      tags:
+      - Crypto Address Book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressBookRecipientModifyRequest'
+      responses:
+        '200':
+          description: Successfully updated the address book recipient.
+          headers:
+            X-Request-Id:
+              $ref: '#/components/headers/XRequestId'
+          content:
+            application/json:
+              schema:
+                title: ModifyAddressBookRecipientResponse
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AddressBookRecipient'
+              examples:
+                response:
+                  value:
+                    data:
+                      id: 8755d0ea-14f9-4259-b092-de23c14b6568
+                      chain: ETH
+                      address: '0x45bfcf1a6289a0b77b4d3f7d12005a05949fd8c3'
+                      metadata:
+                        nickname: sample nickname
+                        email: satoshi@circle.com
+                        bns: sample.circle
+                      status: pending
+                      createDate: '2022-07-21T20:13:35.578678Z'
+                      updateDate: '2022-07-21T20:19:24.859052Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      parameters:
+      - $ref: '#/components/parameters/IdPath'
+      security:
+      - bearerAuth: []
+      summary: Delete a recipient
+      operationId: deleteAddressBookRecipient
+      tags:
+      - Crypto Address Book
       responses:
         '200':
           headers:
             X-Request-Id:
               $ref: '#/components/headers/XRequestId'
-          description: Successfully retrieved a transfer.
-          content:
-            application/json:
-              schema:
-                title: GetTransferResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/TransferDetailedTransfer'
-              examples:
-                response:
-                  value:
-                    data:
-                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      source:
-                        type: wallet
-                        id: '12345'
-                      destination:
-                        type: blockchain
-                        address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
-                        chain: ETH
-                      amount:
-                        amount: '3.14'
-                        currency: USD
-                      transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
-                      status: pending
-                      createDate: '2020-04-10T02:13:30.000Z'
-                travel rule:
-                  value:
-                    data:
-                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      source:
-                        type: wallet
-                        id: '12345'
-                        identities:
-                        - type: individual
-                          name: Satoshi Nakamoto
-                          addresses:
-                          - line1: 100 Money Street
-                            line2: Suite 1
-                            city: Boston
-                            district: MA
-                            postalCode: '01234'
-                            country: US
-                      destination:
-                        type: blockchain
-                        address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
-                        chain: ETH
-                      amount:
-                        amount: '3000.00'
-                        currency: USD
-                      transactionHash: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
-                      status: pending
-                      createDate: '2020-04-10T02:13:30.000Z'
+          description: Successfully removed the address book recipient.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /v1/banks/wires:
     post:
       security:
@@ -808,7 +904,7 @@ paths:
           content:
             application/json:
               schema:
-                title: CreateAchAccountResponse
+                title: CreateMockAchAccountResponse
                 properties:
                   data:
                     $ref: '#/components/schemas/MockAchAccountResponse'
@@ -981,6 +1077,53 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/NotAuthorized'
+  /v1/exchange/rates/{trading-pair}:
+    get:
+      security:
+      - bearerAuth: []
+      summary: Get a exchange rate
+      description: Fetch the current rates for the specified trading pair. The trading
+        pair is defined by a base currency followed by a quote currency. The response
+        contains buy and sell rates denominated in the quote currency. **Exchange
+        rate is an estimate only and is subject to change by the time you submit the
+        actual request.**
+      operationId: getExchangeRates
+      tags:
+      - Crypto Exchange Rates
+      parameters:
+      - name: trading-pair
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - BTC-USD
+          - ETH-USD
+          - FLOW-USD
+      responses:
+        '200':
+          description: Successfully retrieved rates.
+          headers:
+            X-Request-Id:
+              $ref: '#/components/headers/XRequestId'
+          content:
+            application/json:
+              schema:
+                title: GetExchangeRatesResponse
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Rate'
+              examples:
+                response:
+                  value:
+                    data:
+                      buy: '46317.59000'
+                      sell: '45400.41000'
+                      createDate: '2020-04-10T02:13:30.000Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/NotAuthorized'
 components:
   securitySchemes:
     bearerAuth:
@@ -989,11 +1132,12 @@ components:
   schemas:
     PayoutDestinationType:
       type: string
-      description: The destination bank account type.
+      description: The destination type.
       enum:
       - wire
       - ach
       - sepa
+      - address_book
     PayoutStatus:
       type: string
       description: Status of the payout. Status `pending` indicates that the payout
@@ -1008,22 +1152,28 @@ components:
       description: Unique system generated identifier for the entity.
       format: uuid
       example: b8627ae8-732b-4d25-b947-1df8f4007a29
-    BankDestination:
+    FiatPayoutDestinationType:
+      type: string
+      description: The destination type.
+      enum:
+      - wire
+      - ach
+      - sepa
+    FiatPayoutDestination:
       type: object
-      description: The destination bank account.
+      description: The destination.
       required:
       - type
       - id
       properties:
         type:
-          $ref: '#/components/schemas/PayoutDestinationType'
+          $ref: '#/components/schemas/FiatPayoutDestinationType'
         id:
           $ref: '#/components/schemas/Id'
         name:
           type: string
           description: Bank name plus last four digits of the bank account number
             or IBAN.
-          readOnly: true
           example: COMMERZBANK AG ****3000
     FiatMoneyUsd:
       type: object
@@ -1040,6 +1190,27 @@ components:
           type: string
           enum:
           - USD
+    PayoutMoney:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: string
+          description: Magnitude of the amount, in units of the currency, with a `.`.
+          example: '3.14'
+        currency:
+          type: string
+          description: Currency code for the amount.
+          enum:
+          - USD
+          - EUR
+          - BTC
+          - ETH
+          - MTC
+          - FLW
+          - MAN
     PayoutErrorCode:
       type: string
       nullable: true
@@ -1127,7 +1298,7 @@ components:
           $ref: '#/components/schemas/UtcTimestamp'
         updateDate:
           $ref: '#/components/schemas/UtcTimestamp'
-    Payout:
+    FiatPayout:
       type: object
       properties:
         id:
@@ -1137,9 +1308,11 @@ components:
           description: The identifier of the source wallet used to fund a payout.
           example: '53535335'
         destination:
-          $ref: '#/components/schemas/BankDestination'
+          $ref: '#/components/schemas/FiatPayoutDestination'
         amount:
           $ref: '#/components/schemas/FiatMoneyUsd'
+        toAmount:
+          $ref: '#/components/schemas/PayoutMoney'
         fees:
           $ref: '#/components/schemas/FiatMoneyUsd'
         status:
@@ -1156,6 +1329,49 @@ components:
           $ref: '#/components/schemas/FinalAdjustments'
         return:
           $ref: '#/components/schemas/UnwithdrawalObject'
+        createDate:
+          $ref: '#/components/schemas/UtcTimestamp'
+        updateDate:
+          $ref: '#/components/schemas/UtcTimestamp'
+    CryptoPayoutDestinationType:
+      type: string
+      description: The destination type.
+      enum:
+      - address_book
+    CryptoPayoutDestination:
+      type: object
+      description: The destination.
+      required:
+      - type
+      - id
+      properties:
+        type:
+          $ref: '#/components/schemas/CryptoPayoutDestinationType'
+        id:
+          $ref: '#/components/schemas/Id'
+    CryptoPayout:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        sourceWalletId:
+          type: string
+          description: The identifier of the source wallet used to fund a payout.
+          example: '53535335'
+        destination:
+          $ref: '#/components/schemas/CryptoPayoutDestination'
+        amount:
+          $ref: '#/components/schemas/PayoutMoney'
+        toAmount:
+          $ref: '#/components/schemas/PayoutMoney'
+        fees:
+          $ref: '#/components/schemas/PayoutMoney'
+        status:
+          $ref: '#/components/schemas/PayoutStatus'
+        errorCode:
+          $ref: '#/components/schemas/PayoutErrorCode'
+        riskEvaluation:
+          $ref: '#/components/schemas/RiskEvaluation'
         createDate:
           $ref: '#/components/schemas/UtcTimestamp'
         updateDate:
@@ -1193,7 +1409,7 @@ components:
       properties:
         beneficiaryEmail:
           $ref: '#/components/schemas/Email'
-    PayoutCreationRequest:
+    FiatPayoutCreationRequest:
       type: object
       required:
       - idempotencyKey
@@ -1206,61 +1422,20 @@ components:
         source:
           $ref: '#/components/schemas/WalletLocation'
         destination:
-          $ref: '#/components/schemas/BankDestination'
+          type: object
+          description: The destination.
+          required:
+          - type
+          - id
+          properties:
+            type:
+              $ref: '#/components/schemas/FiatPayoutDestinationType'
+            id:
+              $ref: '#/components/schemas/Id'
         amount:
           $ref: '#/components/schemas/FiatMoneyUsd'
         metadata:
           $ref: '#/components/schemas/MetadataPayout'
-    ExternalRef:
-      type: string
-      description: "External network identifier which will be present once provided\
-        \ from the applicable network. \n\nExamples:\n* **Input/Output Message Accountability\
-        \ Data (IMAD/OMAD)**: unique number given to each FedWire payment when using\
-        \ the Federal Reserve Bank Service which can be used to investigate and track\
-        \ wire transfers.\n"
-      example: YYYYMMDDXXXXXXXX012345
-    DetailedPayout:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/Id'
-        sourceWalletId:
-          description: The identifier of the source wallet used to fund a payout.
-          type: string
-          example: '53535335'
-        destination:
-          $ref: '#/components/schemas/BankDestination'
-        amount:
-          $ref: '#/components/schemas/FiatMoneyUsd'
-        fees:
-          $ref: '#/components/schemas/FiatMoneyUsd'
-        status:
-          description: Status of the payout. Status `pending` indicates that the payout
-            is in process; `complete` indicates it finished successfully; `failed`
-            indicates it failed.
-          type: string
-          enum:
-          - pending
-          - complete
-          - failed
-        trackingRef:
-          description: A payout tracking reference. Will be present once known.
-          nullable: true
-          example: CIR-6ESOQANEP3NAO
-        externalRef:
-          $ref: '#/components/schemas/ExternalRef'
-        errorCode:
-          $ref: '#/components/schemas/PayoutErrorCode'
-        riskEvaluation:
-          $ref: '#/components/schemas/RiskEvaluation'
-        adjustments:
-          $ref: '#/components/schemas/FinalAdjustments'
-        return:
-          $ref: '#/components/schemas/UnwithdrawalObject'
-        createDate:
-          $ref: '#/components/schemas/UtcTimestamp'
-        updateDate:
-          $ref: '#/components/schemas/UtcTimestamp'
     IdentityAddress:
       type: object
       required:
@@ -1356,105 +1531,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Identity'
-    Chain:
-      type: string
-      description: A blockchain that a given currency is available on.
-      enum:
-      - ALGO
-      - AVAX
-      - BTC
-      - ETH
-      - FLOW
-      - HBAR
-      - MATIC
-      - SOL
-      - TRX
-      - XLM
-    TransferSourceBlockchainLocation:
-      description: A source blockchain address.
-      type: object
-      required:
-      - type
-      - chain
-      properties:
-        type:
-          type: string
-          enum:
-          - blockchain
-        chain:
-          $ref: '#/components/schemas/Chain'
-        identities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Identity'
-    TransferSourceLocation:
-      description: A source of funds.
-      oneOf:
-      - $ref: '#/components/schemas/TransferSourceWalletLocation'
-      - $ref: '#/components/schemas/TransferSourceBlockchainLocation'
-      discriminator:
-        propertyName: type
-    Address:
-      type: string
-      description: An alphanumeric string representing a blockchain address. Will
-        be in different formats for different chains. It is important to preserve
-        the exact formatting and capitalization of the address.
-      example: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
-    AddressTag:
-      type: string
-      description: The secondary identifier for a blockchain address. An example of
-        this is the memo field on the Stellar network, which can be text, id, or hash
-        format.
-      nullable: true
-      example: '123456789'
-    TransferDestinationBlockchainLocation:
-      description: A destination blockchain address.
-      type: object
-      required:
-      - type
-      - chain
-      - address
-      properties:
-        type:
-          type: string
-          enum:
-          - blockchain
-        address:
-          $ref: '#/components/schemas/Address'
-        addressTag:
-          $ref: '#/components/schemas/AddressTag'
-        chain:
-          $ref: '#/components/schemas/Chain'
-    TransferDestinationWalletLocation:
-      description: A destination wallet location.
-      type: object
-      required:
-      - type
-      - id
-      properties:
-        type:
-          type: string
-          enum:
-          - wallet
-        id:
-          type: string
-          description: The id of the wallet.
-          example: '12345'
-        address:
-          type: string
-          description: An alphanumeric string which indicates the wallet address used
-            to receive the transfer. Will only be set when the transfer source is
-            a blockchain address.
-          example: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
-        addressTag:
-          $ref: '#/components/schemas/AddressTag'
-    TransferDestinationLocation:
-      description: A destination of funds.
-      oneOf:
-      - $ref: '#/components/schemas/TransferDestinationBlockchainLocation'
-      - $ref: '#/components/schemas/TransferDestinationWalletLocation'
-      discriminator:
-        propertyName: type
     Money:
       type: object
       required:
@@ -1473,184 +1549,181 @@ components:
           - EUR
           - BTC
           - ETH
-    Fee:
+    ToAmount:
       type: object
       required:
-      - amount
       - currency
-      - type
       properties:
-        amount:
-          type: string
-          description: Magnitude of the fee amount, in units of the currency, with
-            a `.`.
-          example: '10.00'
         currency:
           type: string
           description: Currency code for the amount.
           enum:
           - USD
-        type:
-          type: string
-          description: Category of the fee.
-          enum:
-          - network
-    TransferErrorCode:
-      type: string
-      description: Indicates the failure reason of a transfer. Only present for transfers
-        in a `failed` state. Possible values are `insufficient_funds`, `blockchain_error`
-        and `transfer_denied` and `transfer_failed`
-      nullable: true
-      enum:
-      - transfer_failed
-      - transfer_denied
-      - blockchain_error
-      - insufficient_funds
-    Transfer:
-      type: object
-      description: A transfer of funds.
-      required:
-      - id
-      - source
-      - destination
-      - amount
-      - status
-      properties:
-        id:
-          $ref: '#/components/schemas/Id'
-        source:
-          $ref: '#/components/schemas/TransferSourceLocation'
-        destination:
-          $ref: '#/components/schemas/TransferDestinationLocation'
-        amount:
-          $ref: '#/components/schemas/Money'
-        fees:
-          description: An array of fees applied to a transaction. This is only available
-            when there is at least one non-zero fee.
-          readOnly: true
-          type: array
-          items:
-            $ref: '#/components/schemas/Fee'
-        transactionHash:
-          description: A hash that uniquely identifies the onchain transaction. This
-            is only available where either source or destination are of type blockchain.
-          type: string
-          example: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
-        status:
-          description: Status of the transfer. Status `pending` indicates that the
-            transfer is in the process of running; `complete` indicates it finished
-            successfully; `failed` indicates it failed.
-          type: string
-          enum:
-          - pending
-          - complete
-          - failed
-        errorCode:
-          $ref: '#/components/schemas/TransferErrorCode'
-        createDate:
-          description: The create date of the transfer.
-          type: string
-          format: date-time
-    TransferRequestSourceWalletLocation:
-      type: object
-      required:
-      - type
-      - id
-      properties:
-        type:
-          type: string
-          enum:
-          - wallet
-        id:
-          type: string
-          description: The id of the wallet.
-          example: '12345'
-        identities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Identity'
-    TransferRequestBlockchainLocation:
-      type: object
-      required:
-      - type
-      - address
-      - chain
-      properties:
-        type:
-          type: string
-          enum:
-          - blockchain
-        address:
-          type: string
-          description: The blockchain address.
-          example: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
-        addressTag:
-          $ref: '#/components/schemas/AddressTag'
-        chain:
-          $ref: '#/components/schemas/Chain'
-    TransferCreationRequest:
+          - EUR
+          - BTC
+          - ETH
+          - MTC
+    CryptoPayoutCreationRequest:
       type: object
       required:
       - idempotencyKey
-      - source
       - destination
       - amount
       properties:
         idempotencyKey:
           $ref: '#/components/schemas/IdempotencyKey'
         source:
-          $ref: '#/components/schemas/TransferRequestSourceWalletLocation'
+          $ref: '#/components/schemas/TransferSourceWalletLocation'
         destination:
-          oneOf:
-          - $ref: '#/components/schemas/TransferRequestBlockchainLocation'
-          - $ref: '#/components/schemas/WalletLocation'
+          $ref: '#/components/schemas/CryptoPayoutDestination'
         amount:
           $ref: '#/components/schemas/Money'
-    TransferDetailedTransfer:
+        toAmount:
+          $ref: '#/components/schemas/ToAmount'
+    ExternalRef:
+      type: string
+      description: "External network identifier which will be present once provided\
+        \ from the applicable network. \n\nExamples:\n* **Input/Output Message Accountability\
+        \ Data (IMAD/OMAD)**: unique number given to each FedWire payment when using\
+        \ the Federal Reserve Bank Service which can be used to investigate and track\
+        \ wire transfers.\n"
+      example: YYYYMMDDXXXXXXXX012345
+    FiatDetailedPayout:
       type: object
-      description: A transfer of funds.
-      required:
-      - id
-      - source
-      - destination
-      - amount
-      - status
       properties:
         id:
           $ref: '#/components/schemas/Id'
-        source:
-          $ref: '#/components/schemas/TransferSourceLocation'
+        sourceWalletId:
+          description: The identifier of the source wallet used to fund a payout.
+          type: string
+          example: '53535335'
         destination:
-          $ref: '#/components/schemas/TransferDestinationLocation'
+          $ref: '#/components/schemas/FiatPayoutDestination'
         amount:
-          $ref: '#/components/schemas/Money'
+          $ref: '#/components/schemas/FiatMoneyUsd'
+        toAmount:
+          $ref: '#/components/schemas/PayoutMoney'
         fees:
-          description: An array of fees applied to a transaction. This is only available
-            when there is at least one non-zero fee.
-          readOnly: true
-          type: array
-          items:
-            $ref: '#/components/schemas/Fee'
-        transactionHash:
-          type: string
-          description: A hash that uniquely identifies the onchain transaction. This
-            is only available where either source or destination are of type blockchain.
-          example: '0x4cebf8f90c9243a23c77e4ae20df691469e4b933b295a73376292843968f7a63'
+          $ref: '#/components/schemas/FiatMoneyUsd'
         status:
+          description: Status of the payout. Status `pending` indicates that the payout
+            is in process; `complete` indicates it finished successfully; `failed`
+            indicates it failed.
           type: string
-          description: Status of the transfer. Status `pending` indicates that the
-            transfer is in the process of running; `complete` indicates it finished
-            successfully; `failed` indicates it failed.
           enum:
-          - failed
           - pending
           - complete
+          - failed
+        trackingRef:
+          description: A payout tracking reference. Will be present once known.
+          nullable: true
+          example: CIR-6ESOQANEP3NAO
+        externalRef:
+          $ref: '#/components/schemas/ExternalRef'
         errorCode:
-          $ref: '#/components/schemas/TransferErrorCode'
+          $ref: '#/components/schemas/PayoutErrorCode'
         riskEvaluation:
           $ref: '#/components/schemas/RiskEvaluation'
+        adjustments:
+          $ref: '#/components/schemas/FinalAdjustments'
+        return:
+          $ref: '#/components/schemas/UnwithdrawalObject'
         createDate:
           $ref: '#/components/schemas/UtcTimestamp'
+        updateDate:
+          $ref: '#/components/schemas/UtcTimestamp'
+    Chain:
+      type: string
+      description: A blockchain that a given currency is available on.
+      enum:
+      - ALGO
+      - AVAX
+      - BTC
+      - ETH
+      - FLOW
+      - HBAR
+      - MATIC
+      - SOL
+      - TRX
+      - XLM
+    Address:
+      type: string
+      description: An alphanumeric string representing a blockchain address. Will
+        be in different formats for different chains. It is important to preserve
+        the exact formatting and capitalization of the address.
+      example: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+    AddressTag:
+      type: string
+      description: The secondary identifier for a blockchain address. An example of
+        this is the memo field on the Stellar network, which can be text, id, or hash
+        format.
+      nullable: true
+      example: '123456789'
+    AddressBookRecipientMetadata:
+      type: object
+      properties:
+        nickname:
+          type: string
+          description: Nickname related to the address.
+          example: sample nickname
+        email:
+          $ref: '#/components/schemas/Email'
+        bns:
+          type: string
+          description: Blockchain Name Service (e.g. ENS) domain for the address.
+          example: sample.circle
+    AddressBookRecipient:
+      type: object
+      required:
+      - chain
+      - address
+      - metadata
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        chain:
+          $ref: '#/components/schemas/Chain'
+        address:
+          $ref: '#/components/schemas/Address'
+        addressTag:
+          $ref: '#/components/schemas/AddressTag'
+        metadata:
+          $ref: '#/components/schemas/AddressBookRecipientMetadata'
+        status:
+          type: string
+          description: Status of the address book recipient.
+          enum:
+          - pending
+          - inactive
+          - active
+          - denied
+        createDate:
+          $ref: '#/components/schemas/UtcTimestamp'
+        updateDate:
+          $ref: '#/components/schemas/UtcTimestamp'
+    AddressBookRecipientRequest:
+      type: object
+      required:
+      - idempotencyKey
+      - chain
+      - address
+      - metadata
+      properties:
+        idempotencyKey:
+          $ref: '#/components/schemas/IdempotencyKey'
+        chain:
+          $ref: '#/components/schemas/Chain'
+        address:
+          $ref: '#/components/schemas/Address'
+        addressTag:
+          $ref: '#/components/schemas/AddressTag'
+        metadata:
+          $ref: '#/components/schemas/AddressBookRecipientMetadata'
+    AddressBookRecipientModifyRequest:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/AddressBookRecipientMetadata'
     BillingDetails:
       type: object
       required:
@@ -2237,18 +2310,44 @@ components:
           $ref: '#/components/schemas/UtcTimestamp'
         updateDate:
           $ref: '#/components/schemas/UtcTimestamp'
+    Rate:
+      type: object
+      required:
+      - buy
+      - sell
+      - createDate
+      properties:
+        buy:
+          type: string
+          description: The buy rate denominated in the quote currency of the trading
+            pair.
+          example: '46317.59000'
+        sell:
+          type: string
+          description: The sell rate denominated in the quote currency of the trading
+            pair.
+          example: '45400.41000'
+        createDate:
+          $ref: '#/components/schemas/UtcTimestamp'
   parameters:
-    Destination:
-      name: destination
-      description: Universally unique identifier (UUID v4) for the destination bank
-        account. Filters the results to fetch all payouts made to a destination bank
-        account.
+    Chain:
+      name: chain
+      description: Queries items with the specified chain. Matches any chain if unspecified
       in: query
       required: false
       schema:
         type: string
-        format: uuid
-        example: e3d0a838-d732-49d0-bf44-73a668e38973
+        enum:
+        - ALGO
+        - AVAX
+        - BTC
+        - ETH
+        - FLOW
+        - HBAR
+        - MATIC
+        - SOL
+        - TRX
+        - XLM
     From:
       name: from
       description: Queries items created since the specified date-time (inclusive).
@@ -2346,17 +2445,6 @@ components:
         type: string
         format: uuid
         example: b3d9d2d5-4c12-4946-a09d-953e82fae2b0
-    ReturnIdentities:
-      name: returnIdentities
-      description: Specify if you would like to see identities in the response. Restricts
-        maximum returned items to 5. By default returnIdentities is false, resulting
-        in the response not returning `data.source.identities`.
-      in: query
-      required: false
-      schema:
-        type: boolean
-        example: 'true'
-        default: false
   headers:
     XRequestId:
       description: Universally unique identifier (UUID v4) for the request. Helpful

@@ -1,13 +1,19 @@
 openapi: 3.0.2
 servers:
-- url: api-sandbox.circle.com
+- url: https://api-sandbox.circle.com
 info:
-  version: 1.0.3
+  version: 1.1.0
   title: Accounts API
-  description: APIs to manage custodial wallets.
+  description: The Accounts API allows you to easily create and host digital wallets
+    for your customers, and manage transfers of funds across accounts- whether they
+    are within the Circle platform, or in / out of the platform via on-chain USDC,
+    EUROC, BTC, and ETH connectivity.
 tags:
 - name: Wallets
+  description: Create digital wallets and get information on their activity.
 - name: Transfers
+  description: Create transfers to another wallet or blockchain address, and get information
+    on those transfers.
 paths:
   /v1/wallets:
     post:
@@ -984,7 +990,6 @@ components:
         fees:
           description: An array of fees applied to a transaction. This is only available
             when there is at least one non-zero fee.
-          readOnly: true
           type: array
           items:
             $ref: '#/components/schemas/Fee'
@@ -1120,7 +1125,6 @@ components:
         fees:
           description: An array of fees applied to a transaction. This is only available
             when there is at least one non-zero fee.
-          readOnly: true
           type: array
           items:
             $ref: '#/components/schemas/Fee'

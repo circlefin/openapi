@@ -2,11 +2,11 @@
   "openapi": "3.0.2",
   "servers": [
     {
-      "url": "api-sandbox.circle.com"
+      "url": "https://api-sandbox.circle.com"
     }
   ],
   "info": {
-    "version": "1.0.3",
+    "version": "1.1.0",
     "title": "API Overview",
     "description": "Common endpoints shared across all Circle APIs."
   },
@@ -162,6 +162,70 @@
       }
     },
     "/v1/notifications/subscriptions": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create a notification subscription",
+        "description": "Subscribe to receiving notifications at a given endpoint. The endpoint should be able to handle AWS SNS subscription requests. For more details see https://docs.aws.amazon.com/mobile/sdkforxamarin/developerguide/sns-send-http.html. Note, the sandbox environment allows a maximum of 3 active subscriptions; otherwise, this is limited to 1 active subscription and subsequent create requests will be rejected with a Limit Exceeded error.\n",
+        "operationId": "createSubscription",
+        "tags": [
+          "Subscriptions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscriptionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created a notification subscription.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "CreateSubscriptionResponse",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SubscriptionResponse"
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": {
+                        "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                        "endpoint": "https://example.org/handler/for/notifications",
+                        "subscriptionDetails": [
+                          {
+                            "url": "arn:aws:sns:us-east-1:<...>:fcb4a2c9-9c4f-4706-b312-6b22650f5d17",
+                            "status": "confirmed"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          }
+        }
+      },
       "get": {
         "security": [
           {
@@ -216,70 +280,6 @@
             "$ref": "#/components/responses/NotAuthorized"
           }
         }
-      },
-      "post": {
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "summary": "Create a notification subscription",
-        "description": "Subscribe to receiving notifications at a given endpoint. The endpoint should be able to handle AWS SNS subscription requests. For more details see https://docs.aws.amazon.com/mobile/sdkforxamarin/developerguide/sns-send-http.html. Note, the sandbox environment allows a maximum of 3 active subscriptions; otherwise, this is limited to 1 active subscription and subsequent create requests will be rejected with a Limit Exceeded error.\n",
-        "operationId": "createSubscribtion",
-        "tags": [
-          "Subscriptions"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SubscriptionRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successfully created a notification subscription.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "CreateSubscribtionResponse",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/SubscriptionResponse"
-                    }
-                  }
-                },
-                "examples": {
-                  "response": {
-                    "value": {
-                      "data": {
-                        "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
-                        "endpoint": "https://example.org/handler/for/notifications",
-                        "subscriptionDetails": [
-                          {
-                            "url": "arn:aws:sns:us-east-1:<...>:fcb4a2c9-9c4f-4706-b312-6b22650f5d17",
-                            "status": "confirmed"
-                          }
-                        ]
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/NotAuthorized"
-          },
-          "429": {
-            "$ref": "#/components/responses/LimitExceeded"
-          }
-        }
       }
     },
     "/v1/notifications/subscriptions/{id}": {
@@ -296,7 +296,7 @@
         ],
         "summary": "Remove a notification subscription",
         "description": "To remove a subscription, all its subscription requests' statuses must be either 'confirmed', 'deleted' or a combination of those. A subscription with at least one 'pending' subscription request cannot be removed.",
-        "operationId": "deleteSubscribtion",
+        "operationId": "deleteSubscription",
         "tags": [
           "Subscriptions"
         ],
@@ -311,7 +311,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "DeleteSubscribtionResponse",
+                  "title": "DeleteSubscriptionResponse",
                   "properties": {
                     "data": {
                       "$ref": "#/components/schemas/UnsubscribeResponse"
