@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 1.1.0
+  version: 1.1.1
   title: All Circle APIs
   description: Circle's General, Core Functionality, Payments, Payouts, Accounts,
     and Crypto Payments APIs bundled into one OpenAPI Specification.
@@ -1856,7 +1856,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PaymentIntent'
+              $ref: '#/components/schemas/PaymentIntentCreationRequest'
       responses:
         '201':
           description: Successfully created a payment intent.
@@ -6879,6 +6879,29 @@ components:
           $ref: '#/components/schemas/UtcTimestamp'
         createDate:
           $ref: '#/components/schemas/UtcTimestamp'
+    PaymentIntentCreationRequest:
+      type: object
+      required:
+      - idempotencyKey
+      - amount
+      - settlementCurrency
+      - paymentMethods
+      properties:
+        idempotencyKey:
+          $ref: '#/components/schemas/IdempotencyKey'
+        amount:
+          $ref: '#/components/schemas/CryptoPaymentsMoney'
+        settlementCurrency:
+          description: Desired currency for the payments to settle in.
+          type: string
+          enum:
+          - USD
+          - BTC
+          - ETH
+        paymentMethods:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentMethodBlockchain'
     AddressBookRecipientMetadata:
       type: object
       properties:

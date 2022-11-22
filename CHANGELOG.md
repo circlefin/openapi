@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/circlefin/openapi-internal/compare/v1.1.0...v1.1.1) (2022-11-22)
+
+
+### Bug Fixes
+
+* create payment intent was using the wrong schema 
+
 ## [1.1.0](https://github.com/circlefin/openapi-internal/compare/v1.0.3...v1.1.0) (2022-11-17)
 
 
