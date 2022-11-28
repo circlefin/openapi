@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/circlefin/openapi-internal/compare/v1.2.0...v1.2.1) (2022-11-28)
+
+
+### Fixes
+
+* remove identities from crypto refund creation request 
+
 ## [1.2.0](https://github.com/circlefin/openapi-internal/compare/v1.1.1...v1.2.0) (2022-11-28)
 
 
