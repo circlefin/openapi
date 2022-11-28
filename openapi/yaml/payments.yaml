@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 1.1.1
+  version: 1.2.0
   title: Payments API
   description: 'The Circle Payments API allows you to take payments from your end
     users via traditional methods such as debit & credit cards, bank accounts (wires
@@ -243,6 +243,9 @@ paths:
                       amount:
                         amount: '3.14'
                         currency: USD
+                      fromAmount:
+                        amount: '3.14'
+                        currency: EUR
                       source:
                         id: b8627ae8-732b-4d25-b947-1df8f4007a29
                         type: card
@@ -402,6 +405,9 @@ paths:
                         amount:
                           amount: '3.14'
                           currency: USD
+                        fromAmount:
+                          amount: '3.14'
+                          currency: EUR
                         source:
                           id: b8627ae8-732b-4d25-b947-1df8f4007a29
                           type: card
@@ -686,6 +692,9 @@ paths:
                         amount:
                           amount: '3.14'
                           currency: USD
+                        fromAmount:
+                          amount: '3.14'
+                          currency: USD
                         source:
                           id: b8627ae8-732b-4d25-b947-1df8f4007a29
                           type: card
@@ -802,6 +811,9 @@ paths:
                         merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
                         merchantWalletId: '212000'
                         amount:
+                          amount: '3.14'
+                          currency: USD
+                        fromAmount:
                           amount: '3.14'
                           currency: USD
                         source:
@@ -1102,6 +1114,9 @@ paths:
                       amountPaid:
                         amount: '3.14'
                         currency: USD
+                      amountRefunded:
+                        amount: '3.14'
+                        currency: USD
                       settlementCurrency: USD
                       paymentMethods:
                       - type: blockchain
@@ -1113,6 +1128,8 @@ paths:
                         currency: USD
                       paymentIds:
                       - 69808f36-3e5e-4f37-bf82-ca79e4d70fc1
+                      refundIds:
+                      - 425dca6d-ac79-43b6-b0f9-43fdc51de91b
                       timeline:
                       - status: created
                         context: underpaid
@@ -1223,6 +1240,60 @@ paths:
                         time: '2022-07-21T20:13:35.579331Z'
                       createDate: '2022-07-21T20:13:35.578678Z'
                       updateDate: '2022-07-21T20:19:24.859052Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/paymentIntents/{id}/refund:
+    post:
+      security:
+      - bearerAuth: []
+      summary: Create a crypto refund
+      operationId: createCryptoRefund
+      tags:
+      - Crypto Payment Intents
+      parameters:
+      - $ref: '#/components/parameters/IdPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CryptoRefundCreationRequest'
+      responses:
+        '201':
+          description: Crypto refund successfully created for the given payment intent.
+          headers:
+            X-Request-Id:
+              $ref: '#/components/headers/XRequestId'
+          content:
+            application/json:
+              schema:
+                title: CreateCryptoRefundResponse
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CryptoPayment'
+              examples:
+                response:
+                  value:
+                    data:
+                      id: 3389f4ba-aafd-4eef-aaa2-3292df8f62e6
+                      type: refund
+                      status: pending
+                      amount:
+                        currency: USD
+                      merchantId: 5ffea093-d210-44b4-a7ca-ad33b9498188
+                      merchantWalletId: '1000999922'
+                      paymentIntentId: 77c91fe9-e603-4e7b-9672-1ef8ac502cf6
+                      settlementAmount:
+                        amount: '1.00'
+                        currency: ETH
+                      depositAddress:
+                        chain: ETH
+                        address: '0x97de855690955e0da79ce5c1b6804847e7070c7f'
+                      createDate: '2022-07-21T20:16:35.092852Z'
+                      updateDate: '2022-07-21T20:19:24.719313Z'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -2542,6 +2613,22 @@ components:
           type: string
           enum:
           - USD
+    FiatMoney:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          description: Magnitude of the amount, in units of the currency, with a `.`.
+          type: string
+          example: '3.14'
+        currency:
+          description: Currency code.
+          type: string
+          enum:
+          - USD
+          - EUR
     SourceResponse:
       type: object
       description: The payment source.
@@ -2691,6 +2778,8 @@ components:
           $ref: '#/components/schemas/MerchantWalletId'
         amount:
           $ref: '#/components/schemas/FiatMoneyUsd'
+        fromAmount:
+          $ref: '#/components/schemas/FiatMoney'
         source:
           $ref: '#/components/schemas/SourceResponse'
         description:
@@ -2724,6 +2813,22 @@ components:
           $ref: '#/components/schemas/UtcTimestamp'
         updateDate:
           $ref: '#/components/schemas/UtcTimestamp'
+    CryptoPaymentsOptionalAmountMoney:
+      type: object
+      required:
+      - currency
+      properties:
+        amount:
+          description: Magnitude of the amount, in units of the currency, with a `.`.
+          type: string
+          example: '3.14'
+        currency:
+          description: Currency code.
+          type: string
+          enum:
+          - USD
+          - ETH
+          - BTC
     Chain:
       type: string
       description: A blockchain that a given currency is available on.
@@ -2747,7 +2852,6 @@ components:
       - type
       - merchantId
       - amount
-      - source
       - status
       properties:
         id:
@@ -2757,12 +2861,13 @@ components:
           type: string
           enum:
           - payment
+          - refund
         merchantId:
           $ref: '#/components/schemas/IdMerchant'
         merchantWalletId:
           $ref: '#/components/schemas/MerchantWalletId'
         amount:
-          $ref: '#/components/schemas/FiatMoneyUsd'
+          $ref: '#/components/schemas/CryptoPaymentsOptionalAmountMoney'
         status:
           $ref: '#/components/schemas/PaymentStatus'
         fees:
@@ -3233,6 +3338,8 @@ components:
           $ref: '#/components/schemas/MerchantWalletId'
         amount:
           $ref: '#/components/schemas/FiatMoneyUsd'
+        fromAmount:
+          $ref: '#/components/schemas/FiatMoney'
         source:
           $ref: '#/components/schemas/SourceResponse'
         description:
@@ -3581,6 +3688,7 @@ components:
           - complete
           - expired
           - failed
+          - refunded
         context:
           type: string
           enum:
@@ -3623,6 +3731,27 @@ components:
               type: string
               enum:
               - USD
+              - BTC
+              - ETH
+        amountRefunded:
+          description: Sum of the the amount refunded.
+          type: object
+          required:
+          - amount
+          - currency
+          properties:
+            amount:
+              description: Magnitude of the amount, in units of the currency, with
+                a `.`.
+              type: string
+              example: '3.14'
+            currency:
+              description: Currency code.
+              type: string
+              enum:
+              - USD
+              - BTC
+              - ETH
         settlementCurrency:
           description: Desired currency for the payments to settle in.
           type: string
@@ -3645,6 +3774,13 @@ components:
             type: string
             format: uuid
             example: 69808f36-3e5e-4f37-bf82-ca79e4d70fc1
+        refundIds:
+          description: List of associated refunds.
+          type: array
+          items:
+            type: string
+            format: uuid
+            example: 425dca6d-ac79-43b6-b0f9-43fdc51de91b
         timeline:
           description: State management timeline.
           type: array
@@ -3679,6 +3815,143 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PaymentMethodBlockchain'
+    CryptoRefundDestination:
+      type: object
+      description: The destination of a crypto refund.
+      required:
+      - address
+      - chain
+      properties:
+        address:
+          type: string
+          description: The blockchain address.
+          example: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+        chain:
+          $ref: '#/components/schemas/Chain'
+    IdentityAddress:
+      type: object
+      required:
+      - line1
+      - city
+      - district
+      - postalCode
+      - country
+      properties:
+        line1:
+          type: string
+          description: Line one of the street address.
+          maxLength: 1024
+          example: 100 Money Street
+        line2:
+          type: string
+          description: Line two of the street address.
+          maxLength: 1024
+          example: Suite 1
+        city:
+          type: string
+          description: City portion of the address.
+          maxLength: 1024
+          example: Boston
+        district:
+          description: State / County / Province / Region portion of the address.
+            If the country is US or Canada, then district is required and should use
+            the two-letter code for the subdivision.
+          type: string
+          maxLength: 16
+          example: MA
+        postalCode:
+          type: string
+          description: Postal / ZIP code of the address.
+          maxLength: 16
+          example: '01234'
+        country:
+          type: string
+          description: Country portion of the address. Formatted as a two-letter country
+            code specified in ISO 3166-1 alpha-2.
+          maxLength: 2
+          example: US
+    Identity:
+      type: object
+      description: "The identity of the originator. Identities are required when:\n\
+        \  * `destination.type: \"blockchain\"`\n  * `destination.chain: \"ETH\"`\n\
+        \  * `amount.amount` >= $3,000 in value\n"
+      required:
+      - type
+      - name
+      - addresses
+      properties:
+        type:
+          type: string
+          description: 'The type of identity for the originator.
+
+            * `individual` - A uniquely distinguishable individual.
+
+            * `business` - Any entity other than a natural person that can establish
+            a permanent customer relationship with an affected entity or otherwise
+            own property. This can include companies, foundations, anstalt, partnerships,
+            associations and other relevantly similar entities.
+
+            '
+          enum:
+          - individual
+          - business
+        name:
+          type: string
+          description: Full name of the identity.
+          example: Satoshi Nakamoto
+          maxLength: 1024
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdentityAddress'
+    CryptoRefundCreationRequest:
+      type: object
+      required:
+      - idempotencyKey
+      - destination
+      - amount
+      - toAmount
+      properties:
+        idempotencyKey:
+          $ref: '#/components/schemas/IdempotencyKey'
+        destination:
+          $ref: '#/components/schemas/CryptoRefundDestination'
+        amount:
+          description: The source amount of the refund, it can be in either the original
+            payment currency or the settlement currency.
+          required:
+          - currency
+          properties:
+            currency:
+              description: Currency code.
+              type: string
+              enum:
+              - USD
+              - ETH
+              - BTC
+        toAmount:
+          description: The destination amount of the refund, it must be in the original
+            payment currency.
+          required:
+          - amount
+          - currency
+          properties:
+            amount:
+              description: Magnitude of the amount, in units of the currency, with
+                a `.`.
+              type: string
+              example: '3.14'
+            currency:
+              description: Currency code.
+              type: string
+              enum:
+              - USD
+              - ETH
+              - BTC
+        identities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Identity'
     ExternalFiatAccountStatus:
       description: Status of the account. A `pending` status indicates that the linking
         is in-progress; `complete` indicates the account was linked successfully;

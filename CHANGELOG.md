@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/circlefin/openapi-internal/compare/v1.1.1...v1.2.0) (2022-11-28)
+
+
+### New Features
+
+* add crypto refund endpoint 
+
+
+### Fixes
+
+* add fromAmount to fiat payments 
+
 ## [1.1.1](https://github.com/circlefin/openapi-internal/compare/v1.1.0...v1.1.1) (2022-11-22)
 
 
