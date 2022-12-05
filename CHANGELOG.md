@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/circlefin/openapi-internal/compare/v1.2.1...v1.3.0) (2022-12-05)
+
+
+### New Features
+
+* add checkout sessions endpoints 
+
+
+### Fixes
+
+* add updateDate for checkout session 
+* summary and operation id for crypto refund api 
+
 ## [1.2.1](https://github.com/circlefin/openapi-internal/compare/v1.2.0...v1.2.1) (2022-11-28)
 
 
