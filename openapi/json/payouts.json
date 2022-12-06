@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "1.3.0",
+    "version": "1.3.1",
     "title": "Payouts API",
     "description": "The Circle Payouts API allows you to programmatically make fast, global payouts to your customers, vendors, and suppliers. Use traditional methods like bank wires and ACH, or make payouts on supported blockchains."
   },
@@ -1389,7 +1389,7 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Create a SEPA bank account (BETA)",
+        "summary": "Create a SEPA bank account",
         "operationId": "createSepaAccount",
         "tags": [
           "SEPA"
@@ -1473,7 +1473,7 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Get a SEPA bank account (BETA)",
+        "summary": "Get a SEPA bank account",
         "operationId": "getSepaAccount",
         "tags": [
           "SEPA"

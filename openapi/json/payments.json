@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "1.3.0",
+    "version": "1.3.1",
     "title": "Payments API",
     "description": "The Circle Payments API allows you to take payments from your end users via traditional methods such as debit & credit cards, bank accounts (wires and ACH), etc., and receive settlement in USDC.\n\nThe Circle Payments API has been designed with any business or internet commerce in mind, not just crypto applications, and it's based on Circle's extensive experience processing millions of card payments since 2014.\n"
   },
@@ -2802,7 +2802,7 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Create a SEPA bank account (BETA)",
+        "summary": "Create a SEPA bank account",
         "operationId": "createSepaAccount",
         "tags": [
           "SEPA"
@@ -2886,7 +2886,7 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Get a SEPA bank account (BETA)",
+        "summary": "Get a SEPA bank account",
         "operationId": "getSepaAccount",
         "tags": [
           "SEPA"
@@ -2961,8 +2961,8 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Get SEPA instructions (BETA)",
-        "description": "Get the SEPA transfer instructions into the Circle bank account given your bank account id (BETA).",
+        "summary": "Get SEPA instructions",
+        "description": "Get the SEPA transfer instructions into the Circle bank account given your bank account id.",
         "operationId": "getSepaAccountInstructions",
         "tags": [
           "SEPA"

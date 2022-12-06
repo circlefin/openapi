@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 1.3.0
+  version: 1.3.1
   title: Payouts API
   description: The Circle Payouts API allows you to programmatically make fast, global
     payouts to your customers, vendors, and suppliers. Use traditional methods like
@@ -928,7 +928,7 @@ paths:
     post:
       security:
       - bearerAuth: []
-      summary: Create a SEPA bank account (BETA)
+      summary: Create a SEPA bank account
       operationId: createSepaAccount
       tags:
       - SEPA
@@ -982,7 +982,7 @@ paths:
       - $ref: '#/components/parameters/IdPath'
       security:
       - bearerAuth: []
-      summary: Get a SEPA bank account (BETA)
+      summary: Get a SEPA bank account
       operationId: getSepaAccount
       tags:
       - SEPA
