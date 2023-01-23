@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.0](https://github.com/circlefin/openapi-internal/compare/v1.3.1...v1.4.0) (2023-01-23)
+
+
+### New Features
+
+* add continuous payment intent request and responses 
+
+
+### Fixes
+
+* revert Payment Intent schema names 
+
 ## [1.3.1](https://github.com/circlefin/openapi-internal/compare/v1.3.0...v1.3.1) (2022-12-06)
 
 

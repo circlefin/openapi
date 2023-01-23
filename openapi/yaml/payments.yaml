@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 1.3.1
+  version: 1.4.0
   title: Payments API
   description: 'The Circle Payments API allows you to take payments from your end
     users via traditional methods such as debit & credit cards, bank accounts (wires
@@ -1005,6 +1005,7 @@ paths:
       security:
       - bearerAuth: []
       summary: Create a payment intent
+      description: Create a transient or continuous payment intent
       operationId: createPaymentIntent
       tags:
       - Crypto Payment Intents
@@ -1012,7 +1013,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PaymentIntentCreationRequest'
+              oneOf:
+              - $ref: '#/components/schemas/PaymentIntentCreationRequest'
+              - $ref: '#/components/schemas/ContinuousPaymentIntentCreationRequest'
       responses:
         '201':
           description: Successfully created a payment intent.
@@ -1025,9 +1028,11 @@ paths:
                 title: CreatePaymentIntentResponse
                 properties:
                   data:
-                    $ref: '#/components/schemas/PaymentIntent'
+                    oneOf:
+                    - $ref: '#/components/schemas/PaymentIntent'
+                    - $ref: '#/components/schemas/ContinuousPaymentIntent'
               examples:
-                response:
+                Transient Payment Intent:
                   value:
                     data:
                       id: 8755d0ea-14f9-4259-b092-de23c14b6568
@@ -1047,10 +1052,30 @@ paths:
                         time: '2022-07-21T20:13:35.579331Z'
                       createDate: '2022-07-21T20:13:35.578678Z'
                       updateDate: '2022-07-21T20:19:24.859052Z'
+                Continuous Payment Intent:
+                  value:
+                    data:
+                      id: e2e90ba3-9d1f-490d-9460-24ac6eb55a1b
+                      currency: USD
+                      settlementCurrency: USD
+                      amountPaid:
+                        amount: '0.00'
+                        currency: USD
+                      paymentMethods:
+                      - type: blockchain
+                        chain: ETH
+                      timeline:
+                      - status: created
+                        time: '2023-01-21T20:13:35.579331Z'
+                      type: continuous
+                      createDate: '2023-01-21T20:13:35.578678Z'
+                      updateDate: '2023-01-21T20:13:35.578678Z'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/NotAuthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
     get:
@@ -1104,41 +1129,48 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/PaymentIntent'
+                      anyOf:
+                      - $ref: '#/components/schemas/PaymentIntent'
+                      - $ref: '#/components/schemas/ContinuousPaymentIntent'
               examples:
-                response:
+                Transient Payment Intent:
                   value:
                     data:
-                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      id: 8755d0ea-14f9-4259-b092-de23c14b6568
                       amount:
                         amount: '3.14'
                         currency: USD
                       amountPaid:
-                        amount: '3.14'
-                        currency: USD
-                      amountRefunded:
-                        amount: '3.14'
+                        amount: '0.00'
                         currency: USD
                       settlementCurrency: USD
                       paymentMethods:
                       - type: blockchain
-                        chain: ALGO
-                        address: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
-                      fees:
-                      - type: blockchainLeaseFee
-                        amount: '3.14'
-                        currency: USD
-                      paymentIds:
-                      - 69808f36-3e5e-4f37-bf82-ca79e4d70fc1
-                      refundIds:
-                      - 425dca6d-ac79-43b6-b0f9-43fdc51de91b
+                        chain: ETH
+                      paymentIds: []
                       timeline:
                       - status: created
-                        context: underpaid
-                        time: '2020-04-10T02:13:30.000Z'
-                      expiresOn: '2020-04-10T02:13:30.000Z'
-                      updateDate: '2020-04-10T02:13:30.000Z'
-                      createDate: '2020-04-10T02:13:30.000Z'
+                        time: '2022-07-21T20:13:35.579331Z'
+                      createDate: '2022-07-21T20:13:35.578678Z'
+                      updateDate: '2022-07-21T20:19:24.859052Z'
+                Continuous Payment Intent:
+                  value:
+                    data:
+                      id: e2e90ba3-9d1f-490d-9460-24ac6eb55a1b
+                      currency: USD
+                      settlementCurrency: USD
+                      amountPaid:
+                        amount: '0.00'
+                        currency: USD
+                      paymentMethods:
+                      - type: blockchain
+                        chain: ETH
+                      timeline:
+                      - status: created
+                        time: '2023-01-21T20:13:35.579331Z'
+                      type: continuous
+                      createDate: '2023-01-21T20:13:35.578678Z'
+                      updateDate: '2023-01-21T20:13:35.578678Z'
         '401':
           $ref: '#/components/responses/NotAuthorized'
   /v1/paymentIntents/{id}:
@@ -1163,9 +1195,13 @@ paths:
                 title: GetPaymentIntentResponse
                 properties:
                   data:
-                    $ref: '#/components/schemas/PaymentIntent'
+                    type: array
+                    items:
+                      anyOf:
+                      - $ref: '#/components/schemas/PaymentIntent'
+                      - $ref: '#/components/schemas/ContinuousPaymentIntent'
               examples:
-                response:
+                Transient Payment Intent:
                   value:
                     data:
                       id: 8755d0ea-14f9-4259-b092-de23c14b6568
@@ -1185,6 +1221,24 @@ paths:
                         time: '2022-07-21T20:13:35.579331Z'
                       createDate: '2022-07-21T20:13:35.578678Z'
                       updateDate: '2022-07-21T20:19:24.859052Z'
+                Continuous Payment Intent:
+                  value:
+                    data:
+                      id: e2e90ba3-9d1f-490d-9460-24ac6eb55a1b
+                      currency: USD
+                      settlementCurrency: USD
+                      amountPaid:
+                        amount: '0.00'
+                        currency: USD
+                      paymentMethods:
+                      - type: blockchain
+                        chain: ETH
+                      timeline:
+                      - status: created
+                        time: '2023-01-21T20:13:35.579331Z'
+                      type: continuous
+                      createDate: '2023-01-21T20:13:35.578678Z'
+                      updateDate: '2023-01-21T20:13:35.578678Z'
         '401':
           $ref: '#/components/responses/NotAuthorized'
         '404':
@@ -1216,9 +1270,13 @@ paths:
                 title: ExpirePaymentIntentResponse
                 properties:
                   data:
-                    $ref: '#/components/schemas/PaymentIntent'
+                    type: array
+                    items:
+                      anyOf:
+                      - $ref: '#/components/schemas/PaymentIntent'
+                      - $ref: '#/components/schemas/ContinuousPaymentIntent'
               examples:
-                response:
+                Transient Payment Intent:
                   value:
                     data:
                       id: 8755d0ea-14f9-4259-b092-de23c14b6568
@@ -1226,7 +1284,7 @@ paths:
                         amount: '3.14'
                         currency: USD
                       amountPaid:
-                        amount: '3.14'
+                        amount: '0.00'
                         currency: USD
                       settlementCurrency: USD
                       paymentMethods:
@@ -1234,14 +1292,28 @@ paths:
                         chain: ETH
                       paymentIds: []
                       timeline:
-                      - status: expired
-                        context: underpaid
-                        reason: requested_by_merchant
-                        time: '2022-07-21T21:45:54.569Z'
                       - status: created
                         time: '2022-07-21T20:13:35.579331Z'
                       createDate: '2022-07-21T20:13:35.578678Z'
                       updateDate: '2022-07-21T20:19:24.859052Z'
+                Continuous Payment Intent:
+                  value:
+                    data:
+                      id: e2e90ba3-9d1f-490d-9460-24ac6eb55a1b
+                      currency: USD
+                      settlementCurrency: USD
+                      amountPaid:
+                        amount: '0.00'
+                        currency: USD
+                      paymentMethods:
+                      - type: blockchain
+                        chain: ETH
+                      timeline:
+                      - status: created
+                        time: '2023-01-21T20:13:35.579331Z'
+                      type: continuous
+                      createDate: '2023-01-21T20:13:35.578678Z'
+                      updateDate: '2023-01-21T20:13:35.578678Z'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -3877,43 +3949,9 @@ components:
         amount:
           $ref: '#/components/schemas/CryptoPaymentsMoney'
         amountPaid:
-          description: Sum of the the amount paid.
-          type: object
-          required:
-          - amount
-          - currency
-          properties:
-            amount:
-              description: Magnitude of the amount, in units of the currency, with
-                a `.`.
-              type: string
-              example: '3.14'
-            currency:
-              description: Currency code.
-              type: string
-              enum:
-              - USD
-              - BTC
-              - ETH
+          $ref: '#/components/schemas/CryptoPaymentsMoney'
         amountRefunded:
-          description: Sum of the the amount refunded.
-          type: object
-          required:
-          - amount
-          - currency
-          properties:
-            amount:
-              description: Magnitude of the amount, in units of the currency, with
-                a `.`.
-              type: string
-              example: '3.14'
-            currency:
-              description: Currency code.
-              type: string
-              enum:
-              - USD
-              - BTC
-              - ETH
+          $ref: '#/components/schemas/CryptoPaymentsMoney'
         settlementCurrency:
           description: Desired currency for the payments to settle in.
           type: string
@@ -3954,6 +3992,56 @@ components:
           $ref: '#/components/schemas/UtcTimestamp'
         createDate:
           $ref: '#/components/schemas/UtcTimestamp'
+    ContinuousPaymentIntent:
+      type: object
+      required:
+      - idempotencyKey
+      - currency
+      - settlementCurrency
+      - paymentMethods
+      - type
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        currency:
+          description: Desired currency of the payment.
+          type: string
+          enum:
+          - USD
+          - BTC
+          - ETH
+        amountPaid:
+          $ref: '#/components/schemas/CryptoPaymentsMoney'
+        amountRefunded:
+          $ref: '#/components/schemas/CryptoPaymentsMoney'
+        settlementCurrency:
+          description: Desired currency for the payments to settle in.
+          type: string
+          enum:
+          - USD
+          - BTC
+          - ETH
+        paymentMethods:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentMethodBlockchain'
+        fees:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentIntentFees'
+        timeline:
+          description: State management timeline.
+          type: array
+          items:
+            $ref: '#/components/schemas/Timeline'
+        updateDate:
+          $ref: '#/components/schemas/UtcTimestamp'
+        createDate:
+          $ref: '#/components/schemas/UtcTimestamp'
+        type:
+          type: string
+          enum:
+          - continuous
     PaymentIntentCreationRequest:
       type: object
       required:
@@ -3977,6 +4065,38 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PaymentMethodBlockchain'
+    ContinuousPaymentIntentCreationRequest:
+      type: object
+      required:
+      - idempotencyKey
+      - currency
+      - settlementCurrency
+      - paymentMethods
+      properties:
+        idempotencyKey:
+          $ref: '#/components/schemas/IdempotencyKey'
+        currency:
+          description: Desired currency for the payment
+          type: string
+          enum:
+          - USD
+          - BTC
+          - ETH
+        settlementCurrency:
+          description: Desired currency for the payments to settle in.
+          type: string
+          enum:
+          - USD
+          - BTC
+          - ETH
+        paymentMethods:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentMethodBlockchain'
+        type:
+          type: string
+          enum:
+          - continuous
     CryptoRefundDestination:
       type: object
       description: The destination of a crypto refund.
@@ -5587,6 +5707,35 @@ components:
               value:
                 code: 404
                 message: Not found.
+    Forbidden:
+      description: The request provides authentication, but the authenticated user
+        does not possess sufficient permissions for accessing this resource.
+      headers:
+        X-Request-Id:
+          $ref: '#/components/headers/XRequestId'
+      content:
+        application/json:
+          schema:
+            type: object
+            title: Forbidden
+            required:
+            - code
+            - message
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: Something went wrong.
+            example:
+              code: 3
+              message: Forbidden
+          examples:
+            response:
+              value:
+                code: 3
+                message: Forbidden
     Conflict:
       description: The request has not been applied because it comes in conflict with
         another request (such as re-using an idempotencyKey for a different request).
