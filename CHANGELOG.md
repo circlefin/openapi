@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/circlefin/openapi-internal/compare/v1.4.0...v1.5.0) (2023-01-23)
+
+
+### New Features
+
+* add list checkout sessions endpoint 
+
 ## [1.4.0](https://github.com/circlefin/openapi-internal/compare/v1.3.1...v1.4.0) (2023-01-23)
 
 
