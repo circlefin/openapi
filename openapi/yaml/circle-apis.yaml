@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 1.5.0
+  version: 1.6.0
   title: All Circle APIs
   description: Circle's General, Core Functionality, Payments, Payouts, Accounts,
     and Crypto Payments APIs bundled into one OpenAPI Specification.
@@ -2209,6 +2209,10 @@ paths:
                       settlementAmount:
                         amount: '1.00'
                         currency: ETH
+                      fromAddresses:
+                        chain: ETH
+                        addresses:
+                        - '0x0d4344cFF68F72A5B9Abded37CA5862941a62050'
                       depositAddress:
                         chain: ETH
                         address: '0x97de855690955e0da79ce5c1b6804847e7070c7f'
@@ -2711,12 +2715,20 @@ paths:
                       fees:
                         amount: '0.01'
                         currency: USD
+                      networkFees:
+                        amount: '0.01'
+                        currency: USD
+                        feePayer: endUser
                       merchantId: f1397191-56e6-42fd-be86-0a7b9bd91522
                       merchantWalletId: '1000999922'
                       paymentIntentId: 6e4d4047-db14-4c09-b238-1215aee50d03
                       settlementAmount:
                         amount: '1.00'
                         currency: USD
+                      fromAddresses:
+                        chain: ETH
+                        addresses:
+                        - '0x0d4344cFF68F72A5B9Abded37CA5862941a62050'
                       depositAddress:
                         chain: ETH
                         address: '0x97de855690955e0da79ce5c1b6804847e7070c7f'
@@ -2983,12 +2995,20 @@ paths:
                       fees:
                         amount: '0.01'
                         currency: USD
+                      networkFees:
+                        amount: '0.01'
+                        currency: USD
+                        feePayer: endUser
                       merchantId: f1397191-56e6-42fd-be86-0a7b9bd91522
                       merchantWalletId: '1000999922'
                       paymentIntentId: 6e4d4047-db14-4c09-b238-1215aee50d03
                       settlementAmount:
                         amount: '1.00'
                         currency: USD
+                      fromAddresses:
+                        chain: ETH
+                        addresses:
+                        - '0x0d4344cFF68F72A5B9Abded37CA5862941a62050'
                       depositAddress:
                         chain: ETH
                         address: '0x97de855690955e0da79ce5c1b6804847e7070c7f'
@@ -3664,6 +3684,9 @@ paths:
                       fees:
                         amount: '3.14'
                         currency: USD
+                      networkFees:
+                        amount: '0.14'
+                        currency: USD
                       status: pending
                       errorCode: transaction_denied
                       riskEvaluation:
@@ -3841,6 +3864,9 @@ paths:
                       fees:
                         amount: '3.14'
                         currency: USD
+                      networkFees:
+                        amount: '0.14'
+                        currency: USD
                       status: pending
                       errorCode: transaction_denied
                       riskEvaluation:
@@ -3939,6 +3965,9 @@ paths:
                         currency: ETH
                       fees:
                         amount: '3.14'
+                        currency: USD
+                      networkFees:
+                        amount: '0.14'
                         currency: USD
                       status: pending
                       errorCode: transaction_denied
@@ -7231,6 +7260,8 @@ components:
           $ref: '#/components/schemas/UtcTimestamp'
         createDate:
           $ref: '#/components/schemas/UtcTimestamp'
+        merchantWalletId:
+          $ref: '#/components/schemas/MerchantWalletId'
     ContinuousPaymentIntent:
       type: object
       required:
@@ -7281,6 +7312,8 @@ components:
           type: string
           enum:
           - continuous
+        merchantWalletId:
+          $ref: '#/components/schemas/MerchantWalletId'
     PaymentIntentCreationRequest:
       type: object
       required:
@@ -7304,6 +7337,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PaymentMethodBlockchain'
+        merchantWalletId:
+          $ref: '#/components/schemas/MerchantWalletId'
     ContinuousPaymentIntentCreationRequest:
       type: object
       required:
@@ -7332,6 +7367,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PaymentMethodBlockchain'
+        merchantWalletId:
+          $ref: '#/components/schemas/MerchantWalletId'
         type:
           type: string
           enum:
@@ -7430,6 +7467,30 @@ components:
       - paid
       - failed
       - action_required
+    CryptoPaymentNetworkFee:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: string
+          description: Magnitude of the amount, in units of the currency, with a `.`.
+          example: '3.14'
+        currency:
+          type: string
+          description: Currency code for the amount.
+          enum:
+          - USD
+          - EUR
+          - BTC
+          - ETH
+        feePayer:
+          type: string
+          description: The party that pays the network fee based on merchant configuration.
+          enum:
+          - endUser
+          - merchant
     CryptoPayment:
       type: object
       description: Status information of the related payment. This property is only
@@ -7459,12 +7520,23 @@ components:
           $ref: '#/components/schemas/PaymentStatus'
         fees:
           $ref: '#/components/schemas/FiatMoneyUsd'
+        networkFees:
+          $ref: '#/components/schemas/CryptoPaymentNetworkFee'
         paymentIntentId:
           type: string
           format: uuid
           example: 6e4d4047-db14-4c09-b238-1215aee50d03
         settlementAmount:
           $ref: '#/components/schemas/FiatMoneyUsd'
+        fromAddresses:
+          type: object
+          properties:
+            chain:
+              $ref: '#/components/schemas/Chain'
+            addresses:
+              type: array
+              items:
+                $ref: '#/components/schemas/Address'
         depositAddress:
           type: object
           properties:
@@ -7473,6 +7545,8 @@ components:
             address:
               type: string
               example: '0x97de855690955e0da79ce5c1b6804847e7070c7f'
+            addressTag:
+              $ref: '#/components/schemas/AddressTag'
         transactionHash:
           type: string
           example: '0x7351585460bd657f320b9afa02a52c26d89272d0d10cc29913eb8b28e64fd906'
@@ -8551,6 +8625,8 @@ components:
         toAmount:
           $ref: '#/components/schemas/PayoutMoney'
         fees:
+          $ref: '#/components/schemas/PayoutMoney'
+        networkFees:
           $ref: '#/components/schemas/PayoutMoney'
         status:
           $ref: '#/components/schemas/PayoutStatus'

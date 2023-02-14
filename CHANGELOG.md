@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.6.0](https://github.com/circlefin/openapi-internal/compare/v1.5.0...v1.6.0) (2023-02-14)
+
+
+### New Features
+
+* add network fees to crypto payments and payouts 
+
+
+### Fixes
+
+* add addressTag to CryptoPayment.yml 
+* optional merchant wallet id in payment intent req / resp 
+* update crypto payment response with from addresses 
+
 ## [1.5.0](https://github.com/circlefin/openapi-internal/compare/v1.4.0...v1.5.0) (2023-01-23)
 
 

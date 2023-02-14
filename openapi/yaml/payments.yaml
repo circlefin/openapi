@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 1.5.0
+  version: 1.6.0
   title: Payments API
   description: 'The Circle Payments API allows you to take payments from your end
     users via traditional methods such as debit & credit cards, bank accounts (wires
@@ -300,12 +300,20 @@ paths:
                       fees:
                         amount: '0.01'
                         currency: USD
+                      networkFees:
+                        amount: '0.01'
+                        currency: USD
+                        feePayer: endUser
                       merchantId: f1397191-56e6-42fd-be86-0a7b9bd91522
                       merchantWalletId: '1000999922'
                       paymentIntentId: 6e4d4047-db14-4c09-b238-1215aee50d03
                       settlementAmount:
                         amount: '1.00'
                         currency: USD
+                      fromAddresses:
+                        chain: ETH
+                        addresses:
+                        - '0x0d4344cFF68F72A5B9Abded37CA5862941a62050'
                       depositAddress:
                         chain: ETH
                         address: '0x97de855690955e0da79ce5c1b6804847e7070c7f'
@@ -572,12 +580,20 @@ paths:
                       fees:
                         amount: '0.01'
                         currency: USD
+                      networkFees:
+                        amount: '0.01'
+                        currency: USD
+                        feePayer: endUser
                       merchantId: f1397191-56e6-42fd-be86-0a7b9bd91522
                       merchantWalletId: '1000999922'
                       paymentIntentId: 6e4d4047-db14-4c09-b238-1215aee50d03
                       settlementAmount:
                         amount: '1.00'
                         currency: USD
+                      fromAddresses:
+                        chain: ETH
+                        addresses:
+                        - '0x0d4344cFF68F72A5B9Abded37CA5862941a62050'
                       depositAddress:
                         chain: ETH
                         address: '0x97de855690955e0da79ce5c1b6804847e7070c7f'
@@ -1363,6 +1379,10 @@ paths:
                       settlementAmount:
                         amount: '1.00'
                         currency: ETH
+                      fromAddresses:
+                        chain: ETH
+                        addresses:
+                        - '0x0d4344cFF68F72A5B9Abded37CA5862941a62050'
                       depositAddress:
                         chain: ETH
                         address: '0x97de855690955e0da79ce5c1b6804847e7070c7f'
@@ -3115,6 +3135,30 @@ components:
           - USD
           - ETH
           - BTC
+    CryptoPaymentNetworkFee:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: string
+          description: Magnitude of the amount, in units of the currency, with a `.`.
+          example: '3.14'
+        currency:
+          type: string
+          description: Currency code for the amount.
+          enum:
+          - USD
+          - EUR
+          - BTC
+          - ETH
+        feePayer:
+          type: string
+          description: The party that pays the network fee based on merchant configuration.
+          enum:
+          - endUser
+          - merchant
     Chain:
       type: string
       description: A blockchain that a given currency is available on.
@@ -3129,6 +3173,19 @@ components:
       - SOL
       - TRX
       - XLM
+    Address:
+      type: string
+      description: An alphanumeric string representing a blockchain address. Will
+        be in different formats for different chains. It is important to preserve
+        the exact formatting and capitalization of the address.
+      example: '0x8381470ED67C3802402dbbFa0058E8871F017A6F'
+    AddressTag:
+      type: string
+      description: The secondary identifier for a blockchain address. An example of
+        this is the memo field on the Stellar network, which can be text, id, or hash
+        format.
+      nullable: true
+      example: '123456789'
     CryptoPayment:
       type: object
       description: Status information of the related payment. This property is only
@@ -3158,12 +3215,23 @@ components:
           $ref: '#/components/schemas/PaymentStatus'
         fees:
           $ref: '#/components/schemas/FiatMoneyUsd'
+        networkFees:
+          $ref: '#/components/schemas/CryptoPaymentNetworkFee'
         paymentIntentId:
           type: string
           format: uuid
           example: 6e4d4047-db14-4c09-b238-1215aee50d03
         settlementAmount:
           $ref: '#/components/schemas/FiatMoneyUsd'
+        fromAddresses:
+          type: object
+          properties:
+            chain:
+              $ref: '#/components/schemas/Chain'
+            addresses:
+              type: array
+              items:
+                $ref: '#/components/schemas/Address'
         depositAddress:
           type: object
           properties:
@@ -3172,6 +3240,8 @@ components:
             address:
               type: string
               example: '0x97de855690955e0da79ce5c1b6804847e7070c7f'
+            addressTag:
+              $ref: '#/components/schemas/AddressTag'
         transactionHash:
           type: string
           example: '0x7351585460bd657f320b9afa02a52c26d89272d0d10cc29913eb8b28e64fd906'
@@ -4044,6 +4114,8 @@ components:
           $ref: '#/components/schemas/UtcTimestamp'
         createDate:
           $ref: '#/components/schemas/UtcTimestamp'
+        merchantWalletId:
+          $ref: '#/components/schemas/MerchantWalletId'
     ContinuousPaymentIntent:
       type: object
       required:
@@ -4094,6 +4166,8 @@ components:
           type: string
           enum:
           - continuous
+        merchantWalletId:
+          $ref: '#/components/schemas/MerchantWalletId'
     PaymentIntentCreationRequest:
       type: object
       required:
@@ -4117,6 +4191,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PaymentMethodBlockchain'
+        merchantWalletId:
+          $ref: '#/components/schemas/MerchantWalletId'
     ContinuousPaymentIntentCreationRequest:
       type: object
       required:
@@ -4145,6 +4221,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PaymentMethodBlockchain'
+        merchantWalletId:
+          $ref: '#/components/schemas/MerchantWalletId'
         type:
           type: string
           enum:

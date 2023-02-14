@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 1.5.0
+  version: 1.6.0
   title: Payouts API
   description: The Circle Payouts API allows you to programmatically make fast, global
     payouts to your customers, vendors, and suppliers. Use traditional methods like
@@ -126,6 +126,9 @@ paths:
                         currency: ETH
                       fees:
                         amount: '3.14'
+                        currency: USD
+                      networkFees:
+                        amount: '0.14'
                         currency: USD
                       status: pending
                       errorCode: transaction_denied
@@ -304,6 +307,9 @@ paths:
                       fees:
                         amount: '3.14'
                         currency: USD
+                      networkFees:
+                        amount: '0.14'
+                        currency: USD
                       status: pending
                       errorCode: transaction_denied
                       riskEvaluation:
@@ -402,6 +408,9 @@ paths:
                         currency: ETH
                       fees:
                         amount: '3.14'
+                        currency: USD
+                      networkFees:
+                        amount: '0.14'
                         currency: USD
                       status: pending
                       errorCode: transaction_denied
@@ -1365,6 +1374,8 @@ components:
         toAmount:
           $ref: '#/components/schemas/PayoutMoney'
         fees:
+          $ref: '#/components/schemas/PayoutMoney'
+        networkFees:
           $ref: '#/components/schemas/PayoutMoney'
         status:
           $ref: '#/components/schemas/PayoutStatus'

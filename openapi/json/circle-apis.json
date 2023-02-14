@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "1.5.0",
+    "version": "1.6.0",
     "title": "All Circle APIs",
     "description": "Circle's General, Core Functionality, Payments, Payouts, Accounts, and Crypto Payments APIs bundled into one OpenAPI Specification."
   },
@@ -3475,6 +3475,12 @@
                           "amount": "1.00",
                           "currency": "ETH"
                         },
+                        "fromAddresses": {
+                          "chain": "ETH",
+                          "addresses": [
+                            "0x0d4344cFF68F72A5B9Abded37CA5862941a62050"
+                          ]
+                        },
                         "depositAddress": {
                           "chain": "ETH",
                           "address": "0x97de855690955e0da79ce5c1b6804847e7070c7f"
@@ -4244,12 +4250,23 @@
                             "amount": "0.01",
                             "currency": "USD"
                           },
+                          "networkFees": {
+                            "amount": "0.01",
+                            "currency": "USD",
+                            "feePayer": "endUser"
+                          },
                           "merchantId": "f1397191-56e6-42fd-be86-0a7b9bd91522",
                           "merchantWalletId": "1000999922",
                           "paymentIntentId": "6e4d4047-db14-4c09-b238-1215aee50d03",
                           "settlementAmount": {
                             "amount": "1.00",
                             "currency": "USD"
+                          },
+                          "fromAddresses": {
+                            "chain": "ETH",
+                            "addresses": [
+                              "0x0d4344cFF68F72A5B9Abded37CA5862941a62050"
+                            ]
                           },
                           "depositAddress": {
                             "chain": "ETH",
@@ -4612,12 +4629,23 @@
                           "amount": "0.01",
                           "currency": "USD"
                         },
+                        "networkFees": {
+                          "amount": "0.01",
+                          "currency": "USD",
+                          "feePayer": "endUser"
+                        },
                         "merchantId": "f1397191-56e6-42fd-be86-0a7b9bd91522",
                         "merchantWalletId": "1000999922",
                         "paymentIntentId": "6e4d4047-db14-4c09-b238-1215aee50d03",
                         "settlementAmount": {
                           "amount": "1.00",
                           "currency": "USD"
+                        },
+                        "fromAddresses": {
+                          "chain": "ETH",
+                          "addresses": [
+                            "0x0d4344cFF68F72A5B9Abded37CA5862941a62050"
+                          ]
                         },
                         "depositAddress": {
                           "chain": "ETH",
@@ -5550,6 +5578,10 @@
                           "amount": "3.14",
                           "currency": "USD"
                         },
+                        "networkFees": {
+                          "amount": "0.14",
+                          "currency": "USD"
+                        },
                         "status": "pending",
                         "errorCode": "transaction_denied",
                         "riskEvaluation": {
@@ -5798,6 +5830,10 @@
                             "amount": "3.14",
                             "currency": "USD"
                           },
+                          "networkFees": {
+                            "amount": "0.14",
+                            "currency": "USD"
+                          },
                           "status": "pending",
                           "errorCode": "transaction_denied",
                           "riskEvaluation": {
@@ -5943,6 +5979,10 @@
                         },
                         "fees": {
                           "amount": "3.14",
+                          "currency": "USD"
+                        },
+                        "networkFees": {
+                          "amount": "0.14",
                           "currency": "USD"
                         },
                         "status": "pending",
@@ -10576,6 +10616,9 @@
           },
           "createDate": {
             "$ref": "#/components/schemas/UtcTimestamp"
+          },
+          "merchantWalletId": {
+            "$ref": "#/components/schemas/MerchantWalletId"
           }
         }
       },
@@ -10646,6 +10689,9 @@
             "enum": [
               "continuous"
             ]
+          },
+          "merchantWalletId": {
+            "$ref": "#/components/schemas/MerchantWalletId"
           }
         }
       },
@@ -10678,6 +10724,9 @@
             "items": {
               "$ref": "#/components/schemas/PaymentMethodBlockchain"
             }
+          },
+          "merchantWalletId": {
+            "$ref": "#/components/schemas/MerchantWalletId"
           }
         }
       },
@@ -10716,6 +10765,9 @@
             "items": {
               "$ref": "#/components/schemas/PaymentMethodBlockchain"
             }
+          },
+          "merchantWalletId": {
+            "$ref": "#/components/schemas/MerchantWalletId"
           },
           "type": {
             "type": "string",
@@ -10839,6 +10891,38 @@
           "action_required"
         ]
       },
+      "CryptoPaymentNetworkFee": {
+        "type": "object",
+        "required": [
+          "amount",
+          "currency"
+        ],
+        "properties": {
+          "amount": {
+            "type": "string",
+            "description": "Magnitude of the amount, in units of the currency, with a `.`.",
+            "example": "3.14"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency code for the amount.",
+            "enum": [
+              "USD",
+              "EUR",
+              "BTC",
+              "ETH"
+            ]
+          },
+          "feePayer": {
+            "type": "string",
+            "description": "The party that pays the network fee based on merchant configuration.",
+            "enum": [
+              "endUser",
+              "merchant"
+            ]
+          }
+        }
+      },
       "CryptoPayment": {
         "type": "object",
         "description": "Status information of the related payment. This property is only present on refund or cancel items.",
@@ -10876,6 +10960,9 @@
           "fees": {
             "$ref": "#/components/schemas/FiatMoneyUsd"
           },
+          "networkFees": {
+            "$ref": "#/components/schemas/CryptoPaymentNetworkFee"
+          },
           "paymentIntentId": {
             "type": "string",
             "format": "uuid",
@@ -10883,6 +10970,20 @@
           },
           "settlementAmount": {
             "$ref": "#/components/schemas/FiatMoneyUsd"
+          },
+          "fromAddresses": {
+            "type": "object",
+            "properties": {
+              "chain": {
+                "$ref": "#/components/schemas/Chain"
+              },
+              "addresses": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Address"
+                }
+              }
+            }
           },
           "depositAddress": {
             "type": "object",
@@ -10893,6 +10994,9 @@
               "address": {
                 "type": "string",
                 "example": "0x97de855690955e0da79ce5c1b6804847e7070c7f"
+              },
+              "addressTag": {
+                "$ref": "#/components/schemas/AddressTag"
               }
             }
           },
@@ -12312,6 +12416,9 @@
             "$ref": "#/components/schemas/PayoutMoney"
           },
           "fees": {
+            "$ref": "#/components/schemas/PayoutMoney"
+          },
+          "networkFees": {
             "$ref": "#/components/schemas/PayoutMoney"
           },
           "status": {
