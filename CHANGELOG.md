@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/circlefin/openapi-internal/compare/v1.6.0...v1.7.0) (2023-03-02)
+
+
+### New Features
+
+* add POST /payments/crypto and GET /payments/presign for the gas-less project 
+
 ## [1.6.0](https://github.com/circlefin/openapi-internal/compare/v1.5.0...v1.6.0) (2023-02-14)
 
 
