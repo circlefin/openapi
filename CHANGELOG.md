@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/circlefin/openapi-internal/compare/v1.7.0...v1.7.1) (2023-03-07)
+
+
+### Fixes
+
+* remove discriminators 
+
 ## [1.7.0](https://github.com/circlefin/openapi-internal/compare/v1.6.0...v1.7.0) (2023-03-02)
 
 

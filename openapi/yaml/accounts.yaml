@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 1.7.0
+  version: 1.7.1
   title: Accounts API
   description: The Accounts API allows you to easily create and host digital wallets
     for your customers, and manage transfers of funds across accounts- whether they
@@ -886,8 +886,6 @@ components:
       oneOf:
       - $ref: '#/components/schemas/TransferSourceWalletLocation'
       - $ref: '#/components/schemas/TransferSourceBlockchainLocation'
-      discriminator:
-        propertyName: type
     TransferDestinationBlockchainLocation:
       description: A destination blockchain address.
       type: object
@@ -934,8 +932,6 @@ components:
       oneOf:
       - $ref: '#/components/schemas/TransferDestinationBlockchainLocation'
       - $ref: '#/components/schemas/TransferDestinationWalletLocation'
-      discriminator:
-        propertyName: type
     Fee:
       type: object
       required:

@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 1.7.0
+  version: 1.7.1
   title: Payments API
   description: 'The Circle Payments API allows you to take payments from your end
     users via traditional methods such as debit & credit cards, bank accounts (wires
@@ -229,13 +229,6 @@ paths:
                       - $ref: '#/components/schemas/CryptoPayment'
                       - $ref: '#/components/schemas/FiatCancel'
                       - $ref: '#/components/schemas/FiatRefund'
-                      discriminator:
-                        propertyName: type
-                        mapping:
-                          Fiat Payment: '#/components/schemas/FiatPayment'
-                          Crypto Payment: '#/components/schemas/CryptoPayment'
-                          Fiat Cancel: '#/components/schemas/FiatCancel'
-                          Fiat Refund: '#/components/schemas/FiatRefund'
               examples:
                 Fiat Payment:
                   value:
@@ -400,11 +393,6 @@ paths:
                     oneOf:
                     - $ref: '#/components/schemas/FiatPaymentPolymorphic'
                     - $ref: '#/components/schemas/CryptoPayment'
-                    discriminator:
-                      propertyName: type
-                      mapping:
-                        Fiat Payment: '#/components/schemas/FiatPaymentPolymorphic'
-                        Crypto Payment: '#/components/schemas/CryptoPayment'
               examples:
                 Fiat Payment:
                   value:
