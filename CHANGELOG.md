@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.2](https://github.com/circlefin/openapi-internal/compare/v1.7.1...v1.7.2) (2023-03-21)
+
+
+### Fixes
+
+* payment intents endpoints schemas 
+
 ## [1.7.1](https://github.com/circlefin/openapi-internal/compare/v1.7.0...v1.7.1) (2023-03-07)
 
 

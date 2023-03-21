@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 1.7.1
+  version: 1.7.2
   title: All Circle APIs
   description: Circle's General, Core Functionality, Payments, Payouts, Accounts,
     and Crypto Payments APIs bundled into one OpenAPI Specification.
@@ -1984,7 +1984,7 @@ paths:
                 Transient Payment Intent:
                   value:
                     data:
-                      id: 8755d0ea-14f9-4259-b092-de23c14b6568
+                    - id: 8755d0ea-14f9-4259-b092-de23c14b6568
                       amount:
                         amount: '3.14'
                         currency: USD
@@ -2004,7 +2004,7 @@ paths:
                 Continuous Payment Intent:
                   value:
                     data:
-                      id: e2e90ba3-9d1f-490d-9460-24ac6eb55a1b
+                    - id: e2e90ba3-9d1f-490d-9460-24ac6eb55a1b
                       currency: USD
                       settlementCurrency: USD
                       amountPaid:
@@ -2043,11 +2043,9 @@ paths:
                 title: GetPaymentIntentResponse
                 properties:
                   data:
-                    type: array
-                    items:
-                      anyOf:
-                      - $ref: '#/components/schemas/PaymentIntent'
-                      - $ref: '#/components/schemas/ContinuousPaymentIntent'
+                    anyOf:
+                    - $ref: '#/components/schemas/PaymentIntent'
+                    - $ref: '#/components/schemas/ContinuousPaymentIntent'
               examples:
                 Transient Payment Intent:
                   value:
@@ -2118,11 +2116,9 @@ paths:
                 title: ExpirePaymentIntentResponse
                 properties:
                   data:
-                    type: array
-                    items:
-                      anyOf:
-                      - $ref: '#/components/schemas/PaymentIntent'
-                      - $ref: '#/components/schemas/ContinuousPaymentIntent'
+                    anyOf:
+                    - $ref: '#/components/schemas/PaymentIntent'
+                    - $ref: '#/components/schemas/ContinuousPaymentIntent'
               examples:
                 Transient Payment Intent:
                   value:
@@ -7340,6 +7336,8 @@ components:
           type: string
           enum:
           - USD
+          - BTC
+          - ETH
     Timeline:
       type: object
       required:
