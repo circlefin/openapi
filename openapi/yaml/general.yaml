@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 1.7.3
+  version: 1.8.0
   title: API Overview
   description: Common endpoints shared across all Circle APIs.
 tags:
