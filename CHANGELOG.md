@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/circlefin/openapi-internal/compare/v1.8.0...v2.0.0) (2023-04-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove references to banking 3rd party Payment/Payout APIs 
+
+### Fixes
+
+* Remove references to banking 3rd party Payment/Payout APIs 
+
 ## [1.8.0](https://github.com/circlefin/openapi-internal/compare/v1.7.3...v1.8.0) (2023-04-05)
 
 

@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 1.8.0
+  version: 2.0.0
   title: Core Functionality
   description: 'All of Circle''s APIs share a common set of core functionality that
     lets you manage your Circle Account in a programmatic way.
@@ -21,10 +21,6 @@ tags:
 - name: Wires
   description: Create, get instructions, and get information on 1st party bank accounts
     for wire transfers.
-- name: Signet
-  description: Create and get information on Signet accounts.
-- name: SEN
-  description: Create and get information on SEN accounts.
 - name: CBIT
   description: Create and get information on CBIT accounts.
 - name: Transfers
@@ -158,6 +154,7 @@ paths:
           type: string
           enum:
           - wire
+          - cbit
       - name: status
         description: Queries items with the specified status. Matches any status if
           unspecified.
@@ -518,305 +515,50 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
-  /v1/businessAccount/banks/signet:
+  /v1/mocks/payments/wire:
     post:
       security:
       - bearerAuth: []
-      summary: Create a Signet bank account (Production Only)
-      operationId: createBusinessSignetAccount
+      summary: Create a mock Wire payment
+      description: In the sandbox environment, initiate a mock wire payment that mimics
+        the behavior of funds sent through the bank (wire) account linked to master
+        wallet.
+      operationId: createMockWirePayment
       tags:
-      - Signet
+      - Payments
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SignetFiatAccountCreationRequest'
+              $ref: '#/components/schemas/MockWirePaymentRequest'
       responses:
         '201':
-          description: Successfully created a bank account for Signet transfers.
+          description: Successfully created a mock wire payment.
           headers:
             X-Request-Id:
               $ref: '#/components/headers/XRequestId'
           content:
             application/json:
               schema:
-                title: CreateBusinessSignetAccountResponse
+                title: CreateWirePaymentResponse
                 properties:
                   data:
-                    $ref: '#/components/schemas/SignetFiatAccountResponse'
+                    $ref: '#/components/schemas/MockWirePaymentResponse'
               examples:
                 response:
                   value:
                     data:
-                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      trackingRef: CIR13FB13A
+                      amount:
+                        amount: '3.14'
+                        currency: USD
+                      beneficiaryBank:
+                        accountNumber: '11111111'
                       status: pending
-                      trackingRef: CIR13FB14A
-                      walletAddress: '0xcac04f0069e4ac9314ac4e608e99278a3bebabcd'
-                      createDate: '2020-04-10T02:13:30.000Z'
-                      updateDate: '2020-04-10T02:13:30.000Z'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/NotAuthorized'
-    get:
-      security:
-      - bearerAuth: []
-      summary: List all Signet bank accounts (Production Only).
-      operationId: listBusinessSignetAccounts
-      tags:
-      - Signet
-      responses:
-        '200':
-          description: Successfully retrieved all bank accounts for Signet transfers.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: ListBusinessSignetAccountsResponse
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SignetFiatAccountResponse'
-              examples:
-                response:
-                  value:
-                    data:
-                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      status: pending
-                      trackingRef: CIR13FB14A
-                      walletAddress: '0xcac04f0069e4ac9314ac4e608e99278a3bebabcd'
-                      createDate: '2020-04-10T02:13:30.000Z'
-                      updateDate: '2020-04-10T02:13:30.000Z'
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-  /v1/businessAccount/banks/signet/{id}:
-    get:
-      parameters:
-      - $ref: '#/components/parameters/IdPath'
-      security:
-      - bearerAuth: []
-      summary: Get a Signet bank account (Production Only)
-      operationId: getBusinessSignetAccount
-      tags:
-      - Signet
-      responses:
-        '200':
-          description: Successfully retrieved a bank account for Signet transfers.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: GetBusinessSignetAccountResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/SignetFiatAccountResponse'
-              examples:
-                response:
-                  value:
-                    data:
-                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      status: pending
-                      trackingRef: CIR13FB14A
-                      walletAddress: '0xcac04f0069e4ac9314ac4e608e99278a3bebabcd'
-                      createDate: '2020-04-10T02:13:30.000Z'
-                      updateDate: '2020-04-10T02:13:30.000Z'
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /v1/businessAccount/banks/signet/{id}/instructions:
-    get:
-      parameters:
-      - $ref: '#/components/parameters/IdPath'
-      security:
-      - bearerAuth: []
-      summary: Get Signet instructions (Production Only)
-      description: Get the Signet transfer instructions into the Circle bank account
-        given your bank account id (only available on Production now).
-      operationId: getBusinessSignetAccountInstructions
-      tags:
-      - Signet
-      responses:
-        '200':
-          description: Successfully retrieved Signet transfer instructions for the
-            bank account.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: ListBusinessSignetAccountInstructionsResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/SignetInstruction'
-              examples:
-                response:
-                  value:
-                    data:
-                      trackingRef: CIR13FB14A
-                      walletAddress: '0x7e4f4fe03243ac7b291ebaee90b2bb27025a1234'
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /v1/businessAccount/banks/sen:
-    post:
-      security:
-      - bearerAuth: []
-      summary: Create a Silvergate SEN bank account (BETA)
-      operationId: createBusinessSenAccount
-      tags:
-      - SEN
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SenFiatAccountCreationRequest'
-      responses:
-        '201':
-          description: Successfully created a bank account for Silvergate SEN transfers.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: CreateBusinessSenAccountResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/SenFiatAccountResponse'
-              examples:
-                response:
-                  value:
-                    data:
-                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      status: pending
-                      description: SILVERGATE BANK ****1111
-                      trackingRef: CIR13FB14A
-                      createDate: '2020-04-10T02:13:30.000Z'
-                      updateDate: '2020-04-10T02:13:30.000Z'
-                      currency: USD
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-    get:
-      security:
-      - bearerAuth: []
-      summary: List all Silvergate SEN bank accounts (BETA).
-      operationId: listBusinessSenAccounts
-      tags:
-      - SEN
-      responses:
-        '200':
-          description: Successfully retrieved all bank accounts for Silvergate SEN
-            transfers.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: ListBusinessSenAccountsResponse
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SenFiatAccountResponse'
-              examples:
-                response:
-                  value:
-                    data:
-                    - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      status: pending
-                      description: SILVERGATE BANK ****1111
-                      trackingRef: CIR13FB14A
-                      createDate: '2020-04-10T02:13:30.000Z'
-                      updateDate: '2020-04-10T02:13:30.000Z'
-                      currency: USD
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-  /v1/businessAccount/banks/sen/{id}:
-    get:
-      parameters:
-      - $ref: '#/components/parameters/IdPath'
-      security:
-      - bearerAuth: []
-      summary: Get a Silvergate SEN bank account (BETA)
-      operationId: getBusinessSenAccount
-      tags:
-      - SEN
-      responses:
-        '200':
-          description: Successfully retrieved a bank account for Silvergate SEN transfers.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: GetBusinessSenAccountResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/SenFiatAccountResponse'
-              examples:
-                response:
-                  value:
-                    data:
-                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      status: pending
-                      description: SILVERGATE BANK ****1111
-                      trackingRef: CIR13FB14A
-                      createDate: '2020-04-10T02:13:30.000Z'
-                      updateDate: '2020-04-10T02:13:30.000Z'
-                      currency: USD
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /v1/businessAccount/banks/sen/{id}/instructions:
-    get:
-      parameters:
-      - $ref: '#/components/parameters/IdPath'
-      security:
-      - bearerAuth: []
-      summary: Get Silvergate SEN instructions (BETA)
-      description: Get the Silvergate SEN transfer instructions into the Circle bank
-        account given your bank account id (BETA).
-      operationId: getBusinessSenAccountInstructions
-      tags:
-      - SEN
-      responses:
-        '200':
-          description: Successfully retrieved Sen transfer instructions for the bank
-            account.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: GetBusinessSenAccountInstructionsResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/SenInstruction'
-              examples:
-                response:
-                  value:
-                    data:
-                      trackingRef: CIR13FB14A
-                      accountNumber: '11111111'
-                      currency: USD
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
   /v1/businessAccount/banks/cbit:
     post:
       security:
@@ -1380,50 +1122,6 @@ paths:
                       updateDate: '2020-04-10T02:13:30.000Z'
         '401':
           $ref: '#/components/responses/NotAuthorized'
-  /v1/mocks/payments/sen:
-    post:
-      security:
-      - bearerAuth: []
-      summary: Create a mock Silvergate SEN payment
-      description: In the sandbox environment, initiate a mock SEN transfer that mimics
-        the behavior of funds sent through the Silvergate SEN account linked to master
-        wallet.
-      operationId: createMockSenPayment
-      tags:
-      - Deposits
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MockSenPaymentRequest'
-      responses:
-        '201':
-          description: Successfully created a mock SEN transfer.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: CreateSenPaymentResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/MockSenPaymentResponse'
-              examples:
-                response:
-                  value:
-                    data:
-                      trackingRef: CIR13FB13A
-                      amount:
-                        amount: '3.14'
-                        currency: USD
-                      beneficiaryBank:
-                        accountNumber: '11111111'
-                      status: pending
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
 components:
   securitySchemes:
     bearerAuth:
@@ -1495,9 +1193,7 @@ components:
       description: The destination bank account type.
       enum:
       - wire
-      - ach
-      - sepa
-      - signet
+      - cbit
     BankDestination:
       type: object
       description: The destination bank account.
@@ -1682,8 +1378,7 @@ components:
           type: string
           enum:
           - wire
-          - sen
-          - signet
+          - cbit
         id:
           $ref: '#/components/schemas/Id'
     BusinessPayoutCreationRequest:
@@ -2073,122 +1768,55 @@ components:
           $ref: '#/components/schemas/WireInstructionBeneficiary'
         beneficiaryBank:
           $ref: '#/components/schemas/WireInstructionBeneficiaryBank'
-    SignetFiatAccountResponse:
+    MockWirePaymentBeneficiaryBankInstruction:
       type: object
       required:
-      - id
-      - status
-      - trackingRef
-      - walletAddress
-      - createDate
-      - updateDate
-      properties:
-        id:
-          $ref: '#/components/schemas/Id'
-        status:
-          $ref: '#/components/schemas/ExternalFiatAccountStatus'
-        trackingRef:
-          type: string
-          description: Tracking ref that needs to be set in the public description
-            field when you send the funds to Circle Signet wallet.
-          example: CIR13FB14A
-        walletAddress:
-          type: string
-          description: Your signet wallet address.
-          example: '0xcac04f0069e4ac9314ac4e608e99278a3bebabcd'
-        createDate:
-          $ref: '#/components/schemas/UtcTimestamp'
-        updateDate:
-          $ref: '#/components/schemas/UtcTimestamp'
-    SignetFiatAccountCreationRequest:
-      type: object
-      required:
-      - idempotencyKey
-      - walletAddress
-      properties:
-        idempotencyKey:
-          $ref: '#/components/schemas/IdempotencyKey'
-        walletAddress:
-          type: string
-          description: Signet wallet address.
-          example: '0xcac04f0069e4ac9314ac4e608e99278a3bebabcd'
-    SignetInstruction:
-      type: object
-      properties:
-        trackingRef:
-          type: string
-          description: Circle tracking reference that needs to be set in the signet
-            public description field.
-          example: CIR13FB14A
-        walletAddress:
-          type: string
-          description: Circle wallet address that needs to be set in the signet recipient
-            wallet field.
-          example: '0x7e4f4fe03243ac7b291ebaee90b2bb27025a1234'
-    SenFiatAccountResponse:
-      type: object
-      required:
-      - id
-      - status
-      - description
-      - trackingRef
-      - createDate
-      - updateDate
-      properties:
-        id:
-          $ref: '#/components/schemas/Id'
-        status:
-          $ref: '#/components/schemas/ExternalFiatAccountStatus'
-        description:
-          type: string
-          description: Bank name plus last four digits of the bank account number.
-          example: SILVERGATE BANK ****1111
-        trackingRef:
-          type: string
-          description: Circle tracking reference that needs to be set in the memo
-            field..
-          example: CIR13FB14A
-        createDate:
-          $ref: '#/components/schemas/UtcTimestamp'
-        updateDate:
-          $ref: '#/components/schemas/UtcTimestamp'
-        currency:
-          type: string
-          description: Currency of the fiat account.
-          example: USD
-    SenFiatAccountCreationRequest:
-      type: object
-      required:
-      - idempotencyKey
       - accountNumber
       properties:
-        idempotencyKey:
-          $ref: '#/components/schemas/IdempotencyKey'
         accountNumber:
           type: string
-          description: Silvergate SEN account number.
-          example: '12345678'
-        currency:
+          description: Virtual account number or Circle corporate Silvergate Wire
+            account number that needs to be set as destination.
+          example: '11111111'
+    MockWirePaymentRequest:
+      type: object
+      required:
+      - trackingRef
+      - amount
+      - beneficiaryBank
+      properties:
+        trackingRef:
           type: string
-          description: Currency of the Silvergate SEN account.
-          example: USD
-    SenInstruction:
+          description: Wire tracking reference that needs to be set in the wire reference
+            to beneficiary field. This field is retrievable through the response during
+            wire creation or via the bank instruction endpoint.
+          example: CIR13FB13A
+        amount:
+          $ref: '#/components/schemas/FiatMoneyUsd'
+        beneficiaryBank:
+          $ref: '#/components/schemas/MockWirePaymentBeneficiaryBankInstruction'
+    MockWirePaymentResponse:
       type: object
       properties:
         trackingRef:
           type: string
-          description: Circle tracking reference that needs to be set in the memo
-            field.
-          example: CIR13FB14A
-        accountNumber:
+          description: Wire tracking reference that needs to be set in the wire reference
+            to beneficiary field. This field is retrievable through the response during
+            wire creation or via the bank instruction endpoint.
+          example: CIR13FB13A
+        amount:
+          $ref: '#/components/schemas/FiatMoneyUsd'
+        beneficiaryBank:
+          $ref: '#/components/schemas/MockWirePaymentBeneficiaryBankInstruction'
+        status:
           type: string
-          description: Circle corporate Silvergate SEN account number that needs to
-            be set as destination.
-          example: '11111111'
-        currency:
-          type: string
-          description: Currency of Circle corporate Silvergate SEN account.
-          example: USD
+          description: Enumerated status of the wire payment. Status `pending` indicates
+            that the wire payment is in process; `processed` indicates it finished
+            successfully; `failed` indicates it failed.
+          enum:
+          - pending
+          - processed
+          - failed
     CbitFiatAccountResponse:
       type: object
       required:
@@ -2663,55 +2291,6 @@ components:
           $ref: '#/components/schemas/UtcTimestamp'
         updateDate:
           $ref: '#/components/schemas/UtcTimestamp'
-    MockSenPaymentBeneficiaryBankInstruction:
-      type: object
-      required:
-      - accountNumber
-      properties:
-        accountNumber:
-          type: string
-          description: Circle corporate Silvergate SEN account number that needs to
-            be set as destination.
-          example: '11111111'
-    MockSenPaymentRequest:
-      type: object
-      required:
-      - trackingRef
-      - amount
-      - beneficiaryBank
-      properties:
-        trackingRef:
-          type: string
-          description: Circle tracking reference that needs to be set in the memo
-            filed. This field is retrievable through the response during SEN account
-            creation or via the bank instruction endpoint.
-          example: CIR13FB13A
-        amount:
-          $ref: '#/components/schemas/FiatMoney'
-        beneficiaryBank:
-          $ref: '#/components/schemas/MockSenPaymentBeneficiaryBankInstruction'
-    MockSenPaymentResponse:
-      type: object
-      properties:
-        trackingRef:
-          type: string
-          description: Wire tracking reference that needs to be set in the wire reference
-            to beneficiary field. This field is retrievable through the response during
-            wire creation or via the bank instruction endpoint.
-          example: CIR13FB13A
-        amount:
-          $ref: '#/components/schemas/FiatMoneyUsd'
-        beneficiaryBank:
-          $ref: '#/components/schemas/MockSenPaymentBeneficiaryBankInstruction'
-        status:
-          type: string
-          description: Enumerated status of the wire payment. Status `pending` indicates
-            that the wire payment is in process; `processed` indicates it finished
-            successfully; `failed` indicates it failed.
-          enum:
-          - pending
-          - processed
-          - failed
   responses:
     NotAuthorized:
       description: The request has not been applied because it lacks valid authentication

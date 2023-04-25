@@ -2,11 +2,11 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 1.8.0
+  version: 2.0.0
   title: Payments API
   description: 'The Circle Payments API allows you to take payments from your end
-    users via traditional methods such as debit & credit cards, bank accounts (wires
-    and ACH), etc., and receive settlement in USDC.
+    users via traditional methods such as debit & credit cards and receive settlement
+    in USDC.
 
 
     The Circle Payments API has been designed with any business or internet commerce
@@ -16,7 +16,7 @@ info:
     '
 tags:
 - name: Payments
-  description: Create, cancel, refund, and get updates on card and ACH payments.
+  description: Create, cancel, refund, and get updates on card payments.
 - name: Pull Crypto Payments
   description: Create pull crypto payments and generate typed messages for signing.
 - name: Crypto Payment Intents
@@ -25,19 +25,10 @@ tags:
   description: Link, update, and get information on debit/credit cards.
 - name: Payment Tokens
   description: Create Apple Pay and Google Pay payment tokens.
-- name: Wires
-  description: Create, get instructions, and get information on bank accounts for
-    wire transfers.
-- name: ACH
-  description: Link and get information on bank account for ACH payments.
-- name: SEPA
-  description: Create and get information on SEPA accounts.
 - name: Settlements
   description: Get information on settlement batches.
 - name: Chargebacks
   description: Get information on card chargebacks.
-- name: Reversals
-  description: Get information on ACH reversals.
 - name: Balances
   description: Get information on settled and unsettled balances.
 - name: Checkout Sessions
@@ -397,7 +388,30 @@ paths:
                 Fiat Payment:
                   value:
                     data:
-                      data:
+                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                      type: payment
+                      merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
+                      merchantWalletId: '212000'
+                      amount:
+                        amount: '3.14'
+                        currency: USD
+                      fromAmount:
+                        amount: '3.14'
+                        currency: EUR
+                      source:
+                        id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                        type: card
+                      description: Payment
+                      status: pending
+                      requiredAction:
+                        type: three_d_secure_required
+                        redirectUrl: https://example.org
+                      verification:
+                        avs: D
+                        cvv: not_requested
+                        threeDSecure: pass
+                        eci: '00'
+                      originalPayment:
                         id: b8627ae8-732b-4d25-b947-1df8f4007a29
                         type: payment
                         merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
@@ -405,159 +419,135 @@ paths:
                         amount:
                           amount: '3.14'
                           currency: USD
-                        fromAmount:
-                          amount: '3.14'
-                          currency: EUR
                         source:
                           id: b8627ae8-732b-4d25-b947-1df8f4007a29
                           type: card
                         description: Payment
                         status: pending
+                        captured: false
+                        captureAmount:
+                          amount: '3.14'
+                          currency: USD
+                        captureDate: '2020-04-10T02:13:30.000Z'
                         requiredAction:
                           type: three_d_secure_required
                           redirectUrl: https://example.org
-                        verification:
-                          avs: D
-                          cvv: not_requested
-                          threeDSecure: pass
-                          eci: '00'
-                        originalPayment:
-                          id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                          type: payment
-                          merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
-                          merchantWalletId: '212000'
-                          amount:
-                            amount: '3.14'
-                            currency: USD
-                          source:
-                            id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                            type: card
-                          description: Payment
-                          status: pending
-                          captured: false
-                          captureAmount:
-                            amount: '3.14'
-                            currency: USD
-                          captureDate: '2020-04-10T02:13:30.000Z'
-                          requiredAction:
-                            type: three_d_secure_required
-                            redirectUrl: https://example.org
-                          cancel:
-                            id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                            type: cancel
-                            description: Payment
-                            status: pending
-                            createDate: '2020-04-10T02:13:30.000Z'
-                          refunds:
-                          - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                            type: payment
-                            amount:
-                              amount: '3.14'
-                              currency: USD
-                            description: Payment
-                            status: pending
-                            requiredAction:
-                              type: three_d_secure_required
-                              redirectUrl: https://example.org
-                            fees:
-                              amount: '3.14'
-                              currency: USD
-                            createDate: '2020-04-10T02:13:30.000Z'
-                          fees:
-                            amount: '3.14'
-                            currency: USD
-                          channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
-                          createDate: '2020-04-10T02:13:30.000Z'
-                          updateDate: '2020-04-10T02:13:30.000Z'
                         cancel:
                           id: b8627ae8-732b-4d25-b947-1df8f4007a29
                           type: cancel
-                          merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
-                          merchantWalletId: '212000'
-                          amount:
-                            amount: '3.14'
-                            currency: USD
-                          source:
-                            id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                            type: card
                           description: Payment
                           status: pending
-                          originalPayment:
-                            id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                            type: payment
-                            amount:
-                              amount: '3.14'
-                              currency: USD
-                            description: Payment
-                            status: pending
-                            requiredAction:
-                              type: three_d_secure_required
-                              redirectUrl: https://example.org
-                            fees:
-                              amount: '3.14'
-                              currency: USD
-                            createDate: '2020-04-10T02:13:30.000Z'
-                          fees:
-                            amount: '3.14'
-                            currency: USD
-                          channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
                           createDate: '2020-04-10T02:13:30.000Z'
-                          updateDate: '2020-04-10T02:13:30.000Z'
                         refunds:
                         - id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                          type: refund
-                          merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
-                          merchantWalletId: '212000'
+                          type: payment
                           amount:
                             amount: '3.14'
                             currency: USD
-                          source:
-                            id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                            type: card
                           description: Payment
                           status: pending
-                          originalPayment:
-                            id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                            type: payment
-                            amount:
-                              amount: '3.14'
-                              currency: USD
-                            description: Payment
-                            status: pending
-                            requiredAction:
-                              type: three_d_secure_required
-                              redirectUrl: https://example.org
-                            fees:
-                              amount: '3.14'
-                              currency: USD
-                            createDate: '2020-04-10T02:13:30.000Z'
-                          cancel:
-                            id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                            type: cancel
-                            description: Payment
-                            status: pending
-                            createDate: '2020-04-10T02:13:30.000Z'
+                          requiredAction:
+                            type: three_d_secure_required
+                            redirectUrl: https://example.org
                           fees:
                             amount: '3.14'
                             currency: USD
-                          channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
                           createDate: '2020-04-10T02:13:30.000Z'
-                          updateDate: '2020-04-10T02:13:30.000Z'
                         fees:
                           amount: '3.14'
                           currency: USD
-                        trackingRef: '24910599141085313498894'
-                        externalRef: YYYYMMDDXXXXXXXX012345
-                        errorCode: payment_failed
-                        metadata:
-                          email: satoshi@circle.com
-                          phoneNumber: '+14155555555'
                         channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
-                        riskEvaluation:
-                          decision: approved
-                          reason: '3000'
                         createDate: '2020-04-10T02:13:30.000Z'
                         updateDate: '2020-04-10T02:13:30.000Z'
+                      cancel:
+                        id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                        type: cancel
+                        merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
+                        merchantWalletId: '212000'
+                        amount:
+                          amount: '3.14'
+                          currency: USD
+                        source:
+                          id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                          type: card
+                        description: Payment
+                        status: pending
+                        originalPayment:
+                          id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                          type: payment
+                          amount:
+                            amount: '3.14'
+                            currency: USD
+                          description: Payment
+                          status: pending
+                          requiredAction:
+                            type: three_d_secure_required
+                            redirectUrl: https://example.org
+                          fees:
+                            amount: '3.14'
+                            currency: USD
+                          createDate: '2020-04-10T02:13:30.000Z'
+                        fees:
+                          amount: '3.14'
+                          currency: USD
+                        channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
+                        createDate: '2020-04-10T02:13:30.000Z'
+                        updateDate: '2020-04-10T02:13:30.000Z'
+                      refunds:
+                      - id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                        type: refund
+                        merchantId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
+                        merchantWalletId: '212000'
+                        amount:
+                          amount: '3.14'
+                          currency: USD
+                        source:
+                          id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                          type: card
+                        description: Payment
+                        status: pending
+                        originalPayment:
+                          id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                          type: payment
+                          amount:
+                            amount: '3.14'
+                            currency: USD
+                          description: Payment
+                          status: pending
+                          requiredAction:
+                            type: three_d_secure_required
+                            redirectUrl: https://example.org
+                          fees:
+                            amount: '3.14'
+                            currency: USD
+                          createDate: '2020-04-10T02:13:30.000Z'
+                        cancel:
+                          id: b8627ae8-732b-4d25-b947-1df8f4007a29
+                          type: cancel
+                          description: Payment
+                          status: pending
+                          createDate: '2020-04-10T02:13:30.000Z'
+                        fees:
+                          amount: '3.14'
+                          currency: USD
+                        channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
+                        createDate: '2020-04-10T02:13:30.000Z'
+                        updateDate: '2020-04-10T02:13:30.000Z'
+                      fees:
+                        amount: '3.14'
+                        currency: USD
+                      trackingRef: '24910599141085313498894'
+                      externalRef: YYYYMMDDXXXXXXXX012345
+                      errorCode: payment_failed
+                      metadata:
+                        email: satoshi@circle.com
+                        phoneNumber: '+14155555555'
+                      channel: ba943ff1-ca16-49b2-ba55-1057e70ca5c7
+                      riskEvaluation:
+                        decision: approved
+                        reason: '3000'
+                      createDate: '2020-04-10T02:13:30.000Z'
+                      updateDate: '2020-04-10T02:13:30.000Z'
                 Crypto Payment:
                   value:
                     data:
@@ -1085,97 +1075,6 @@ paths:
                       riskEvaluation:
                         decision: approved
                         reason: '3000'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-  /v1/mocks/payments/wire:
-    post:
-      security:
-      - bearerAuth: []
-      summary: Create a mock Wire payment
-      description: In the sandbox environment, initiate a mock wire payment that mimics
-        the behavior of funds sent through the bank (wire) account linked to master
-        wallet.
-      operationId: createMockWirePayment
-      tags:
-      - Payments
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MockWirePaymentRequest'
-      responses:
-        '201':
-          description: Successfully created a mock wire payment.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: CreateWirePaymentResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/MockWirePaymentResponse'
-              examples:
-                response:
-                  value:
-                    data:
-                      trackingRef: CIR13FB13A
-                      amount:
-                        amount: '3.14'
-                        currency: USD
-                      beneficiaryBank:
-                        accountNumber: '11111111'
-                      status: pending
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-  /v1/mocks/payments/sepa:
-    post:
-      security:
-      - bearerAuth: []
-      summary: Create a mock SEPA payment
-      description: In the sandbox environment, initiate a mock SEPA payment that mimics
-        the behavior of funds sent through the bank (SEPA) account linked to master
-        wallet.
-      operationId: createMockSepaPayment
-      tags:
-      - Payments
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MockSepaPaymentRequest'
-            example:
-              trackingRef: CIR13FB13A
-              amount:
-                amount: 3.14
-                currency: EUR
-      responses:
-        '201':
-          description: Successfully created a mock SEPA payment.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: CreateSepaPaymentResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/MockSepaPaymentResponse'
-              examples:
-                response:
-                  value:
-                    data:
-                      trackingRef: CIR13FB13A
-                      amount:
-                        amount: '3.14'
-                        currency: USD
-                      status: pending
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1841,481 +1740,6 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/NotAuthorized'
-  /v1/banks/wires:
-    post:
-      security:
-      - bearerAuth: []
-      summary: Create a Wire bank account
-      operationId: createWireAccount
-      tags:
-      - Wires
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/WireCreationRequest'
-      responses:
-        '201':
-          description: Successfully created a bank account for wire transfers.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: CreateWireAccountResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Wire'
-              examples:
-                response:
-                  value:
-                    data:
-                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      status: pending
-                      description: WELLS FARGO BANK, NA ****0010
-                      trackingRef: CIR13FB13A
-                      fingerprint: eb170539-9e1c-4e92-bf4f-1d09534fdca2
-                      billingDetails:
-                        name: Satoshi Nakamoto
-                        city: Boston
-                        country: US
-                        line1: 100 Money Street
-                        line2: Suite 1
-                        district: MA
-                        postalCode: '01234'
-                      bankAddress:
-                        bankName: SAN FRANCISCO
-                        city: SAN FRANCISCO
-                        country: US
-                        line1: 100 Money Street
-                        line2: Suite 1
-                        district: CA
-                      createDate: '2020-04-10T02:13:30.000Z'
-                      updateDate: '2020-04-10T02:13:30.000Z'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-  /v1/banks/wires/{id}:
-    get:
-      parameters:
-      - $ref: '#/components/parameters/IdPath'
-      security:
-      - bearerAuth: []
-      summary: Get a Wire bank account
-      operationId: getWireAccount
-      tags:
-      - Wires
-      responses:
-        '200':
-          description: Successfully retrieved a bank account for wire transfers.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: GetWireAccountResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Wire'
-              examples:
-                response:
-                  value:
-                    data:
-                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      status: pending
-                      description: WELLS FARGO BANK, NA ****0010
-                      trackingRef: CIR13FB13A
-                      fingerprint: eb170539-9e1c-4e92-bf4f-1d09534fdca2
-                      billingDetails:
-                        name: Satoshi Nakamoto
-                        city: Boston
-                        country: US
-                        line1: 100 Money Street
-                        line2: Suite 1
-                        district: MA
-                        postalCode: '01234'
-                      bankAddress:
-                        bankName: SAN FRANCISCO
-                        city: SAN FRANCISCO
-                        country: US
-                        line1: 100 Money Street
-                        line2: Suite 1
-                        district: CA
-                      createDate: '2020-04-10T02:13:30.000Z'
-                      updateDate: '2020-04-10T02:13:30.000Z'
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /v1/banks/wires/{id}/instructions:
-    get:
-      parameters:
-      - $ref: '#/components/parameters/IdPath'
-      security:
-      - bearerAuth: []
-      summary: Get Wire instructions
-      description: Get the wire transfer instructions into the Circle bank account
-        given your bank account id
-      operationId: getWireAccountInstructions
-      tags:
-      - Wires
-      responses:
-        '200':
-          description: Successfully retrieved wire transfer instructions for the bank
-            account.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: GetWireAccountInstructionsResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/WireInstruction'
-              examples:
-                response:
-                  value:
-                    data:
-                      trackingRef: CIR13FB13A
-                      beneficiary:
-                        name: CIRCLE INTERNET FINANCIAL INC
-                        address1: 99 HIGH STREET
-                        address2: BOSTON MA 02110
-                      beneficiaryBank:
-                        name: SILVERGATE BANK
-                        swiftCode: SIVGUS66XXX
-                        routingNumber: '322286803'
-                        accountNumber: '****7427'
-                        currency: USD
-                        address: 4250 EXECUTIVE SQUARE SUITE 300
-                        city: LA JOLLA
-                        postalCode: '02110'
-                        country: US
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /v1/banks/ach:
-    post:
-      security:
-      - bearerAuth: []
-      summary: Create a ACH bank account
-      operationId: createAchAccount
-      tags:
-      - ACH
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AchCreationRequest'
-      responses:
-        '201':
-          description: Successfully created a bank account for ACH transfers.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: CreateAchAccountResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Ach'
-              examples:
-                response:
-                  value:
-                    data:
-                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      status: pending
-                      accountNumber: '****6789'
-                      routingNumber: '613334455'
-                      billingDetails:
-                        name: Satoshi Nakamoto
-                        city: Boston
-                        country: US
-                        line1: 100 Money Street
-                        line2: Suite 1
-                        district: MA
-                        postalCode: '01234'
-                      bankAccountType: retail
-                      bankAddress:
-                        bankName: SAN FRANCISCO
-                        city: SAN FRANCISCO
-                        country: US
-                        line1: 100 Money Street
-                        line2: Suite 1
-                        district: CA
-                      fingerprint: eb170539-9e1c-4e92-bf4f-1d09534fdca2
-                      errorCode: bank_account_authorization_expired
-                      riskEvaluation:
-                        decision: approved
-                        reason: '3000'
-                      createDate: '2020-04-10T02:13:30.000Z'
-                      updateDate: '2020-04-10T02:13:30.000Z'
-                      metadata:
-                        email: satoshi@circle.com
-                        phoneNumber: '+14155555555'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-  /v1/banks/ach/{id}:
-    get:
-      parameters:
-      - $ref: '#/components/parameters/IdPath'
-      security:
-      - bearerAuth: []
-      summary: Get a ACH bank account
-      operationId: getAchAccount
-      tags:
-      - ACH
-      responses:
-        '200':
-          description: Successfully retrieved a bank account for ACH transfers.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: GetAchAccountResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Ach'
-              examples:
-                response:
-                  value:
-                    data:
-                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      status: pending
-                      accountNumber: '****6789'
-                      routingNumber: '613334455'
-                      billingDetails:
-                        name: Satoshi Nakamoto
-                        city: Boston
-                        country: US
-                        line1: 100 Money Street
-                        line2: Suite 1
-                        district: MA
-                        postalCode: '01234'
-                      bankAccountType: retail
-                      bankAddress:
-                        bankName: SAN FRANCISCO
-                        city: SAN FRANCISCO
-                        country: US
-                        line1: 100 Money Street
-                        line2: Suite 1
-                        district: CA
-                      fingerprint: eb170539-9e1c-4e92-bf4f-1d09534fdca2
-                      errorCode: bank_account_authorization_expired
-                      riskEvaluation:
-                        decision: approved
-                        reason: '3000'
-                      createDate: '2020-04-10T02:13:30.000Z'
-                      updateDate: '2020-04-10T02:13:30.000Z'
-                      metadata:
-                        email: satoshi@circle.com
-                        phoneNumber: '+14155555555'
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /v1/mocks/ach/accounts:
-    post:
-      security:
-      - bearerAuth: []
-      summary: Create a mock ACH bank account
-      description: In the sandbox environment, create a mock ACH account and retrieve
-        a processor token that can be used to link an ACH account.
-      operationId: createMockAchAccount
-      tags:
-      - ACH
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MockAchAccountCreationRequest'
-      responses:
-        '201':
-          description: Successfully created a mock ach payment.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: CreateMockAchAccountResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/MockAchAccountResponse'
-              examples:
-                response:
-                  value:
-                    data:
-                      processorToken: processor-sandbox-circle-82cf95bb-43f8-4191-8d30-2c9f42853621
-                      balance:
-                        amount: '3.14'
-                        currency: USD
-                      account:
-                        accountNumber: '123456789'
-                        routingNumber: 011000028
-                        description: My ACH account
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-  /v1/banks/sepa:
-    post:
-      security:
-      - bearerAuth: []
-      summary: Create a SEPA bank account
-      operationId: createSepaAccount
-      tags:
-      - SEPA
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SepaCreationRequest'
-      responses:
-        '201':
-          description: Successfully created a bank account for SEPA transfers.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: CreateSepaAccountResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Sepa'
-              examples:
-                response:
-                  value:
-                    data:
-                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      status: pending
-                      description: Bank of Ireland ****0010
-                      trackingRef: CIR13FB13A
-                      fingerprint: eb170539-9e1c-4e92-bf4f-1d09534fdca2
-                      riskEvaluation:
-                        decision: approved
-                        reason: '3000'
-                      billingDetails:
-                        name: Satoshi Nakamoto
-                        city: Boston
-                        country: US
-                        line1: 100 Money Street
-                        line2: Suite 1
-                        district: MA
-                        postalCode: '01234'
-                      createDate: '2020-04-10T02:13:30.000Z'
-                      updateDate: '2020-04-10T02:13:30.000Z'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-  /v1/banks/sepa/{id}:
-    get:
-      parameters:
-      - $ref: '#/components/parameters/IdPath'
-      security:
-      - bearerAuth: []
-      summary: Get a SEPA bank account
-      operationId: getSepaAccount
-      tags:
-      - SEPA
-      responses:
-        '200':
-          description: Successfully retrieved a bank account for SEPA transfers.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: GetSepaAccountResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Sepa'
-              examples:
-                response:
-                  value:
-                    data:
-                      id: b8627ae8-732b-4d25-b947-1df8f4007a29
-                      status: pending
-                      description: Bank of Ireland ****0010
-                      trackingRef: CIR13FB13A
-                      fingerprint: eb170539-9e1c-4e92-bf4f-1d09534fdca2
-                      riskEvaluation:
-                        decision: approved
-                        reason: '3000'
-                      billingDetails:
-                        name: Satoshi Nakamoto
-                        city: Boston
-                        country: US
-                        line1: 100 Money Street
-                        line2: Suite 1
-                        district: MA
-                        postalCode: '01234'
-                      createDate: '2020-04-10T02:13:30.000Z'
-                      updateDate: '2020-04-10T02:13:30.000Z'
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /v1/banks/sepa/{id}/instructions:
-    get:
-      parameters:
-      - $ref: '#/components/parameters/IdPath'
-      security:
-      - bearerAuth: []
-      summary: Get SEPA instructions
-      description: Get the SEPA transfer instructions into the Circle bank account
-        given your bank account id.
-      operationId: getSepaAccountInstructions
-      tags:
-      - SEPA
-      responses:
-        '200':
-          description: Successfully retrieved SEPA transfer instructions for the bank
-            account.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: GetSepaAccountInstructionsResponse
-                properties:
-                  data:
-                    $ref: '#/components/schemas/SepaInstruction'
-              examples:
-                response:
-                  value:
-                    data:
-                      trackingRef: CIR13FB13A
-                      beneficiary:
-                        name: CIRCLE INTERNET FINANCIAL INC
-                        address1: 99 HIGH STREET
-                        address2: BOSTON MA 02110
-                      beneficiaryBank:
-                        name: LHV Bank
-                        bic: LHVBEE22XXX
-                        iban: '****6789'
-                        address: Tartu mnt 2, 10145 Tallinn
-                        city: Tallinn
-                        postalCode: '10017'
-                        country: EE
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
   /v1/settlements:
     get:
       security:
@@ -2568,60 +1992,6 @@ paths:
           $ref: '#/components/responses/NotFound'
         '409':
           $ref: '#/components/responses/Conflict'
-  /v1/reversals:
-    get:
-      security:
-      - bearerAuth: []
-      parameters:
-      - $ref: '#/components/parameters/PaymentStatus'
-      - $ref: '#/components/parameters/From'
-      - $ref: '#/components/parameters/To'
-      - $ref: '#/components/parameters/PageBefore'
-      - $ref: '#/components/parameters/PageAfter'
-      - $ref: '#/components/parameters/PageSize'
-      summary: List all ACH payment reversals.
-      description: Retrieve a list of ACH payment reversals. Results will be sorted
-        by create date descending; more recent reversals will be at the beginning
-        of the list
-      operationId: listReversals
-      tags:
-      - Reversals
-      responses:
-        '200':
-          description: Successfully retrieved a list of ACH payment reversals.
-          headers:
-            X-Request-Id:
-              $ref: '#/components/headers/XRequestId'
-          content:
-            application/json:
-              schema:
-                title: ListReversalsResponse
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Reversal'
-              examples:
-                response:
-                  value:
-                    data:
-                    - id: key1
-                      paymentId: fc988ed5-c129-4f70-a064-e5beb7eb8e32
-                      amount:
-                        amount: '3.14'
-                        currency: USD
-                      description: Merchant Payment Reversal
-                      status: pending
-                      reason: duplicate
-                      fees:
-                        amount: '3.14'
-                        currency: USD
-                      createDate: '2020-04-10T02:13:30.000Z'
-                      updateDate: '2020-04-10T02:13:30.000Z'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/NotAuthorized'
   /v1/balances:
     get:
       security:
@@ -2917,9 +2287,6 @@ components:
           type: string
           enum:
           - card
-          - wire
-          - ach
-          - sepa
     PaymentStatus:
       name: status
       description: Queries items with the specified status. Matches any status if
@@ -3581,7 +2948,6 @@ components:
           description: Type of the source.
           enum:
           - card
-          - ach
     PaymentCreationRequest:
       type: object
       required:
@@ -4338,87 +3704,6 @@ components:
           description: Network fee quote uuid which is returned from the /presign
             response. Only required when end user pays for gas fee
           example: c6ac001e-9812-4bc1-8dc3-1549b5adaa23
-    MockWirePaymentBeneficiaryBankInstruction:
-      type: object
-      required:
-      - accountNumber
-      properties:
-        accountNumber:
-          type: string
-          description: Virtual account number or Circle corporate Silvergate Wire
-            account number that needs to be set as destination.
-          example: '11111111'
-    MockWirePaymentRequest:
-      type: object
-      required:
-      - trackingRef
-      - amount
-      - beneficiaryBank
-      properties:
-        trackingRef:
-          type: string
-          description: Wire tracking reference that needs to be set in the wire reference
-            to beneficiary field. This field is retrievable through the response during
-            wire creation or via the bank instruction endpoint.
-          example: CIR13FB13A
-        amount:
-          $ref: '#/components/schemas/FiatMoneyUsd'
-        beneficiaryBank:
-          $ref: '#/components/schemas/MockWirePaymentBeneficiaryBankInstruction'
-    MockWirePaymentResponse:
-      type: object
-      properties:
-        trackingRef:
-          type: string
-          description: Wire tracking reference that needs to be set in the wire reference
-            to beneficiary field. This field is retrievable through the response during
-            wire creation or via the bank instruction endpoint.
-          example: CIR13FB13A
-        amount:
-          $ref: '#/components/schemas/FiatMoneyUsd'
-        beneficiaryBank:
-          $ref: '#/components/schemas/MockWirePaymentBeneficiaryBankInstruction'
-        status:
-          type: string
-          description: Enumerated status of the wire payment. Status `pending` indicates
-            that the wire payment is in process; `processed` indicates it finished
-            successfully; `failed` indicates it failed.
-          enum:
-          - pending
-          - processed
-          - failed
-    MockSepaPaymentRequest:
-      type: object
-      required:
-      - trackingRef
-      - amount
-      properties:
-        trackingRef:
-          type: string
-          description: SEPA tracking reference that needs to be set in the payment
-            details or description.
-          example: CIR13FB13A
-        amount:
-          $ref: '#/components/schemas/FiatMoneyUsd'
-    MockSepaPaymentResponse:
-      type: object
-      properties:
-        trackingRef:
-          type: string
-          description: SEPA tracking reference that needs to be set in the payment
-            details or description.
-          example: CIR13FB13A
-        amount:
-          $ref: '#/components/schemas/FiatMoneyUsd'
-        status:
-          type: string
-          description: Enumerated status of the SEPA payment. Status `pending` indicates
-            that the SEPA payment is in process; `processed` indicates it finished
-            successfully; `failed` indicates it failed.
-          enum:
-          - pending
-          - processed
-          - failed
     PaymentMethodBlockchain:
       type: object
       required:
@@ -5253,611 +4538,6 @@ components:
           $ref: '#/components/schemas/UtcTimestamp'
         updateDate:
           $ref: '#/components/schemas/UtcTimestamp'
-    BankAddress:
-      type: object
-      description: The address details for the bank, as provided during bank account
-        creation.
-      required:
-      - country
-      properties:
-        bankName:
-          type: string
-          description: Name of the bank. This property is required for bank accounts
-            outside of the US that do not support IBAN'
-          maxLength: 35
-          example: SAN FRANCISCO
-        city:
-          type: string
-          description: City portion of the address. This property is required for
-            bank accounts outside of the US.
-          maxLength: 35
-          example: SAN FRANCISCO
-        country:
-          type: string
-          description: Country portion of the address. Formatted as a two-letter country
-            code specified in ISO 3166-1 alpha-2.
-          maxLength: 2
-          example: US
-        line1:
-          type: string
-          description: Line one of the street address.
-          maxLength: 35
-          example: 100 Money Street
-        line2:
-          type: string
-          description: Line two of the street address.
-          maxLength: 35
-          example: Suite 1
-        district:
-          type: string
-          description: State / County / Province / Region portion of the address.
-            US and Canada use the two-letter code for the subdivision.
-          maxLength: 16
-          example: CA
-    WireCreationRequestUs:
-      type: object
-      title: US Bank Account
-      description: Relevant fields for U.S. bank accounts.
-      required:
-      - idempotencyKey
-      - accountNumber
-      - routingNumber
-      - billingDetails
-      - bankAddress
-      properties:
-        idempotencyKey:
-          $ref: '#/components/schemas/IdempotencyKey'
-        accountNumber:
-          description: Account number that identifies the bank account.
-          type: string
-          example: '12340010'
-          minLength: 6
-          maxLength: 35
-        routingNumber:
-          description: ABA routing number for the bank account. Note this has to be
-            specific for bank wire transfers.
-          type: string
-          example: '121000248'
-        billingDetails:
-          $ref: '#/components/schemas/BillingDetails'
-        bankAddress:
-          $ref: '#/components/schemas/BankAddress'
-    BankAddressIbanSupported:
-      type: object
-      description: The address of the bank. City and country fields are required.
-      required:
-      - city
-      - country
-      properties:
-        bankName:
-          type: string
-          description: Name of the bank. This property is required for bank accounts
-            outside of the US that do not support IBAN'
-          maxLength: 35
-          example: SAN FRANCISCO
-        city:
-          type: string
-          description: City portion of the address. This property is required for
-            bank accounts outside of the US.
-          maxLength: 1024
-          example: SAN FRANCISCO
-        country:
-          type: string
-          description: Country portion of the address. Formatted as a two-letter country
-            code specified in ISO 3166-1 alpha-2.
-          maxLength: 2
-          example: US
-        line1:
-          type: string
-          description: Line one of the street address.
-          maxLength: 35
-          example: 100 Money Street
-        line2:
-          type: string
-          description: Line two of the street address.
-          maxLength: 35
-          example: Suite 1
-        district:
-          type: string
-          description: State / County / Province / Region portion of the address.
-            US and Canada use the two-letter code for the subdivision.
-          maxLength: 16
-          example: CA
-    WireCreationRequestIban:
-      type: object
-      title: Non US Bank Account - IBAN Supported
-      description: Relevant fields for non-U.S. bank accounts that support IBAN.
-      required:
-      - idempotencyKey
-      - iban
-      - billingDetails
-      - bankAddress
-      properties:
-        idempotencyKey:
-          $ref: '#/components/schemas/IdempotencyKey'
-        iban:
-          description: International Bank Account Number (IBAN) for the bank account.
-          type: string
-          example: DE31100400480532013000
-        billingDetails:
-          $ref: '#/components/schemas/BillingDetails'
-        bankAddress:
-          $ref: '#/components/schemas/BankAddressIbanSupported'
-    BankAddressNonIban:
-      type: object
-      description: The address of the bank. BankName, City and Country fields are
-        required.
-      required:
-      - bankName
-      - city
-      - country
-      properties:
-        bankName:
-          type: string
-          description: Name of the bank. This property is required for bank accounts
-            outside of the US that do not support IBAN'
-          maxLength: 35
-          example: SAN FRANCISCO
-        city:
-          type: string
-          description: City portion of the address. This property is required for
-            bank accounts outside of the US.
-          maxLength: 1024
-          example: SAN FRANCISCO
-        country:
-          type: string
-          description: Country portion of the address. Formatted as a two-letter country
-            code specified in ISO 3166-1 alpha-2.
-          maxLength: 2
-          example: US
-        line1:
-          type: string
-          description: Line one of the street address.
-          maxLength: 35
-          example: 100 Money Street
-        line2:
-          type: string
-          description: Line two of the street address.
-          maxLength: 35
-          example: Suite 1
-        district:
-          type: string
-          description: State / County / Province / Region portion of the address.
-            US and Canada use the two-letter code for the subdivision.
-          maxLength: 16
-          example: CA
-    WireCreationRequestAccountNumber:
-      type: object
-      title: Non US Bank Account - IBAN Not Supported
-      description: Relevant fields for non-U.S. banks that do NOT support IBAN.
-      required:
-      - idempotencyKey
-      - accountNumber
-      - routingNumber
-      - billingDetails
-      - bankAddress
-      properties:
-        idempotencyKey:
-          $ref: '#/components/schemas/IdempotencyKey'
-        accountNumber:
-          description: Account number that identifies the bank account.
-          type: string
-          example: 0321800123
-          minLength: 6
-          maxLength: 35
-        routingNumber:
-          description: The bank's SWIFT / BIC code.
-          type: string
-          example: SBININBB354
-        billingDetails:
-          $ref: '#/components/schemas/BillingDetails'
-        bankAddress:
-          $ref: '#/components/schemas/BankAddressNonIban'
-    WireCreationRequest:
-      type: object
-      description: Request object used to create a bank account (wires). Different
-        fields are required depending on the bank country, see the guide documentation
-        for the list of supported bank countries along with which ones support IBAN.
-      oneOf:
-      - $ref: '#/components/schemas/WireCreationRequestUs'
-      - $ref: '#/components/schemas/WireCreationRequestIban'
-      - $ref: '#/components/schemas/WireCreationRequestAccountNumber'
-    Wire:
-      type: object
-      required:
-      - id
-      - status
-      - description
-      - trackingRef
-      - fingerprint
-      - billingDetails
-      - createDate
-      - updateDate
-      properties:
-        id:
-          $ref: '#/components/schemas/Id'
-        status:
-          $ref: '#/components/schemas/ExternalFiatAccountStatus'
-        description:
-          type: string
-          description: Bank name plus last four digits of the bank account number
-            or IBAN.
-          example: WELLS FARGO BANK, NA ****0010
-        trackingRef:
-          type: string
-          description: Wire tracking ref that needs to be set in the wire reference
-            to beneficiary field.
-          example: CIR13FB13A
-        fingerprint:
-          $ref: '#/components/schemas/Fingerprint'
-        billingDetails:
-          $ref: '#/components/schemas/BillingDetails'
-        bankAddress:
-          $ref: '#/components/schemas/BankAddress'
-        createDate:
-          $ref: '#/components/schemas/UtcTimestamp'
-        updateDate:
-          $ref: '#/components/schemas/UtcTimestamp'
-    WireInstructionBeneficiary:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the beneficiary.
-          example: CIRCLE INTERNET FINANCIAL INC
-        address1:
-          type: string
-          description: Address line 1 of the beneficiary's address.
-          example: 99 HIGH STREET
-        address2:
-          type: string
-          description: Address line 2 of the beneficiary's address.
-          example: BOSTON MA 02110
-    WireInstructionBeneficiaryBank:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the beneficiary's bank.
-          example: SILVERGATE BANK
-        swiftCode:
-          type: string
-          description: SWIFT code of the beneficiary's bank account.
-          example: SIVGUS66XXX
-        routingNumber:
-          type: string
-          description: ABA Routing number of the beneficiary's bank account.
-          example: '322286803'
-        accountNumber:
-          type: string
-          description: Account number of the beneficiary's bank account.
-          example: '****7427'
-        currency:
-          type: string
-          description: Currency of the beneficiary's bank account.
-          example: USD
-        address:
-          type: string
-          description: Address of the beneficiary's bank.
-          example: 4250 EXECUTIVE SQUARE SUITE 300
-        city:
-          type: string
-          description: City of the beneficiary's bank.
-          example: LA JOLLA
-        postalCode:
-          type: string
-          description: Postal code of the beneficiary's bank.
-          example: '02110'
-        country:
-          type: string
-          description: Country code of the beneficiary's bank. Formatted as a two-letter
-            country code specified in ISO 3166-1 alpha-2.
-          example: US
-    WireInstruction:
-      type: object
-      properties:
-        trackingRef:
-          type: string
-          description: Circle tracking reference that needs to be set in the wire
-            reference field.
-          example: CIR13FB13A
-        beneficiary:
-          $ref: '#/components/schemas/WireInstructionBeneficiary'
-        beneficiaryBank:
-          $ref: '#/components/schemas/WireInstructionBeneficiaryBank'
-    AchBillingDetails:
-      type: object
-      description: Billing details of the account holder.
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: Full name of the card or bank account holder.
-          maxLength: 1024
-          example: Satoshi Nakamoto
-        city:
-          type: string
-          description: City portion of the address.
-          maxLength: 1024
-          example: Boston
-        country:
-          type: string
-          description: Country portion of the address. Formatted as a two-letter country
-            code specified in ISO 3166-1 alpha-2.
-          maxLength: 2
-          example: US
-        line1:
-          type: string
-          description: Line one of the street address.
-          maxLength: 1024
-          example: 100 Money Street
-        line2:
-          type: string
-          description: Line two of the street address.
-          maxLength: 1024
-          example: Suite 1
-        district:
-          type: string
-          description: State / County / Province / Region portion of the address.
-            If the country is US or Canada, then district is required and should use
-            the two-letter code for the subdivision.
-          maxLength: 16
-          example: MA
-        postalCode:
-          type: string
-          description: Postal / ZIP code of the address.
-          maxLength: 16
-          example: '01234'
-    AchAccountType:
-      type: string
-      description: Retail account (individual consumer account) or Business account
-        (e.g. sole prop, LLC, corporation).
-      nullable: true
-      enum:
-      - retail
-      - business
-    AchCreationRequest:
-      type: object
-      required:
-      - idempotencyKey
-      - plaidProcessorToken
-      - billingDetails
-      - metadata
-      properties:
-        idempotencyKey:
-          $ref: '#/components/schemas/IdempotencyKey'
-        plaidProcessorToken:
-          type: string
-          description: The token for the ACH account provided by the processor (Plaid).
-          example: processor-sandbox-circle-82cf95bb-43f8-4191-8d30-2c9f42853621
-        billingDetails:
-          $ref: '#/components/schemas/AchBillingDetails'
-        bankAccountType:
-          $ref: '#/components/schemas/AchAccountType'
-        metadata:
-          $ref: '#/components/schemas/MetadataCardAndAch'
-    AccountNumberMasked:
-      type: string
-      description: The redacted account number of the ACH account.
-      example: '****6789'
-    RoutingNumber:
-      type: string
-      description: The routing number of the ACH account.
-      example: '613334455'
-    AchVerificationErrorCodes:
-      type: string
-      description: Indicates the failure reason of the ACH account. Only present on
-        failed accounts. Possible values are [bank_account_authorization_expired,
-        bank_account_error, bank_account_ineligible, bank_account_not_found, bank_account_unauthorized,
-        unsupported_routing_number, verification_failed].
-      nullable: true
-      enum:
-      - bank_account_authorization_expired
-      - bank_account_error
-      - bank_account_ineligible
-      - bank_account_not_found
-      - bank_account_unauthorized
-      - unsupported_routing_number
-      - verification_failed
-    Ach:
-      type: object
-      required:
-      - id
-      - accountNumber
-      - routingNumber
-      - description
-      - billingDetails
-      - bankAddress
-      - fingerprint
-      - metadata
-      - createDate
-      - updateDate
-      properties:
-        id:
-          $ref: '#/components/schemas/Id'
-        status:
-          $ref: '#/components/schemas/ExternalFiatAccountStatus'
-        accountNumber:
-          $ref: '#/components/schemas/AccountNumberMasked'
-        routingNumber:
-          $ref: '#/components/schemas/RoutingNumber'
-        billingDetails:
-          $ref: '#/components/schemas/AchBillingDetails'
-        bankAccountType:
-          $ref: '#/components/schemas/AchAccountType'
-        bankAddress:
-          $ref: '#/components/schemas/BankAddress'
-        fingerprint:
-          $ref: '#/components/schemas/Fingerprint'
-        errorCode:
-          $ref: '#/components/schemas/AchVerificationErrorCodes'
-        riskEvaluation:
-          $ref: '#/components/schemas/RiskEvaluation'
-        createDate:
-          $ref: '#/components/schemas/UtcTimestamp'
-        updateDate:
-          $ref: '#/components/schemas/UtcTimestamp'
-        metadata:
-          $ref: '#/components/schemas/MetadataPhoneEmail'
-    MockAchAccount:
-      type: object
-      required:
-      - accountNumber
-      - routingNumber
-      - description
-      properties:
-        accountNumber:
-          type: string
-          description: The account number of the ACH account.
-          example: '123456789'
-        routingNumber:
-          type: string
-          description: 'The routing number of the ACH account.
-
-
-            For sandbox testing, valid routing numbers include `011000028`, `011201762`,
-            `011500120`, `021214862`, `121000248`, `121140399`, `211073473`, `221172610`,
-            and `011000138`.
-
-            '
-          example: 011000028
-        description:
-          type: string
-          description: A description for the ACH account.
-          example: My ACH account
-    MockAchAccountCreationRequest:
-      type: object
-      required:
-      - account
-      - balance
-      properties:
-        account:
-          $ref: '#/components/schemas/MockAchAccount'
-        balance:
-          $ref: '#/components/schemas/FiatMoneyUsd'
-    MockAchAccountResponse:
-      type: object
-      properties:
-        processorToken:
-          type: string
-          description: The processor token needs to be provided when linking an ACH
-            account against this mock.
-          example: processor-sandbox-circle-82cf95bb-43f8-4191-8d30-2c9f42853621
-        balance:
-          $ref: '#/components/schemas/FiatMoneyUsd'
-        account:
-          $ref: '#/components/schemas/MockAchAccount'
-    SepaCreationRequest:
-      type: object
-      required:
-      - idempotencyKey
-      - accountName
-      - iban
-      - billingDetails
-      properties:
-        idempotencyKey:
-          $ref: '#/components/schemas/IdempotencyKey'
-        iban:
-          type: string
-          description: International Bank Account Number (IBAN) for the bank account.
-          example: DE31100400480532013000
-        billingDetails:
-          $ref: '#/components/schemas/BillingDetails'
-    Sepa:
-      type: object
-      required:
-      - id
-      - status
-      - description
-      - trackingRef
-      - fingerprint
-      - billingDetails
-      - createDate
-      - updateDate
-      properties:
-        id:
-          $ref: '#/components/schemas/Id'
-        status:
-          $ref: '#/components/schemas/ExternalFiatAccountStatus'
-        description:
-          type: string
-          description: Bank name plus last four digits of the IBAN.
-          example: Bank of Ireland ****0010
-        trackingRef:
-          type: string
-          description: Tracking reference that needs to be set in the payment details
-            or description.
-          example: CIR13FB13A
-        fingerprint:
-          $ref: '#/components/schemas/Fingerprint'
-        riskEvaluation:
-          $ref: '#/components/schemas/RiskEvaluation'
-        billingDetails:
-          $ref: '#/components/schemas/BillingDetails'
-        createDate:
-          $ref: '#/components/schemas/UtcTimestamp'
-        updateDate:
-          $ref: '#/components/schemas/UtcTimestamp'
-    SepaInstructionBeneficiary:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the beneficiary.
-          example: CIRCLE INTERNET FINANCIAL INC
-        address1:
-          type: string
-          description: Address line 1 of the beneficiary's address.
-          example: 99 HIGH STREET
-        address2:
-          type: string
-          description: Address line 2 of the beneficiary's address.
-          example: BOSTON MA 02110
-    SepaInstructionBeneficiaryBank:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the beneficiary's bank.
-          example: LHV Bank
-        bic:
-          type: string
-          description: BIC code of the beneficiary's bank account.
-          example: LHVBEE22XXX
-        iban:
-          description: IBAN of the beneficiary's bank account.
-          type: string
-          example: '****6789'
-        address:
-          description: Address of the beneficiary's bank.
-          type: string
-          example: Tartu mnt 2, 10145 Tallinn
-        city:
-          description: City of the beneficiary's bank.
-          type: string
-          example: Tallinn
-        postalCode:
-          description: Postal code of the beneficiary's bank.
-          type: string
-          example: '10017'
-        country:
-          description: Country code of the beneficiary's bank. Formatted as a two-letter
-            country code specified in ISO 3166-1 alpha-2.
-          type: string
-          example: EE
-    SepaInstruction:
-      type: object
-      properties:
-        trackingRef:
-          type: string
-          description: Circle tracking reference that needs to be set in the SEPA
-            transfer reference field.
-          example: CIR13FB13A
-        beneficiary:
-          $ref: '#/components/schemas/SepaInstructionBeneficiary'
-        beneficiaryBank:
-          $ref: '#/components/schemas/SepaInstructionBeneficiaryBank'
     Settlement:
       type: object
       properties:
@@ -6015,39 +4695,6 @@ components:
     MockChargeback:
       type: object
       properties: {}
-    Reversal:
-      type: object
-      required:
-      - id
-      - paymentId
-      - amount
-      - description
-      - status
-      - reason
-      - fees
-      - createDate
-      - updateDate
-      properties:
-        id:
-          $ref: '#/components/schemas/IdKey'
-        paymentId:
-          $ref: '#/components/schemas/IdPayment'
-        amount:
-          $ref: '#/components/schemas/FiatMoneyUsd'
-        description:
-          type: string
-          description: Enumerated description of the payment.
-          example: Merchant Payment Reversal
-        status:
-          $ref: '#/components/schemas/CancelRefundReversalStatus'
-        reason:
-          $ref: '#/components/schemas/ReversalReason'
-        fees:
-          $ref: '#/components/schemas/FiatMoneyUsd'
-        createDate:
-          $ref: '#/components/schemas/UtcTimestamp'
-        updateDate:
-          $ref: '#/components/schemas/UtcTimestamp'
     Money:
       type: object
       required:
