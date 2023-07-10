@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/circlefin/openapi-internal/compare/v2.0.0...v2.0.1) (2023-07-10)
+
+
+### Fixes
+
+* remove misplaced required idempotency key fields 
+
 ## [2.0.0](https://github.com/circlefin/openapi-internal/compare/v1.8.0...v2.0.0) (2023-04-25)
 
 

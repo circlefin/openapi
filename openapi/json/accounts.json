@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "2.0.0",
+    "version": "2.0.1",
     "title": "Accounts API",
     "description": "The Accounts API allows you to easily create and host digital wallets for your customers, and manage transfers of funds across accounts- whether they are within the Circle platform, or in / out of the platform via on-chain USDC, EUROC, BTC, and ETH connectivity."
   },

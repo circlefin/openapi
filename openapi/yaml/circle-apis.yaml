@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 2.0.0
+  version: 2.0.1
   title: All Circle APIs
   description: Circle's General, Core Functionality, Payments, Payouts, Accounts,
     and Crypto Payments APIs bundled into one OpenAPI Specification.
@@ -6081,7 +6081,6 @@ components:
     PaymentIntent:
       type: object
       required:
-      - idempotencyKey
       - amount
       - settlementCurrency
       - paymentMethods
@@ -6142,7 +6141,6 @@ components:
     ContinuousPaymentIntent:
       type: object
       required:
-      - idempotencyKey
       - currency
       - settlementCurrency
       - paymentMethods
