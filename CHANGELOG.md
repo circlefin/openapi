@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/circlefin/openapi-internal/compare/v2.0.1...v2.1.0) (2023-07-17)
+
+
+### New Features
+
+* [BANK-713] Add billing details to Update a card page 
+
 ## [2.0.1](https://github.com/circlefin/openapi-internal/compare/v2.0.0...v2.0.1) (2023-07-10)
 
 
