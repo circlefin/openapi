@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/circlefin/openapi-internal/compare/v2.1.0...v2.2.0) (2023-09-05)
+
+
+### New Features
+
+* Enable ARB, OP and BASE chains 
+
 ## [2.1.0](https://github.com/circlefin/openapi-internal/compare/v2.0.1...v2.1.0) (2023-07-17)
 
 

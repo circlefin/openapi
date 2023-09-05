@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 2.1.0
+  version: 2.2.0
   title: API Overview
   description: Common endpoints shared across all Circle APIs.
 tags:
@@ -395,12 +395,15 @@ components:
       description: A blockchain that a given currency is available on.
       enum:
       - ALGO
+      - ARB
       - AVAX
+      - BASE
       - BTC
       - ETH
       - FLOW
       - HBAR
       - MATIC
+      - OP
       - SOL
       - TRX
       - XLM

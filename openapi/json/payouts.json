@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "2.1.0",
+    "version": "2.2.0",
     "title": "Payouts API",
     "description": "The Circle Payouts API allows you to programmatically make fast, global payouts to your customers, vendors, and suppliers. Make payouts on supported blockchains."
   },
@@ -1175,12 +1175,15 @@
         "description": "A blockchain that a given currency is available on.",
         "enum": [
           "ALGO",
+          "ARB",
           "AVAX",
+          "BASE",
           "BTC",
           "ETH",
           "FLOW",
           "HBAR",
           "MATIC",
+          "OP",
           "SOL",
           "TRX",
           "XLM"
@@ -1330,12 +1333,15 @@
           "type": "string",
           "enum": [
             "ALGO",
+            "ARB",
             "AVAX",
+            "BASE",
             "BTC",
             "ETH",
             "FLOW",
             "HBAR",
             "MATIC",
+            "OP",
             "SOL",
             "TRX",
             "XLM"
