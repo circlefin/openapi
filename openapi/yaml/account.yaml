@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 2.2.0
+  version: 2.3.0
   title: Core Functionality
   description: 'All of Circle''s APIs share a common set of core functionality that
     lets you manage your Circle Account in a programmatic way.
@@ -1977,6 +1977,7 @@ components:
       - FLOW
       - HBAR
       - MATIC
+      - NOBLE
       - OP
       - SOL
       - TRX
