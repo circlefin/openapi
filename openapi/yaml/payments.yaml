@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 2.3.0
+  version: 2.4.0
   title: Payments API
   description: 'The Circle Payments API allows you to take payments from your end
     users via traditional methods such as debit & credit cards and receive settlement
@@ -2699,6 +2699,7 @@ components:
       - FLOW
       - HBAR
       - MATIC
+      - NEAR
       - NOBLE
       - OP
       - SOL
