@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 2.4.0
+  version: 2.5.0
   title: API Overview
   description: Common endpoints shared across all Circle APIs.
 tags:
@@ -406,6 +406,7 @@ components:
       - NEAR
       - NOBLE
       - OP
+      - PAH
       - SOL
       - TRX
       - XLM

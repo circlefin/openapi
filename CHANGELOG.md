@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.5.0](https://github.com/circlefin/openapi-internal/compare/v2.4.0...v2.5.0) (2023-09-19)
+
+### New Features
+
+* add PAH to Chain.yaml 
+
 ## [2.4.0](https://github.com/circlefin/openapi-internal/compare/v2.3.0...v2.4.0) (2023-09-14)
 
 
