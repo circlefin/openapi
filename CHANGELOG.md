@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.0](https://github.com/circlefin/openapi-internal/compare/v2.5.0...v2.6.0) (2023-10-10)
+
+
+### New Features
+
+* add POLY Chain option 
+
 ## [2.5.0](https://github.com/circlefin/openapi-internal/compare/v2.4.0...v2.5.0) (2023-09-19)
 
 ### New Features

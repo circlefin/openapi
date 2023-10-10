@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "2.5.0",
+    "version": "2.6.0",
     "title": "API Overview",
     "description": "Common endpoints shared across all Circle APIs."
   },
@@ -609,6 +609,7 @@
           "NOBLE",
           "OP",
           "PAH",
+          "POLY",
           "SOL",
           "TRX",
           "XLM"
