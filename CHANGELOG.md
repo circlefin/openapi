@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.1](https://github.com/circlefin/openapi-internal/compare/v2.6.0...v2.6.1) (2023-10-16)
+
+
+### Fixes
+
+* docs updates for Circle Mint Singapore launch, travel rule 
+
 ## [2.6.0](https://github.com/circlefin/openapi-internal/compare/v2.5.0...v2.6.0) (2023-10-10)
 
 

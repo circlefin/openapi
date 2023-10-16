@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 2.6.0
+  version: 2.6.1
   title: Accounts API
   description: The Accounts API allows you to easily create and host digital wallets
     for your customers, and manage transfers of funds across accounts- whether they
@@ -1004,7 +1004,9 @@ components:
         status:
           description: Status of the transfer. Status `pending` indicates that the
             transfer is in the process of running; `complete` indicates it finished
-            successfully; `failed` indicates it failed.
+            successfully; `failed` indicates it failed. Circle Mint Singapore customers
+            may have transfers in the `pending` status if the recipient addresses
+            are not verified.
           type: string
           enum:
           - pending
