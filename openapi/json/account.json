@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "2.6.1",
+    "version": "2.6.2",
     "title": "Core Functionality",
     "description": "All of Circle's APIs share a common set of core functionality that lets you manage your Circle Account in a programmatic way.\n\nWith a Circle Account your business can deposit traditional money from 80+ countries and seamlessly convert them into \"digital currency dollars\": USDC. You can then use USDC for everyday payments and treasury flows.\n"
   },

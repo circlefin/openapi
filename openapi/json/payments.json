@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "2.6.1",
+    "version": "2.6.2",
     "title": "Payments API",
     "description": "The Circle Payments API allows you to take payments from your end users via traditional methods such as debit & credit cards and receive settlement in USDC.\n\nThe Circle Payments API has been designed with any business or internet commerce in mind, not just crypto applications, and it's based on Circle's extensive experience processing millions of card payments since 2014.\n"
   },
@@ -5527,6 +5527,9 @@
             "type": "string",
             "description": "The blockchain address.",
             "example": "0x8381470ED67C3802402dbbFa0058E8871F017A6F"
+          },
+          "addressTag": {
+            "$ref": "#/components/schemas/AddressTag"
           },
           "chain": {
             "$ref": "#/components/schemas/Chain"

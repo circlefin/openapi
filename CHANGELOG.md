@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.2](https://github.com/circlefin/openapi-internal/compare/v2.6.1...v2.6.2) (2023-11-20)
+
+
+### Fixes
+
+* Add addressTag to crypto refund destination 
+
 ## [2.6.1](https://github.com/circlefin/openapi-internal/compare/v2.6.0...v2.6.1) (2023-10-16)
 
 
