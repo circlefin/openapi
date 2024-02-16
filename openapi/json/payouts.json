@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "2.6.2",
+    "version": "2.7.0",
     "title": "Payouts API",
     "description": "The Circle Payouts API allows you to programmatically make fast, global payouts to your customers, vendors, and suppliers. Make payouts on supported blockchains."
   },
@@ -1182,7 +1182,6 @@
           "ETH",
           "FLOW",
           "HBAR",
-          "MATIC",
           "NEAR",
           "NOBLE",
           "OP",
@@ -1344,7 +1343,6 @@
             "ETH",
             "FLOW",
             "HBAR",
-            "MATIC",
             "NEAR",
             "NOBLE",
             "OP",

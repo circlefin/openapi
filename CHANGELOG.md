@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.0](https://github.com/circlefin/openapi-internal/compare/v2.6.2...v2.7.0) (2024-02-16)
+
+
+### New Features
+
+* remove MATIC Chain option 
+
 ## [2.6.2](https://github.com/circlefin/openapi-internal/compare/v2.6.1...v2.6.2) (2023-11-20)
 
 
