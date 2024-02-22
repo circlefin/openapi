@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "2.7.0",
+    "version": "2.7.1",
     "title": "All Circle APIs",
     "description": "Circle's General, Core Functionality, Payments, Payouts, Accounts, and Crypto Payments APIs bundled into one OpenAPI Specification."
   },
@@ -7266,6 +7266,7 @@
           "AVAX",
           "BASE",
           "BTC",
+          "CELO",
           "ETH",
           "FLOW",
           "HBAR",
@@ -12536,6 +12537,7 @@
             "AVAX",
             "BASE",
             "BTC",
+            "CELO",
             "ETH",
             "FLOW",
             "HBAR",

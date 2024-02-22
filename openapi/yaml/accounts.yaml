@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 2.7.0
+  version: 2.7.1
   title: Accounts API
   description: The Accounts API allows you to easily create and host digital wallets
     for your customers, and manage transfers of funds across accounts- whether they
@@ -735,6 +735,7 @@ components:
       - AVAX
       - BASE
       - BTC
+      - CELO
       - ETH
       - FLOW
       - HBAR

@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 2.7.0
+  version: 2.7.1
   title: All Circle APIs
   description: Circle's General, Core Functionality, Payments, Payouts, Accounts,
     and Crypto Payments APIs bundled into one OpenAPI Specification.
@@ -4763,6 +4763,7 @@ components:
       - AVAX
       - BASE
       - BTC
+      - CELO
       - ETH
       - FLOW
       - HBAR
@@ -8917,6 +8918,7 @@ components:
         - AVAX
         - BASE
         - BTC
+        - CELO
         - ETH
         - FLOW
         - HBAR

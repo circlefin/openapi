@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.1](https://github.com/circlefin/openapi-internal/compare/v2.7.0...v2.7.1) (2024-02-22)
+
+
+### Fixes
+
+* add CELO Chain option 
+
 ## [2.7.0](https://github.com/circlefin/openapi-internal/compare/v2.6.2...v2.7.0) (2024-02-16)
 
 

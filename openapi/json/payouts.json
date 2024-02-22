@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "2.7.0",
+    "version": "2.7.1",
     "title": "Payouts API",
     "description": "The Circle Payouts API allows you to programmatically make fast, global payouts to your customers, vendors, and suppliers. Make payouts on supported blockchains."
   },
@@ -1179,6 +1179,7 @@
           "AVAX",
           "BASE",
           "BTC",
+          "CELO",
           "ETH",
           "FLOW",
           "HBAR",
@@ -1340,6 +1341,7 @@
             "AVAX",
             "BASE",
             "BTC",
+            "CELO",
             "ETH",
             "FLOW",
             "HBAR",
