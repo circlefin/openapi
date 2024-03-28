@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.0](https://github.com/circlefin/openapi-internal/compare/v2.8.0...v2.9.0) (2024-03-28)
+
+
+### New Features
+
+* add status property to GET /recipient API endpoint 
+
 ## [2.8.0](https://github.com/circlefin/openapi-internal/compare/v2.7.1...v2.8.0) (2024-03-11)
 
 

@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 2.8.0
+  version: 2.9.0
   title: Core Functionality
   description: 'All of Circle''s APIs share a common set of core functionality that
     lets you manage your Circle Account in a programmatic way.
@@ -1013,6 +1013,7 @@ paths:
                       chain: ALGO
                       currency: USD
                       description: My USDC address at a cryptocurrency exchange
+                      status: active
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1028,8 +1029,8 @@ paths:
       - $ref: '#/components/parameters/PageSize'
       summary: List all recipient addresses
       description: 'Returns a list of recipient addresses that have each been verified
-        and are eligible for transfers. Any recipient addresses pending verification
-        are not included in the response.
+        and are eligible for transfers. Any recipient addresses pending administrator
+        verification are not included in the response.
 
         '
       operationId: listBusinessRecipientAddresses
@@ -1060,6 +1061,7 @@ paths:
                       chain: ALGO
                       currency: USD
                       description: My USDC address at a cryptocurrency exchange
+                      status: active
         '401':
           $ref: '#/components/responses/NotAuthorized'
   /v1/businessAccount/wallets/addresses/recipient/{id}:
@@ -1069,6 +1071,10 @@ paths:
       parameters:
       - $ref: '#/components/parameters/IdPath'
       summary: Delete a recipient address
+      description: 'Deletes an external blockchain address. The recipient address
+        must be in an ''active'' or ''pending'' state in order to be deleted successfully.
+
+        '
       operationId: deleteBusinessRecipientAddress
       tags:
       - Addresses
@@ -2250,6 +2256,12 @@ components:
           $ref: '#/components/schemas/Currency'
         description:
           $ref: '#/components/schemas/AddressDescription'
+        status:
+          type: string
+          enum:
+          - active
+          - pending_verification
+          - verification_succeeded
     BusinessRecipientAddressCreationRequest:
       type: object
       description: Adds a recipient address. The currency parameter will default to
