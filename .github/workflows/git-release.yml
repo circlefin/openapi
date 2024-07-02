@@ -17,7 +17,7 @@ jobs:
     outputs:
       release-tag: v${{ steps.get-version.outputs.version }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Extract latest section from CHANGELOG.md
         id: parse-changelog
