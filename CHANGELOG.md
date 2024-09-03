@@ -1,5 +1,56 @@
 # Changelog
 
+## [2.11.1](https://github.com/circlefin/openapi-internal/compare/v2.11.0...v2.11.1) (2024-09-03)
+
+
+### Bug Fixes
+
+* use dind spot runner for sync public repo 
+
+## [2.11.0](https://github.com/circlefin/openapi-internal/compare/v2.10.0...v2.11.0) (2024-09-03)
+
+
+### Features
+
+* [BANK-1913] Add transferTypesInfo to GET wire account and GET cbit account endpoints 
+* Add PIX endpoints and update for FX 
+
+
+### Bug Fixes
+
+* Add missing build permissions 
+
+
+### Miscellaneous Chores
+
+* **deps:** update actions/checkout action to v4 
+* **deps:** update actions/setup-node action to v4 
+* **deps:** update circlefin/circle-runner-setup-action action to v5.1.10 
+* **deps:** update crazy-max/ghaction-import-gpg action to v6 
+* **deps:** update peter-evans/create-pull-request action to v6 
+* revert permissions additions in release workflow 
+* use default changelog types 
+
+
+### Continuous Integration
+
+* bump runner action setup version 
+* fix AWS secrets names 
+* fix runner image 
+* refactor to circle runner job setup 
+* specify node version 
+* switch to shared workflows 
+* update AWS secrets path to /ops/ pref 
+* use default iam role in runner setup 
+
+## [2.10.0](https://github.com/circlefin/openapi-internal/compare/v2.9.0...v2.10.0) (2024-04-25)
+
+
+### New Features
+
+* [BANK-2073] Add v1/exchange/quotes to payments docs 
+* use circlefin/github-actions-cache@v1 
+
 ## [2.9.0](https://github.com/circlefin/openapi-internal/compare/v2.8.0...v2.9.0) (2024-03-28)
 
 

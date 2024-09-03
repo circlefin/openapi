@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "2.9.0",
+    "version": "2.11.0",
     "title": "Core Functionality",
     "description": "All of Circle's APIs share a common set of core functionality that lets you manage your Circle Account in a programmatic way.\n\nWith a Circle Account your business can deposit traditional money from 80+ countries and seamlessly convert them into \"digital currency dollars\": USDC. You can then use USDC for everyday payments and treasury flows.\n"
   },
@@ -26,6 +26,10 @@
     {
       "name": "CBIT",
       "description": "Create and get information on CBIT accounts."
+    },
+    {
+      "name": "PIX",
+      "description": "Create and get information on PIX accounts."
     },
     {
       "name": "Transfers",
@@ -109,6 +113,7 @@
           }
         ],
         "summary": "Create a payout",
+        "description": "\nCreate a payout.  \n\nThe following table includes the supported pairs of amount.currency and toAmount.currency for FX payouts:\n\n| amount.currency  | toAmount.currency |\n| ---------------- | ------------ |\n | USD | BRL |\n",
         "operationId": "createBusinessPayout",
         "tags": [
           "Payouts"
@@ -152,6 +157,10 @@
                           "name": "COMMERZBANK AG ****3000"
                         },
                         "amount": {
+                          "amount": "3.14",
+                          "currency": "USD"
+                        },
+                        "toAmount": {
                           "amount": "3.14",
                           "currency": "USD"
                         },
@@ -303,6 +312,10 @@
                             "amount": "3.14",
                             "currency": "USD"
                           },
+                          "toAmount": {
+                            "amount": "3.14",
+                            "currency": "USD"
+                          },
                           "fees": {
                             "amount": "3.14",
                             "currency": "USD"
@@ -403,6 +416,10 @@
                           "name": "COMMERZBANK AG ****3000"
                         },
                         "amount": {
+                          "amount": "3.14",
+                          "currency": "USD"
+                        },
+                        "toAmount": {
                           "amount": "3.14",
                           "currency": "USD"
                         },
@@ -508,6 +525,14 @@
                         "status": "pending",
                         "description": "WELLS FARGO BANK, NA ****0010",
                         "trackingRef": "CIR13FB13A",
+                        "transferTypesInfo": {
+                          "currencies": [
+                            "USD"
+                          ],
+                          "additionalProperties": {
+                            "transactionLimits": 100000
+                          }
+                        },
                         "fingerprint": "eb170539-9e1c-4e92-bf4f-1d09534fdca2",
                         "billingDetails": {
                           "name": "Satoshi Nakamoto",
@@ -584,6 +609,14 @@
                           "status": "pending",
                           "description": "WELLS FARGO BANK, NA ****0010",
                           "trackingRef": "CIR13FB13A",
+                          "transferTypesInfo": {
+                            "currencies": [
+                              "USD"
+                            ],
+                            "additionalProperties": {
+                              "transactionLimits": 100000
+                            }
+                          },
                           "fingerprint": "eb170539-9e1c-4e92-bf4f-1d09534fdca2",
                           "billingDetails": {
                             "name": "Satoshi Nakamoto",
@@ -661,6 +694,14 @@
                         "status": "pending",
                         "description": "WELLS FARGO BANK, NA ****0010",
                         "trackingRef": "CIR13FB13A",
+                        "transferTypesInfo": {
+                          "currencies": [
+                            "USD"
+                          ],
+                          "additionalProperties": {
+                            "transactionLimits": 100000
+                          }
+                        },
                         "fingerprint": "eb170539-9e1c-4e92-bf4f-1d09534fdca2",
                         "billingDetails": {
                           "name": "Satoshi Nakamoto",
@@ -889,6 +930,14 @@
                         "status": "pending",
                         "trackingRef": "CIR25XSXT8",
                         "walletAddress": "0x7d8da35e03ef3a5ec5d5edbb961ef399dfb42d1e",
+                        "transferTypesInfo": {
+                          "currencies": [
+                            "USD"
+                          ],
+                          "additionalProperties": {
+                            "transactionLimits": 100000
+                          }
+                        },
                         "createDate": "2020-04-10T02:13:30.000Z",
                         "updateDate": "2020-04-10T02:13:30.000Z"
                       }
@@ -947,6 +996,14 @@
                           "status": "pending",
                           "trackingRef": "CIR25XSXT8",
                           "walletAddress": "0x7d8da35e03ef3a5ec5d5edbb961ef399dfb42d1e",
+                          "transferTypesInfo": {
+                            "currencies": [
+                              "USD"
+                            ],
+                            "additionalProperties": {
+                              "transactionLimits": 100000
+                            }
+                          },
                           "createDate": "2020-04-10T02:13:30.000Z",
                           "updateDate": "2020-04-10T02:13:30.000Z"
                         }
@@ -1006,6 +1063,14 @@
                         "status": "pending",
                         "trackingRef": "CIR25XSXT8",
                         "walletAddress": "0x7d8da35e03ef3a5ec5d5edbb961ef399dfb42d1e",
+                        "transferTypesInfo": {
+                          "currencies": [
+                            "USD"
+                          ],
+                          "additionalProperties": {
+                            "transactionLimits": 100000
+                          }
+                        },
                         "createDate": "2020-04-10T02:13:30.000Z",
                         "updateDate": "2020-04-10T02:13:30.000Z"
                       }
@@ -1779,6 +1844,266 @@
           }
         }
       }
+    },
+    "/v1/businessAccount/banks/pix": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create a PIX bank account",
+        "operationId": "createBusinessPixAccount",
+        "tags": [
+          "PIX"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PixFiatAccountCreationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created a bank account for PIX transfers.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "CreateBusinessPixAccountResponse",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PixFiatAccountResponse"
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": {
+                        "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                        "status": "pending",
+                        "description": "BTG Pactual ****0010",
+                        "trackingRef": "CIR13FB13A",
+                        "riskEvaluation": {
+                          "decision": "approved",
+                          "reason": "3000"
+                        },
+                        "fingerprint": "eb170539-9e1c-4e92-bf4f-1d09534fdca2",
+                        "createDate": "2020-04-10T02:13:30.000Z",
+                        "updateDate": "2020-04-10T02:13:30.000Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          }
+        }
+      },
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "List all PIX bank accounts.",
+        "operationId": "listBusinessPixAccounts",
+        "tags": [
+          "PIX"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved all bank accounts for PIX transfers.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "ListBusinessPixAccountsResponse",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PixFiatAccountResponse"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                          "status": "pending",
+                          "description": "BTG Pactual ****0010",
+                          "trackingRef": "CIR13FB13A",
+                          "riskEvaluation": {
+                            "decision": "approved",
+                            "reason": "3000"
+                          },
+                          "fingerprint": "eb170539-9e1c-4e92-bf4f-1d09534fdca2",
+                          "createDate": "2020-04-10T02:13:30.000Z",
+                          "updateDate": "2020-04-10T02:13:30.000Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          }
+        }
+      }
+    },
+    "/v1/businessAccount/banks/pix/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get a PIX bank account",
+        "operationId": "getBusinessPixAccount",
+        "tags": [
+          "PIX"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved a bank account for PIX transfers.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "GetBusinessPixAccountResponse",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PixFiatAccountResponse"
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": {
+                        "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                        "status": "pending",
+                        "description": "BTG Pactual ****0010",
+                        "trackingRef": "CIR13FB13A",
+                        "riskEvaluation": {
+                          "decision": "approved",
+                          "reason": "3000"
+                        },
+                        "fingerprint": "eb170539-9e1c-4e92-bf4f-1d09534fdca2",
+                        "createDate": "2020-04-10T02:13:30.000Z",
+                        "updateDate": "2020-04-10T02:13:30.000Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/businessAccount/banks/pix/{id}/instructions": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get PIX instructions",
+        "description": "Get the PIX transfer instructions into the Circle bank account given your bank account id.",
+        "operationId": "getBusinessPixAccountInstructions",
+        "tags": [
+          "PIX"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved PIX transfer instructions for the bank account.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "BusinessPixAccountInstructionsResponse",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PixInstruction"
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": {
+                        "trackingRef": "CIR25XSXT8",
+                        "ispb": "68033222",
+                        "branchCode": "123",
+                        "accountNumber": "322286803",
+                        "accountType": "checking",
+                        "taxId": "57112345675712",
+                        "name": "CIRCLE INTERNET FINANCIAL INC"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1891,6 +2216,18 @@
           }
         }
       },
+      "FiatCurrency": {
+        "type": "string",
+        "description": "Currency code.",
+        "title": "Currency",
+        "enum": [
+          "USD",
+          "EUR",
+          "MXN",
+          "SGD",
+          "BRL"
+        ]
+      },
       "FiatMoney": {
         "type": "object",
         "required": [
@@ -1904,12 +2241,24 @@
             "example": "3.14"
           },
           "currency": {
-            "description": "Currency code.",
+            "$ref": "#/components/schemas/FiatCurrency"
+          }
+        }
+      },
+      "FiatPayoutToMoney": {
+        "type": "object",
+        "required": [
+          "currency"
+        ],
+        "properties": {
+          "amount": {
+            "description": "Magnitude of the amount, in units of the currency, with a `.`.",
             "type": "string",
-            "enum": [
-              "USD",
-              "EUR"
-            ]
+            "example": "3.14",
+            "readOnly": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/FiatCurrency"
           }
         }
       },
@@ -2053,6 +2402,9 @@
           "amount": {
             "$ref": "#/components/schemas/FiatMoney"
           },
+          "toAmount": {
+            "$ref": "#/components/schemas/FiatPayoutToMoney"
+          },
           "fees": {
             "$ref": "#/components/schemas/FiatMoneyUsd"
           },
@@ -2102,7 +2454,10 @@
             "type": "string",
             "enum": [
               "wire",
-              "cbit"
+              "cbit",
+              "pix",
+              "sepa",
+              "sepa_instant"
             ]
           },
           "id": {
@@ -2126,6 +2481,10 @@
           },
           "amount": {
             "$ref": "#/components/schemas/FiatMoney"
+          },
+          "toAmount": {
+            "description": "To be used when requesting currency exchange",
+            "$ref": "#/components/schemas/FiatPayoutToMoney"
           }
         }
       },
@@ -2137,6 +2496,33 @@
           "complete",
           "failed"
         ]
+      },
+      "TransferTypeInfo": {
+        "type": "object",
+        "required": [
+          "currencies"
+        ],
+        "description": "Additional information for specific transfer type.",
+        "properties": {
+          "currencies": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/components/schemas/FiatCurrency"
+            }
+          },
+          "additionalProperties": {
+            "description": "Additional properties that apply to specific transfer type.",
+            "type": "object",
+            "properties": {
+              "transactionLimits": {
+                "type": "integer",
+                "description": "Transaction amount limit for the transfer type.",
+                "example": 100000
+              }
+            }
+          }
+        }
       },
       "Fingerprint": {
         "type": "string",
@@ -2252,7 +2638,8 @@
           "fingerprint",
           "billingDetails",
           "createDate",
-          "updateDate"
+          "updateDate",
+          "transferTypesInfo"
         ],
         "properties": {
           "id": {
@@ -2270,6 +2657,13 @@
             "type": "string",
             "description": "Wire tracking ref that needs to be set in the wire reference to beneficiary field.",
             "example": "CIR13FB13A"
+          },
+          "transferTypesInfo": {
+            "type": "object",
+            "description": "A <TransferType, TransferTypeInfo> map which shows transfer types supported on this account as well as additional information for each.",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TransferTypeInfo"
+            }
           },
           "fingerprint": {
             "$ref": "#/components/schemas/Fingerprint"
@@ -2646,7 +3040,8 @@
           "trackingRef",
           "walletAddress",
           "createDate",
-          "updateDate"
+          "updateDate",
+          "transferTypesInfo"
         ],
         "properties": {
           "id": {
@@ -2664,6 +3059,13 @@
             "type": "string",
             "description": "Your CBIT wallet address.",
             "example": "0x7d8da35e03ef3a5ec5d5edbb961ef399dfb42d1e"
+          },
+          "transferTypesInfo": {
+            "type": "object",
+            "description": "A <TransferType, TransferTypeInfo> map which shows transfer types supported on this account as well as additional information for each. For CBIT accounts this will always only show information for CBIT transfers.",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TransferTypeInfo"
+            }
           },
           "createDate": {
             "$ref": "#/components/schemas/UtcTimestamp"
@@ -3260,6 +3662,142 @@
           },
           "updateDate": {
             "$ref": "#/components/schemas/UtcTimestamp"
+          }
+        }
+      },
+      "PixFiatAccountResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "description",
+          "trackingRef",
+          "fingerprint",
+          "createDate",
+          "updateDate"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ExternalFiatAccountStatus"
+          },
+          "description": {
+            "type": "string",
+            "description": "Bank name plus last four digits of the PIX account number.",
+            "example": "BTG Pactual ****0010"
+          },
+          "trackingRef": {
+            "type": "string",
+            "description": "Wire tracking ref that needs to be set in the wire reference to beneficiary field.",
+            "example": "CIR13FB13A"
+          },
+          "riskEvaluation": {
+            "$ref": "#/components/schemas/RiskEvaluation"
+          },
+          "fingerprint": {
+            "$ref": "#/components/schemas/Fingerprint"
+          },
+          "createDate": {
+            "$ref": "#/components/schemas/UtcTimestamp"
+          },
+          "updateDate": {
+            "$ref": "#/components/schemas/UtcTimestamp"
+          }
+        }
+      },
+      "PixAccountType": {
+        "type": "string",
+        "title": "Account type",
+        "description": "Beneficiary account type.",
+        "enum": [
+          "checking",
+          "savings",
+          "salary",
+          "prepaid"
+        ],
+        "example": "checking"
+      },
+      "PixFiatAccountCreationRequest": {
+        "type": "object",
+        "required": [
+          "idempotencyKey",
+          "name",
+          "accountNumber",
+          "ispb",
+          "taxId",
+          "accountType"
+        ],
+        "properties": {
+          "idempotencyKey": {
+            "$ref": "#/components/schemas/IdempotencyKey"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the beneficiary.",
+            "example": "CIRCLE INTERNET FINANCIAL INC"
+          },
+          "accountNumber": {
+            "type": "string",
+            "description": "Beneficiary account number.",
+            "example": "322286803"
+          },
+          "ispb": {
+            "type": "string",
+            "description": "Beneficiary ISPB.",
+            "example": "68033222"
+          },
+          "branchCode": {
+            "type": "string",
+            "description": "Beneficiary account branch code.",
+            "example": "123"
+          },
+          "taxId": {
+            "type": "string",
+            "description": "Beneficiary Tax ID.",
+            "example": "57112345675712"
+          },
+          "accountType": {
+            "$ref": "#/components/schemas/PixAccountType"
+          }
+        }
+      },
+      "PixInstruction": {
+        "type": "object",
+        "properties": {
+          "trackingRef": {
+            "type": "string",
+            "description": "Circle tracking reference that needs to be set in the PIX reference field.",
+            "example": "CIR25XSXT8"
+          },
+          "ispb": {
+            "type": "string",
+            "description": "ISPB of beneficiary's bank.",
+            "example": "68033222"
+          },
+          "branchCode": {
+            "type": "string",
+            "description": "Beneficiary account branch code.",
+            "example": "123"
+          },
+          "accountNumber": {
+            "type": "string",
+            "description": "Beneficiary account number.",
+            "example": "322286803"
+          },
+          "accountType": {
+            "$ref": "#/components/schemas/PixAccountType"
+          },
+          "taxId": {
+            "type": "string",
+            "description": "Beneficiary Tax ID.",
+            "example": "57112345675712"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the beneficiary.",
+            "example": "CIRCLE INTERNET FINANCIAL INC"
           }
         }
       }

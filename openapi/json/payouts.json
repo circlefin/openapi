@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "2.9.0",
+    "version": "2.11.0",
     "title": "Payouts API",
     "description": "The Circle Payouts API allows you to programmatically make fast, global payouts to your customers, vendors, and suppliers. Make payouts on supported blockchains."
   },
