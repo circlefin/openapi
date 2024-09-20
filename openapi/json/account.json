@@ -3726,6 +3726,7 @@
           "name",
           "accountNumber",
           "ispb",
+          "branchCode",
           "taxId",
           "accountType"
         ],

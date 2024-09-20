@@ -6310,6 +6310,7 @@ components:
       - name
       - accountNumber
       - ispb
+      - branchCode
       - taxId
       - accountType
       properties:
