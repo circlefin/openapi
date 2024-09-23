@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.12.0](https://github.com/circlefin/openapi-internal/compare/v2.11.1...v2.12.0) (2024-09-23)
+
+
+### Features
+
+* Bank 2919 Add /v1/fees/redemption/net/dailyReports to payment docs 
+
 ## [2.11.1](https://github.com/circlefin/openapi-internal/compare/v2.11.0...v2.11.1) (2024-09-03)
 
 
