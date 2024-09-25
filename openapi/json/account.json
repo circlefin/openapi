@@ -526,11 +526,16 @@
                         "description": "WELLS FARGO BANK, NA ****0010",
                         "trackingRef": "CIR13FB13A",
                         "transferTypesInfo": {
-                          "currencies": [
-                            "USD"
-                          ],
-                          "additionalProperties": {
-                            "transactionLimits": 100000
+                          "wire": {
+                            "currencies": [
+                              "USD",
+                              "EUR"
+                            ]
+                          },
+                          "rtgs": {
+                            "currencies": [
+                              "USD"
+                            ]
                           }
                         },
                         "fingerprint": "eb170539-9e1c-4e92-bf4f-1d09534fdca2",
@@ -610,11 +615,16 @@
                           "description": "WELLS FARGO BANK, NA ****0010",
                           "trackingRef": "CIR13FB13A",
                           "transferTypesInfo": {
-                            "currencies": [
-                              "USD"
-                            ],
-                            "additionalProperties": {
-                              "transactionLimits": 100000
+                            "wire": {
+                              "currencies": [
+                                "USD",
+                                "EUR"
+                              ]
+                            },
+                            "rtgs": {
+                              "currencies": [
+                                "USD"
+                              ]
                             }
                           },
                           "fingerprint": "eb170539-9e1c-4e92-bf4f-1d09534fdca2",
@@ -695,11 +705,16 @@
                         "description": "WELLS FARGO BANK, NA ****0010",
                         "trackingRef": "CIR13FB13A",
                         "transferTypesInfo": {
-                          "currencies": [
-                            "USD"
-                          ],
-                          "additionalProperties": {
-                            "transactionLimits": 100000
+                          "wire": {
+                            "currencies": [
+                              "USD",
+                              "EUR"
+                            ]
+                          },
+                          "rtgs": {
+                            "currencies": [
+                              "USD"
+                            ]
                           }
                         },
                         "fingerprint": "eb170539-9e1c-4e92-bf4f-1d09534fdca2",
@@ -931,11 +946,10 @@
                         "trackingRef": "CIR25XSXT8",
                         "walletAddress": "0x7d8da35e03ef3a5ec5d5edbb961ef399dfb42d1e",
                         "transferTypesInfo": {
-                          "currencies": [
-                            "USD"
-                          ],
-                          "additionalProperties": {
-                            "transactionLimits": 100000
+                          "cbit": {
+                            "currencies": [
+                              "USD"
+                            ]
                           }
                         },
                         "createDate": "2020-04-10T02:13:30.000Z",
@@ -997,11 +1011,10 @@
                           "trackingRef": "CIR25XSXT8",
                           "walletAddress": "0x7d8da35e03ef3a5ec5d5edbb961ef399dfb42d1e",
                           "transferTypesInfo": {
-                            "currencies": [
-                              "USD"
-                            ],
-                            "additionalProperties": {
-                              "transactionLimits": 100000
+                            "cbit": {
+                              "currencies": [
+                                "USD"
+                              ]
                             }
                           },
                           "createDate": "2020-04-10T02:13:30.000Z",
@@ -1064,11 +1077,10 @@
                         "trackingRef": "CIR25XSXT8",
                         "walletAddress": "0x7d8da35e03ef3a5ec5d5edbb961ef399dfb42d1e",
                         "transferTypesInfo": {
-                          "currencies": [
-                            "USD"
-                          ],
-                          "additionalProperties": {
-                            "transactionLimits": 100000
+                          "cbit": {
+                            "currencies": [
+                              "USD"
+                            ]
                           }
                         },
                         "createDate": "2020-04-10T02:13:30.000Z",
@@ -1892,6 +1904,13 @@
                         "status": "pending",
                         "description": "BTG Pactual ****0010",
                         "trackingRef": "CIR13FB13A",
+                        "transferTypesInfo": {
+                          "pix": {
+                            "currencies": [
+                              "BRL"
+                            ]
+                          }
+                        },
                         "riskEvaluation": {
                           "decision": "approved",
                           "reason": "3000"
@@ -1955,6 +1974,13 @@
                           "status": "pending",
                           "description": "BTG Pactual ****0010",
                           "trackingRef": "CIR13FB13A",
+                          "transferTypesInfo": {
+                            "pix": {
+                              "currencies": [
+                                "BRL"
+                              ]
+                            }
+                          },
                           "riskEvaluation": {
                             "decision": "approved",
                             "reason": "3000"
@@ -2019,6 +2045,13 @@
                         "status": "pending",
                         "description": "BTG Pactual ****0010",
                         "trackingRef": "CIR13FB13A",
+                        "transferTypesInfo": {
+                          "pix": {
+                            "currencies": [
+                              "BRL"
+                            ]
+                          }
+                        },
                         "riskEvaluation": {
                           "decision": "approved",
                           "reason": "3000"
@@ -2767,6 +2800,19 @@
             "description": "A <TransferType, TransferTypeInfo> map which shows transfer types supported on this account as well as additional information for each.",
             "additionalProperties": {
               "$ref": "#/components/schemas/TransferTypeInfo"
+            },
+            "example": {
+              "wire": {
+                "currencies": [
+                  "USD",
+                  "EUR"
+                ]
+              },
+              "rtgs": {
+                "currencies": [
+                  "USD"
+                ]
+              }
             }
           },
           "fingerprint": {
@@ -3169,6 +3215,13 @@
             "description": "A <TransferType, TransferTypeInfo> map which shows transfer types supported on this account as well as additional information for each. For CBIT accounts this will always only show information for CBIT transfers.",
             "additionalProperties": {
               "$ref": "#/components/schemas/TransferTypeInfo"
+            },
+            "example": {
+              "cbit": {
+                "currencies": [
+                  "USD"
+                ]
+              }
             }
           },
           "createDate": {
@@ -3778,7 +3831,8 @@
           "trackingRef",
           "fingerprint",
           "createDate",
-          "updateDate"
+          "updateDate",
+          "transferTypesInfo"
         ],
         "properties": {
           "id": {
@@ -3796,6 +3850,20 @@
             "type": "string",
             "description": "Wire tracking ref that needs to be set in the wire reference to beneficiary field.",
             "example": "CIR13FB13A"
+          },
+          "transferTypesInfo": {
+            "type": "object",
+            "description": "A <TransferType, TransferTypeInfo> map which shows transfer types supported on this account as well as additional information for each. For PIX accounts this will always only show information for PIX transfers.",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TransferTypeInfo"
+            },
+            "example": {
+              "pix": {
+                "currencies": [
+                  "BRL"
+                ]
+              }
+            }
           },
           "riskEvaluation": {
             "$ref": "#/components/schemas/RiskEvaluation"
