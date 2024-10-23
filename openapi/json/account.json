@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "2.12.0",
+    "version": "2.13.0",
     "title": "Core Functionality",
     "description": "All of Circle's APIs share a common set of core functionality that lets you manage your Circle Account in a programmatic way.\n\nWith a Circle Account your business can deposit traditional money from 80+ countries and seamlessly convert them into \"digital currency dollars\": USDC. You can then use USDC for everyday payments and treasury flows.\n"
   },
@@ -26,6 +26,10 @@
     {
       "name": "CBIT",
       "description": "Create and get information on CBIT accounts."
+    },
+    {
+      "name": "CUBIX",
+      "description": "Create and get information on CUBIX accounts."
     },
     {
       "name": "PIX",
@@ -237,7 +241,8 @@
               "type": "string",
               "enum": [
                 "wire",
-                "cbit"
+                "cbit",
+                "cubix"
               ]
             }
           },
@@ -1143,6 +1148,267 @@
                       "data": {
                         "trackingRef": "CIR25XSXT8",
                         "walletAddress": "0x7d8da35e03ef3a5ec5d5edbb961ef399dfb42d1e"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/businessAccount/banks/cubix": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create a CUBIX bank account",
+        "operationId": "createBusinessCubixAccount",
+        "tags": [
+          "CUBIX"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CubixFiatAccountCreationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created a bank account for CUBIX transfers.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "CreateBusinessCubixAccountResponse",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CubixFiatAccountResponse"
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": {
+                        "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                        "status": "pending",
+                        "trackingRef": "CIR25XSXT8",
+                        "accountId": "ff2212d7-8476-4d1e-9d95-eda6455f4f54",
+                        "transferTypesInfo": {
+                          "cubix": {
+                            "currencies": [
+                              "USD"
+                            ]
+                          }
+                        },
+                        "createDate": "2020-04-10T02:13:30.000Z",
+                        "updateDate": "2020-04-10T02:13:30.000Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          }
+        }
+      },
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "List all CUBIX bank accounts.",
+        "operationId": "listBusinessCubixAccounts",
+        "tags": [
+          "CUBIX"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved all bank accounts for CUBIX transfers.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "ListBusinessCubixAccountsResponse",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CubixFiatAccountResponse"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                          "status": "pending",
+                          "trackingRef": "CIR25XSXT8",
+                          "accountId": "ff2212d7-8476-4d1e-9d95-eda6455f4f54",
+                          "transferTypesInfo": {
+                            "cubix": {
+                              "currencies": [
+                                "USD"
+                              ]
+                            }
+                          },
+                          "createDate": "2020-04-10T02:13:30.000Z",
+                          "updateDate": "2020-04-10T02:13:30.000Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          }
+        }
+      }
+    },
+    "/v1/businessAccount/banks/cubix/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get a CUBIX bank account",
+        "operationId": "getBusinessCubixAccount",
+        "tags": [
+          "CUBIX"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved a bank account for CUBIX transfers.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "GetBusinessCubixAccountResponse",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CubixFiatAccountResponse"
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": {
+                        "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
+                        "status": "pending",
+                        "trackingRef": "CIR25XSXT8",
+                        "accountId": "ff2212d7-8476-4d1e-9d95-eda6455f4f54",
+                        "transferTypesInfo": {
+                          "cubix": {
+                            "currencies": [
+                              "USD"
+                            ]
+                          }
+                        },
+                        "createDate": "2020-04-10T02:13:30.000Z",
+                        "updateDate": "2020-04-10T02:13:30.000Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/businessAccount/banks/cubix/{id}/instructions": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get CUBIX instructions",
+        "description": "Get the CUBIX transfer instructions into the Circle bank account given your fiat account id.",
+        "operationId": "getBusinessCubixAccountInstructions",
+        "tags": [
+          "CUBIX"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved CUBIX transfer instructions for the fiat account.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/XRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "ListBusinessCubixAccountInstructionsResponse",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CubixInstruction"
+                    }
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "data": {
+                        "trackingRef": "CIR25XSXT8",
+                        "accountId": "ff2212d7-8476-4d1e-9d95-eda6455f4f54"
                       }
                     }
                   }
@@ -2329,7 +2595,8 @@
         "description": "The destination bank account type.",
         "enum": [
           "wire",
-          "cbit"
+          "cbit",
+          "cubix"
         ]
       },
       "BankDestination": {
@@ -2592,6 +2859,7 @@
             "enum": [
               "wire",
               "cbit",
+              "cubix",
               "pix",
               "sepa",
               "sepa_instant"
@@ -3261,6 +3529,91 @@
             "type": "string",
             "description": "Circle wallet address that needs to be set in the CBIT recipient wallet field.",
             "example": "0x7d8da35e03ef3a5ec5d5edbb961ef399dfb42d1e"
+          }
+        }
+      },
+      "CubixFiatAccountResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "trackingRef",
+          "accountId",
+          "createDate",
+          "updateDate",
+          "transferTypesInfo"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ExternalFiatAccountStatus"
+          },
+          "trackingRef": {
+            "type": "string",
+            "description": "Tracking ref that needs to be set in the public description field when you send the funds to Circle's CUBIX account.",
+            "example": "CIR25XSXT8"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Your CUBIX Account ID.",
+            "example": "ff2212d7-8476-4d1e-9d95-eda6455f4f54"
+          },
+          "transferTypesInfo": {
+            "type": "object",
+            "description": "A <TransferType, TransferTypeInfo> map which shows transfer types supported on this account as well as additional information for each. For CUBIX accounts this will always only show information for CUBIX transfers.",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TransferTypeInfo"
+            },
+            "example": {
+              "cubix": {
+                "currencies": [
+                  "USD"
+                ]
+              }
+            }
+          },
+          "createDate": {
+            "$ref": "#/components/schemas/UtcTimestamp"
+          },
+          "updateDate": {
+            "$ref": "#/components/schemas/UtcTimestamp"
+          }
+        }
+      },
+      "CubixFiatAccountCreationRequest": {
+        "type": "object",
+        "required": [
+          "idempotencyKey",
+          "accountId"
+        ],
+        "properties": {
+          "idempotencyKey": {
+            "$ref": "#/components/schemas/IdempotencyKey"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Cubix Account ID.",
+            "example": "ff2212d7-8476-4d1e-9d95-eda6455f4f54"
+          }
+        }
+      },
+      "CubixInstruction": {
+        "type": "object",
+        "properties": {
+          "trackingRef": {
+            "type": "string",
+            "description": "Circle tracking reference that needs to be set in the CUBIX public memo field.",
+            "example": "CIR25XSXT8"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Circle account ID that needs to be set in the CUBIX account ID field.",
+            "example": "ff2212d7-8476-4d1e-9d95-eda6455f4f54"
           }
         }
       },
