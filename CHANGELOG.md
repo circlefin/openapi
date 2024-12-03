@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.14.0](https://github.com/circlefin/openapi-internal/compare/v2.13.0...v2.14.0) (2024-12-03)
+
+
+### Features
+
+* remove accounts api 
+
 ## [2.13.0](https://github.com/circlefin/openapi-internal/compare/v2.12.0...v2.13.0) (2024-10-23)
 
 
