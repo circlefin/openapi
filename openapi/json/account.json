@@ -6,7 +6,7 @@
     }
   ],
   "info": {
-    "version": "2.14.0",
+    "version": "2.15.0",
     "title": "Core Functionality",
     "description": "All of Circle's APIs share a common set of core functionality that lets you manage your Circle Account in a programmatic way.\n\nWith a Circle Account your business can deposit traditional money from 80+ countries and seamlessly convert them into \"digital currency dollars\": USDC. You can then use USDC for everyday payments and treasury flows.\n"
   },
@@ -22,10 +22,6 @@
     {
       "name": "Wires",
       "description": "Create, get instructions, and get information on 1st party bank accounts for wire transfers."
-    },
-    {
-      "name": "CBIT",
-      "description": "Create and get information on CBIT accounts."
     },
     {
       "name": "CUBIX",
@@ -241,7 +237,6 @@
               "type": "string",
               "enum": [
                 "wire",
-                "cbit",
                 "cubix"
               ]
             }
@@ -899,267 +894,6 @@
           },
           "401": {
             "$ref": "#/components/responses/NotAuthorized"
-          }
-        }
-      }
-    },
-    "/v1/businessAccount/banks/cbit": {
-      "post": {
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "summary": "Create a CBIT bank account",
-        "operationId": "createBusinessCbitAccount",
-        "tags": [
-          "CBIT"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CbitFiatAccountCreationRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Successfully created a bank account for CBIT transfers.",
-            "headers": {
-              "X-Request-Id": {
-                "$ref": "#/components/headers/XRequestId"
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "CreateBusinessCbitAccountResponse",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/CbitFiatAccountResponse"
-                    }
-                  }
-                },
-                "examples": {
-                  "response": {
-                    "value": {
-                      "data": {
-                        "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
-                        "status": "pending",
-                        "trackingRef": "CIR25XSXT8",
-                        "walletAddress": "0x7d8da35e03ef3a5ec5d5edbb961ef399dfb42d1e",
-                        "transferTypesInfo": {
-                          "cbit": {
-                            "currencies": [
-                              "USD"
-                            ]
-                          }
-                        },
-                        "createDate": "2020-04-10T02:13:30.000Z",
-                        "updateDate": "2020-04-10T02:13:30.000Z"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/NotAuthorized"
-          }
-        }
-      },
-      "get": {
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "summary": "List all CBIT bank accounts.",
-        "operationId": "listBusinessCbitAccounts",
-        "tags": [
-          "CBIT"
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved all bank accounts for CBIT transfers.",
-            "headers": {
-              "X-Request-Id": {
-                "$ref": "#/components/headers/XRequestId"
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "ListBusinessCbitAccountsResponse",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/CbitFiatAccountResponse"
-                      }
-                    }
-                  }
-                },
-                "examples": {
-                  "response": {
-                    "value": {
-                      "data": [
-                        {
-                          "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
-                          "status": "pending",
-                          "trackingRef": "CIR25XSXT8",
-                          "walletAddress": "0x7d8da35e03ef3a5ec5d5edbb961ef399dfb42d1e",
-                          "transferTypesInfo": {
-                            "cbit": {
-                              "currencies": [
-                                "USD"
-                              ]
-                            }
-                          },
-                          "createDate": "2020-04-10T02:13:30.000Z",
-                          "updateDate": "2020-04-10T02:13:30.000Z"
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/NotAuthorized"
-          }
-        }
-      }
-    },
-    "/v1/businessAccount/banks/cbit/{id}": {
-      "get": {
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/IdPath"
-          }
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "summary": "Get a CBIT bank account",
-        "operationId": "getBusinessCbitAccount",
-        "tags": [
-          "CBIT"
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved a bank account for CBIT transfers.",
-            "headers": {
-              "X-Request-Id": {
-                "$ref": "#/components/headers/XRequestId"
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "GetBusinessCbitAccountResponse",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/CbitFiatAccountResponse"
-                    }
-                  }
-                },
-                "examples": {
-                  "response": {
-                    "value": {
-                      "data": {
-                        "id": "b8627ae8-732b-4d25-b947-1df8f4007a29",
-                        "status": "pending",
-                        "trackingRef": "CIR25XSXT8",
-                        "walletAddress": "0x7d8da35e03ef3a5ec5d5edbb961ef399dfb42d1e",
-                        "transferTypesInfo": {
-                          "cbit": {
-                            "currencies": [
-                              "USD"
-                            ]
-                          }
-                        },
-                        "createDate": "2020-04-10T02:13:30.000Z",
-                        "updateDate": "2020-04-10T02:13:30.000Z"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/NotAuthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        }
-      }
-    },
-    "/v1/businessAccount/banks/cbit/{id}/instructions": {
-      "get": {
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/IdPath"
-          }
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "summary": "Get CBIT instructions",
-        "description": "Get the CBIT transfer instructions into the Circle bank account given your bank account id.",
-        "operationId": "getBusinessCbitAccountInstructions",
-        "tags": [
-          "CBIT"
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved CBIT transfer instructions for the bank account.",
-            "headers": {
-              "X-Request-Id": {
-                "$ref": "#/components/headers/XRequestId"
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "title": "ListBusinessCbitAccountInstructionsResponse",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/CbitInstruction"
-                    }
-                  }
-                },
-                "examples": {
-                  "response": {
-                    "value": {
-                      "data": {
-                        "trackingRef": "CIR25XSXT8",
-                        "walletAddress": "0x7d8da35e03ef3a5ec5d5edbb961ef399dfb42d1e"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/NotAuthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
           }
         }
       }
@@ -1848,7 +1582,7 @@
           }
         ],
         "summary": "Create a recipient address",
-        "description": "Stores an external blockchain address. Once added, the recipient address must be verified to ensure that you know and trust each new address. Note: Circle Mint Singapore customers must verify all transfer recipients using the UI in the Circle Console, as transfers from unverified addresses will be held in `pending` status.\n",
+        "description": "Stores an external blockchain address. Once added, the recipient address must be verified to ensure that you know and trust each new address. \n\n**For France customers:**\n\nCircle Mint France customers must verify all transfer recipients using the UI in the Circle Console, as transfers from unverified addresses will be held in pending status. Please see Help Center articles below for details:\n- [Circle Mint France Travel Rule](https://help.circle.com/s/article/Circle-Mint-France-Travel-Rule)\n- [Circle Mint France wallet verification](https://help.circle.com/s/article/Circle-Mint-France-wallet-verification)\n",
         "operationId": "createBusinessRecipientAddress",
         "tags": [
           "Addresses"
@@ -2595,7 +2329,6 @@
         "description": "The destination bank account type.",
         "enum": [
           "wire",
-          "cbit",
           "cubix"
         ]
       },
@@ -2816,6 +2549,7 @@
             "$ref": "#/components/schemas/PayoutStatus"
           },
           "trackingRef": {
+            "type": "string",
             "description": "A payout tracking reference. Will be present once known.",
             "nullable": true,
             "example": "CIR-6ESOQANEP3NAO"
@@ -2858,7 +2592,6 @@
             "type": "string",
             "enum": [
               "wire",
-              "cbit",
               "cubix",
               "pix",
               "sepa",
@@ -3450,88 +3183,6 @@
           }
         }
       },
-      "CbitFiatAccountResponse": {
-        "type": "object",
-        "required": [
-          "id",
-          "status",
-          "trackingRef",
-          "walletAddress",
-          "createDate",
-          "updateDate",
-          "transferTypesInfo"
-        ],
-        "properties": {
-          "id": {
-            "$ref": "#/components/schemas/Id"
-          },
-          "status": {
-            "$ref": "#/components/schemas/ExternalFiatAccountStatus"
-          },
-          "trackingRef": {
-            "type": "string",
-            "description": "Tracking ref that needs to be set in the public description field when you send the funds to Circle CBIT wallet.",
-            "example": "CIR25XSXT8"
-          },
-          "walletAddress": {
-            "type": "string",
-            "description": "Your CBIT wallet address.",
-            "example": "0x7d8da35e03ef3a5ec5d5edbb961ef399dfb42d1e"
-          },
-          "transferTypesInfo": {
-            "type": "object",
-            "description": "A <TransferType, TransferTypeInfo> map which shows transfer types supported on this account as well as additional information for each. For CBIT accounts this will always only show information for CBIT transfers.",
-            "additionalProperties": {
-              "$ref": "#/components/schemas/TransferTypeInfo"
-            },
-            "example": {
-              "cbit": {
-                "currencies": [
-                  "USD"
-                ]
-              }
-            }
-          },
-          "createDate": {
-            "$ref": "#/components/schemas/UtcTimestamp"
-          },
-          "updateDate": {
-            "$ref": "#/components/schemas/UtcTimestamp"
-          }
-        }
-      },
-      "CbitFiatAccountCreationRequest": {
-        "type": "object",
-        "required": [
-          "idempotencyKey",
-          "walletAddress"
-        ],
-        "properties": {
-          "idempotencyKey": {
-            "$ref": "#/components/schemas/IdempotencyKey"
-          },
-          "walletAddress": {
-            "type": "string",
-            "description": "CBIT wallet address.",
-            "example": "0x7d8da35e03ef3a5ec5d5edbb961ef399dfb42d1e"
-          }
-        }
-      },
-      "CbitInstruction": {
-        "type": "object",
-        "properties": {
-          "trackingRef": {
-            "type": "string",
-            "description": "Circle tracking reference that needs to be set in the CBIT public description field.",
-            "example": "CIR25XSXT8"
-          },
-          "walletAddress": {
-            "type": "string",
-            "description": "Circle wallet address that needs to be set in the CBIT recipient wallet field.",
-            "example": "0x7d8da35e03ef3a5ec5d5edbb961ef399dfb42d1e"
-          }
-        }
-      },
       "CubixFiatAccountResponse": {
         "type": "object",
         "required": [
@@ -3734,7 +3385,6 @@
           "BTC",
           "CELO",
           "ETH",
-          "FLOW",
           "HBAR",
           "NEAR",
           "NOBLE",
@@ -3742,8 +3392,9 @@
           "PAH",
           "POLY",
           "SOL",
-          "TRX",
-          "XLM"
+          "SUI",
+          "XLM",
+          "ZKS"
         ]
       },
       "TransferSourceBlockchainLocation": {

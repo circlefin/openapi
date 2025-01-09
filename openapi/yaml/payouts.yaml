@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 2.14.0
+  version: 2.15.0
   title: Payouts API
   description: The Circle Payouts API allows you to programmatically make fast, global
     payouts to your customers, vendors, and suppliers. Make payouts on supported blockchains.
@@ -837,7 +837,6 @@ components:
       - BTC
       - CELO
       - ETH
-      - FLOW
       - HBAR
       - NEAR
       - NOBLE
@@ -845,8 +844,9 @@ components:
       - PAH
       - POLY
       - SOL
-      - TRX
+      - SUI
       - XLM
+      - ZKS
     Address:
       type: string
       description: An alphanumeric string representing a blockchain address. Will
@@ -965,7 +965,6 @@ components:
         - BTC
         - CELO
         - ETH
-        - FLOW
         - HBAR
         - NEAR
         - NOBLE
@@ -973,8 +972,9 @@ components:
         - PAH
         - POLY
         - SOL
-        - TRX
+        - SUI
         - XLM
+        - ZKS
     From:
       name: from
       description: Queries items created since the specified date-time (inclusive).

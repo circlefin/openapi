@@ -2,7 +2,7 @@ openapi: 3.0.2
 servers:
 - url: https://api-sandbox.circle.com
 info:
-  version: 2.14.0
+  version: 2.15.0
   title: API Overview
   description: Common endpoints shared across all Circle APIs.
 tags:
@@ -401,7 +401,6 @@ components:
       - BTC
       - CELO
       - ETH
-      - FLOW
       - HBAR
       - NEAR
       - NOBLE
@@ -409,8 +408,9 @@ components:
       - PAH
       - POLY
       - SOL
-      - TRX
+      - SUI
       - XLM
+      - ZKS
     TokenAmount:
       type: object
       required:
